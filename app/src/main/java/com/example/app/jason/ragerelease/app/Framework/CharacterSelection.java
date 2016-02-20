@@ -4,20 +4,10 @@ package com.example.app.jason.ragerelease.app.Framework;
 // All of the extra includes here.
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Camera;
-import android.graphics.Color;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -26,13 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.app.jason.ragerelease.R;
-import com.example.app.jason.ragerelease.app.Framework.ImageAdapter;
-import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
-import com.example.app.jason.ragerelease.app.GameStates.Game;
-import com.example.app.jason.ragerelease.app.GameStates.MainMenu;
+import com.example.app.jason.ragerelease.app.Framework.AndroidOSHandlers.CameraHandler;
 import com.example.app.jason.ragerelease.app.GameStates.SelectionScreen;
-
-import org.w3c.dom.Text;
 
 /**
  * Created by Jason Mottershead on 17/10/2015.

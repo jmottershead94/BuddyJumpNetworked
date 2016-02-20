@@ -3,7 +3,7 @@
 <!-- Setting up the game over activity. -->
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:background="@color/lightBlue">
 
@@ -37,9 +37,8 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Distance"
         android:id="@+id/gameOverDistanceText"
-        android:layout_above="@+id/gameOverMainMenuButton"
-        android:layout_toStartOf="@+id/gameOverMainMenuButton"
-        android:layout_marginBottom="29dp" />
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/gameOverMainMenuButton" />
 
     <!-- This text will display the current level that the player has reached. -->
     <TextView
@@ -49,15 +48,28 @@
         android:text="Level Number"
         android:id="@+id/gameOverLevelNumberText"
         android:layout_alignTop="@+id/gameOverDistanceText"
-        android:layout_toEndOf="@+id/gameOverMainMenuButton" />
+        android:layout_toEndOf="@+id/gameOverText" />
 
+    <!-- Setting up the main menu button. -->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Main Menu"
         android:id="@+id/gameOverMainMenuButton"
         android:background="@color/reallyLightBlue"
-        android:layout_centerVertical="true"
-        android:layout_alignEnd="@+id/gameOverText" />
+        android:layout_alignTop="@+id/gameOverText"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="117dp" />
+
+    <!-- Setting up the text a friend button. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Text A Friend!"
+        android:id="@+id/textFriendButton"
+        android:background="@color/reallyLightBlue"
+        android:layout_alignBottom="@+id/gameOverMainMenuButton"
+        android:layout_alignStart="@+id/gameOverLevelNumberText"
+        android:layout_marginStart="30dp" />
 
 </RelativeLayout>

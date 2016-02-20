@@ -8,7 +8,7 @@ import android.widget.Button;
 
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
-import com.example.app.jason.ragerelease.app.Framework.SensorHandler;
+import com.example.app.jason.ragerelease.app.Framework.AndroidOSHandlers.SensorHandler;
 
 /**
  * Created by Jason Mottershead on 17/10/2015.

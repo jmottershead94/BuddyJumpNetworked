@@ -11,6 +11,11 @@
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <!-- Setting the user permission to send sms from this phone. -->
+    <uses-permission android:name="ANDROID.PERMISSION.SEND_SMS"/>
+    <uses-permission android:name="ANDROID.PERMISSION.READ_SMS" />
+    <uses-permission android:name="ANDROID.PERMISSION.WRITE_SMS"/>
+
     <!-- Setting the Buddy Jump! application up. -->
     <application
         android:allowBackup="true"

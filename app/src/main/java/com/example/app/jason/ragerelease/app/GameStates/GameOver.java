@@ -5,10 +5,12 @@ package com.example.app.jason.ragerelease.app.GameStates;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.app.jason.ragerelease.R;
+import com.example.app.jason.ragerelease.app.Framework.AndroidOSHandlers.SMSHandler;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
 
 /**
@@ -17,11 +19,12 @@ import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
 
 // GameOver IS AN Activity, therefore inherits from it.
 // This class will provide a game over screen.
-public class GameOver extends Activity
+public class GameOver extends Activity implements View.OnClickListener
 {
     // Attributes.
     // Private.
     private static final String PREFS_NAME = "MyPrefsFile";
+    private Button textAFriendButton = null;
 
     // Methods.
     //////////////////////////////////////////////////
@@ -47,6 +50,7 @@ public class GameOver extends Activity
         final NavigationButton button = new NavigationButton();
         final TextView distanceText = (TextView) findViewById(R.id.gameOverDistanceText);
         final TextView levelNumberText = (TextView) findViewById(R.id.gameOverLevelNumberText);
+        textAFriendButton = (Button) findViewById(R.id.textFriendButton);
 
         // Getting the final distance score for the player.
         distanceText.setText("Final Distance: " + distance);
@@ -55,5 +59,19 @@ public class GameOver extends Activity
         // If the main menu button has been pressed.
         // Navigate the user back to the main menu.
         button.isPressed(mainMenuButton, this, MainMenu.class);
+
+        // Setting the on click listener for this button.
+        textAFriendButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view)
+    {
+        // If we have clicked on the text a friend button.
+        if(view == textAFriendButton)
+        {
+            // Go to the sms application.
+            final SMSHandler smsHandler = new SMSHandler(this);
+        }
     }
 }

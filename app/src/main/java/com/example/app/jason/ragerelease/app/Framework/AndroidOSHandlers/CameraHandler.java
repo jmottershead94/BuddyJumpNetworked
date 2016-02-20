@@ -1,5 +1,5 @@
 // The package location of this class.
-package com.example.app.jason.ragerelease.app.Framework;
+package com.example.app.jason.ragerelease.app.Framework.AndroidOSHandlers;
 
 // All of the extra includes here.
 import android.app.Activity;
@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.provider.MediaStore;
 
 import com.example.app.jason.ragerelease.R;
+import com.example.app.jason.ragerelease.app.Framework.Resources;
 
 import java.io.File;
 

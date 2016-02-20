@@ -1,5 +1,5 @@
 // The package location for this class.
-package com.example.app.jason.ragerelease.app.Framework;
+package com.example.app.jason.ragerelease.app.Framework.Graphics;
 
 // All of the extra includes here.
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.Image;
 import android.view.View;
 
 import com.example.app.jason.ragerelease.app.Framework.Maths.Vector2;
@@ -302,5 +303,11 @@ public class Sprite extends View
 
     // This will return whether or not we are using the camera with this sprite.
     public boolean isUsingCameraImage()     { return usingCameraImage; }
+
+    // This will return our current image for the sprite.
+    public Bitmap getImage()                { return image; }
+
+    // This will return our current colour for the sprite.
+    public Paint getColour()                { return colour; }
 }
 

@@ -5,6 +5,7 @@ package com.example.app.jason.ragerelease.app.Framework;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.example.app.jason.ragerelease.app.Framework.Graphics.AnimatedSprite;
 import com.example.app.jason.ragerelease.app.Framework.Maths.Vector2;
 import com.example.app.jason.ragerelease.app.Framework.Physics.StaticBody;
 import com.example.app.jason.ragerelease.app.GameStates.Game;
@@ -14,7 +15,6 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import java.util.Timer;
 import java.util.Vector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -172,7 +172,7 @@ public class Level implements View.OnTouchListener
                                 }
 
                                 // Make the object jump.
-                                object.body.applyLinearImpulse(new Vec2(0.0f, 4.0f), object.body.getWorldCenter());
+                                object.getBody().applyLinearImpulse(new Vec2(0.0f, 4.0f), object.getBody().getWorldCenter());
                             }
                         }
                     }
@@ -244,7 +244,7 @@ public class Level implements View.OnTouchListener
                 // Animates and moves all of the player characters.
                 if (object.getID() == ObjectID.CHARACTERONE || object.getID() == ObjectID.CHARACTERTWO)
                 {
-                    DynamicBody playerSprite = (DynamicBody) object.body.getUserData();
+                    DynamicBody playerSprite = (DynamicBody) object.getBody().getUserData();
                     playerSprite.updateBody();
 
                     if(!playerSprite.isUsingCameraImage())
@@ -253,18 +253,18 @@ public class Level implements View.OnTouchListener
                     }
 
                     // If a player square needs to respawn.
-                    if(playerSprite.respawn)
+                    if(playerSprite.isRespawning())
                     {
                         // Set the player square at the spawn location.
                         playerSprite.translateFramework(object.getSpawnLocation());
-                        playerSprite.respawn = false;
+                        playerSprite.setRespawnState(false);
                     }
                 }
 
                 // Moves all of the obstacles.
                 if (object.getID() == ObjectID.OBSTACLE)
                 {
-                    StaticBody enemySprite = (StaticBody) object.body.getUserData();
+                    StaticBody enemySprite = (StaticBody) object.getBody().getUserData();
 
                     if(enemySprite.getSpriteRight() > 0.0f)
                     {

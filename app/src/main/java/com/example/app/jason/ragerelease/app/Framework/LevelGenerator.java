@@ -5,12 +5,12 @@ package com.example.app.jason.ragerelease.app.Framework;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
+import com.example.app.jason.ragerelease.app.Framework.Graphics.AnimatedSprite;
 import com.example.app.jason.ragerelease.app.Framework.Maths.Vector2;
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.Physics.DynamicBody;
 import com.example.app.jason.ragerelease.app.Framework.Physics.StaticBody;
 
-import java.util.Timer;
 import java.util.Vector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -100,11 +100,14 @@ public class LevelGenerator
         respawner = scheduler.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                if (!level.player.isPaused()) {
+                if (!level.player.isPaused())
+                {
                     // Loop through all of the level objects.
-                    for (AnimatedSprite object : objects) {
+                    for (AnimatedSprite object : objects)
+                    {
                         // If the object is an obstacle.
-                        if (object.getID() == ObjectID.OBSTACLE) {
+                        if (object.getID() == ObjectID.OBSTACLE)
+                        {
                             object.translateFramework(object.getSpawnLocation());
                         }
                     }
@@ -349,26 +352,23 @@ public class LevelGenerator
                 {
                     // Removing all of the sprites from the screen.
                     // If the object does not have a texture, but is using standard colours.
-                    if(object.colour != null)
+                    if(object.getColour() != null)
                     {
                         // Set the alpha value to 0 and RGB to 0.
                         object.setColour(0, 0, 0, 0);
                     }
                     // Otherwise, the object has a texture.
-                    else if(object.image != null)
+                    else if(object.getImage() != null)
                     {
-                        //if(!object.isUsingCameraImage())
-                        //{
-                            // Set the texture to be transparent.
-                            object.removeTexture();
-                        //}
+                        // Set the texture to be transparent.
+                        object.removeTexture();
                     }
 
-                    if(object.body != null)
+                    if(object.getBody() != null)
                     {
                         // Should destroy the body after the level.
-                        object.body.destroyFixture(object.body.getFixtureList());
-                        resources.getWorld().destroyBody(object.body);
+                        object.getBody().destroyFixture(object.getBody().getFixtureList());
+                        resources.getWorld().destroyBody(object.getBody());
                     }
                 }
             }

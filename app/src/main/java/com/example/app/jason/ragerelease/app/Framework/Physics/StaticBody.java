@@ -3,7 +3,7 @@ package com.example.app.jason.ragerelease.app.Framework.Physics;
 
 // All of the extra includes here.
 import com.example.app.jason.ragerelease.app.Framework.Maths.Vector2;
-import com.example.app.jason.ragerelease.app.Framework.AnimatedSprite;
+import com.example.app.jason.ragerelease.app.Framework.Graphics.AnimatedSprite;
 import com.example.app.jason.ragerelease.app.Framework.Resources;
 
 import org.jbox2d.collision.shapes.PolygonShape;

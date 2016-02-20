@@ -1,8 +1,9 @@
 // The package location for this class.
-package com.example.app.jason.ragerelease.app.Framework;
+package com.example.app.jason.ragerelease.app.Framework.Graphics;
 
 // All of the extra includes here.
 import com.example.app.jason.ragerelease.app.Framework.Maths.Vector2;
+import com.example.app.jason.ragerelease.app.Framework.Resources;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
@@ -105,7 +106,7 @@ public class AnimatedSprite extends Sprite
     //  using the passed in framework position      //
     //  (pixel).                                    //
     //////////////////////////////////////////////////
-    protected void translateFramework(Vector2 frameworkPosition)
+    public void translateFramework(Vector2 frameworkPosition)
     {
         setPosition(frameworkPosition.getX(), frameworkPosition.getY());
         body.setTransform(new Vec2(getBox2DXPosition(frameworkPosition.getX()), getBox2DYPosition(frameworkPosition.getY())), 0.0f);
@@ -116,6 +117,12 @@ public class AnimatedSprite extends Sprite
     public void setAnimationFrames(int animationFrames)
     {
         numberOfFrames = animationFrames;
+    }
+
+    // This will set the current player respawn state.
+    public void setRespawnState(boolean state)
+    {
+        respawn = state;
     }
 
     // Getters.
@@ -130,6 +137,12 @@ public class AnimatedSprite extends Sprite
     public float getBox2DXPosition(float frameworkX)   { return ((frameworkX - box2DFrameworkOffsetX) / box2DFrameworkScale); }
     public float getBox2DYPosition(float frameworkY)   { return ((frameworkY - resources.getScreenHeight() + box2DFrameworkOffsetY) / -box2DFrameworkScale); }
     public float getBox2DSize(float dimension)         { return (dimension / box2DFrameworkScale); }
+
+    // This will return the current box2D body.
+    public Body getBody()               { return body; }
+
+    // This will return the current respawn state of the player.
+    public boolean isRespawning()       { return respawn; }
 
     // This will return the current ID number of the animated sprite.
     public int getID()                  { return id; }

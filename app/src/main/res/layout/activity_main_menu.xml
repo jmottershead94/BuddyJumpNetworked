@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Setting up the main menu activity. -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightBlue">
+
+    <!-- This is the text to tell the player that they are on the main menu. -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"
+        android:text="MAIN MENU"
+        android:id="@+id/mainMenuTextView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <!-- This is the button to start the game up. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play!"
+        android:id="@+id/playButton"
+        android:background="@color/reallyLightBlue"
+        android:layout_below="@+id/mainMenuTextView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="58dp" />
+
+    <!-- This is the button to go to the options menu. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Options"
+        android:id="@+id/optionsButton"
+        android:background="@color/reallyLightBlue"
+        android:layout_below="@+id/playButton"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+    <!-- This is the button to go to the credits. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Credits"
+        android:id="@+id/creditsButton"
+        android:background="@color/reallyLightBlue"
+        android:layout_below="@+id/optionsButton"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+</RelativeLayout>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Setting up the game over activity. -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightBlue">
+
+    <!-- This is the image used for showing the player characters being unhappy. -->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/game_over_screen"/>
+
+    <!-- This is the text to tell the player that the game is now over. -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="GAME OVER"
+        android:id="@+id/gameOverText"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="230dp"
+        android:layout_marginTop="30dp" />
+
+    <!-- This text will display the accumulated distance that the player has achieved on this level. -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Distance"
+        android:id="@+id/gameOverDistanceText"
+        android:layout_above="@+id/gameOverMainMenuButton"
+        android:layout_toStartOf="@+id/gameOverMainMenuButton"
+        android:layout_marginBottom="29dp" />
+
+    <!-- This text will display the current level that the player has reached. -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Level Number"
+        android:id="@+id/gameOverLevelNumberText"
+        android:layout_alignTop="@+id/gameOverDistanceText"
+        android:layout_toEndOf="@+id/gameOverMainMenuButton" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Main Menu"
+        android:id="@+id/gameOverMainMenuButton"
+        android:background="@color/reallyLightBlue"
+        android:layout_centerVertical="true"
+        android:layout_alignEnd="@+id/gameOverText" />
+
+</RelativeLayout>

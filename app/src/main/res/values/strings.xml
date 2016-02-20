@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Buddy Jump!</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="box2D_credit">Physics Engine - Box2D is developed by Erin Catto.</string>
+    <string name="sprite_credit">Sprites - Acquired off a website, royalty free!</string>
+    <string name="anything_else">Everything else - belongs to/done by me!</string>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="red">#FF0000</color>
+    <color name="green">#00FF00</color>
+    <color name="blue">#0000FF</color>
+    <color name="lightBlue">#ff4eadf0</color>
+    <color name="reallyLightBlue">#ff68c8f0</color>
+</resources>

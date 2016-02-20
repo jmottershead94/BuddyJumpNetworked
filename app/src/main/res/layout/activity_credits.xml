@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Setting up the credits activity. -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightBlue">
+
+    <!-- This is the text to tell the player that they are on the credits screen. -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"
+        android:text="CREDITS"
+        android:id="@+id/creditsTextView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <!-- This is the text to tell the player who developed the physics engine used in this game. -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/box2D_credit"
+        android:id="@+id/box2DCredit"
+        android:layout_below="@+id/creditsTextView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="60dp" />
+
+    <!-- This is the text to tell the player where I acquired the sprites used in the game. -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sprite_credit"
+        android:id="@+id/spriteCreditTextView"
+        android:layout_below="@+id/box2DCredit"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="47dp" />
+
+    <!-- This is the button to go to the main menu. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Main Menu"
+        android:id="@+id/mainMenuButton"
+        android:background="@color/reallyLightBlue"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+
+
+</RelativeLayout>

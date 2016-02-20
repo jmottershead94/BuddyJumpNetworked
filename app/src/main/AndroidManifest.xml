@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app.jason.ragerelease" >
+
+    <!-- Setting the user permission to use the phone's camera. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- Setting the Buddy Jump! application up. -->
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+
+        <!-- Setting the Splash Screen Activity. -->
+        <activity
+            android:name=".app.GameStates.SplashScreen"
+            android:label="@string/app_name" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Setting the Title Screen activity. -->
+        <activity
+            android:name=".app.GameStates.TitleScreen"
+            android:label="@string/app_name">
+        </activity>
+
+        <!-- Setting the Main Menu activity. -->
+        <activity
+            android:name=".app.GameStates.MainMenu"
+            android:label="@string/app_name">
+        </activity>
+
+        <!-- Setting the Player Selection activity. -->
+        <activity
+            android:name=".app.GameStates.SelectionScreen"
+            android:label="@string/app_name">
+        </activity>
+
+        <!-- Setting the Player Selection activity. -->
+        <activity
+            android:name=".app.GameStates.PlayerSelection"
+            android:label="@string/app_name">
+        </activity>
+
+        <!-- Setting the Companion Selection activity. -->
+        <activity
+            android:name=".app.GameStates.CompanionSelection"
+            android:label="@string/app_name">
+        </activity>
+
+        <!-- Setting the Game activity. -->
+        <activity
+            android:name=".app.GameStates.Game"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|keyboardHidden">
+        </activity>
+
+        <!-- Setting the Game Over activity. -->
+        <activity
+            android:name=".app.GameStates.GameOver"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|keyboardHidden">
+        </activity>
+
+        <!-- Setting the Options activity. -->
+        <activity
+            android:name=".app.GameStates.Options"
+            android:label="@string/app_name">
+        </activity>
+
+        <!-- Setting the Credits activity. -->
+        <activity
+            android:name=".app.GameStates.Credits"
+            android:label="@string/app_name">
+        </activity>
+
+    </application>
+
+</manifest>

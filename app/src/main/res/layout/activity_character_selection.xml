@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Setting up the character selection activity for the player and the companion. -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/characterSelectionBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightBlue">
+
+    <!-- This will display who the player is selecting the image for. -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CHARACTER SELECTION"
+        android:id="@+id/characterSelectionTextView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <!-- This button will go back to the selection screen activity and save the currently selected sprite. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:id="@+id/saveButton"
+        android:background="@color/reallyLightBlue"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <!-- This is the grid view of images for the player characters. -->
+    <GridView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numColumns="2"
+        android:id="@+id/characterImageSelectionView"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/characterSelectionTextView"
+        android:layout_above="@+id/mainMenuButton" />
+
+</RelativeLayout>

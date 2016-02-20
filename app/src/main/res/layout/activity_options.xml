@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Setting up the options menu activity. -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/optionsBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightBlue">
+
+    <!-- This is the text to tell the player that they are on the options menu. -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"
+        android:text="Options"
+        android:id="@+id/optionsTextView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <!-- This is the button to go to the main menu. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Main Menu"
+        android:id="@+id/mainMenuButton"
+        android:background="@color/reallyLightBlue"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <!-- This is the switch for the first option. -->
+    <!-- This will let the player choose if they use the camera or not. -->
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Use Camera"
+        android:id="@+id/optionOne"
+        android:layout_marginTop="59dp"
+        android:layout_below="@+id/optionsTextView"
+        android:layout_centerHorizontal="true" />
+
+    <!-- This is the text to describe what option one will be affecting. -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold"
+        android:text="Player Sprite"
+        android:id="@+id/textView3"
+        android:layout_marginTop="32dp"
+        android:layout_alignStart="@+id/optionOne" />
+
+    <!-- This is a radio group to allow the player to chose only one sky option for the game background. -->
+    <RadioGroup
+        android:id="@+id/skyOptions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/optionOne"
+        android:layout_alignStart="@+id/optionOne"
+        android:layout_marginTop="49dp">
+
+        <!-- This is the text to describe what these options will be affecting. -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:text="Background Sky"
+            android:id="@+id/optionsSkyTitle" />
+
+        <!-- This is the first radio button for using the morning sky sprite. -->
+        <RadioButton
+            android:id="@+id/morning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Morning"/>
+
+        <!-- This is the second radio button for using the afternoon sky sprite. -->
+        <RadioButton
+            android:id="@+id/afternoon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Afternoon"/>
+
+        <!-- This is the third radio button for using the night sky sprite. -->
+        <RadioButton
+            android:id="@+id/night"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Night"/>
+
+    </RadioGroup>
+
+</RelativeLayout>

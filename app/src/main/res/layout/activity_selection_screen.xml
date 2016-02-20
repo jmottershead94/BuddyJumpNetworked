@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Setting up the selection screen activity. -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/selectionScreenBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightBlue">
+
+    <!-- This is the text to tell the player that they are on the selection screen activity for selecting characters. -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"
+        android:text="Character Selection"
+        android:id="@+id/gameTextView"
+        android:layout_centerHorizontal="true" />
+
+    <!-- This button will go to the player character selection screen. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player Selection"
+        android:id="@+id/playerSelectionButton"
+        android:layout_below="@+id/gameTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="68dp"
+        android:background="@color/reallyLightBlue"/>
+
+    <!-- This button will go to the companion character selection screen. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Companion Selection"
+        android:id="@+id/companionSelectionButton"
+        android:layout_below="@+id/playerSelectionButton"
+        android:layout_alignStart="@+id/playerSelectionButton"
+        android:layout_marginTop="46dp"
+        android:layout_alignEnd="@+id/playerSelectionButton"
+        android:background="@color/reallyLightBlue"/>
+
+    <!-- This button will go to the main menu. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Main Menu"
+        android:id="@+id/mainMenuButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/reallyLightBlue"/>
+
+    <!-- This button will play the game with the currently saved sprites. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play Game!"
+        android:id="@+id/playGameButton"
+        android:layout_alignBottom="@+id/mainMenuButton"
+        android:layout_alignParentEnd="true"
+        android:background="@color/reallyLightBlue"/>
+
+</RelativeLayout>

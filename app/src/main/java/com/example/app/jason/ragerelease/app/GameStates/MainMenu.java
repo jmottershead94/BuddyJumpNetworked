@@ -40,6 +40,7 @@ public class MainMenu extends Activity
         final Button playButton = (Button) findViewById(R.id.playButton);
         final Button optionsButton = (Button) findViewById(R.id.optionsButton);
         final Button creditsButton = (Button) findViewById(R.id.creditsButton);
+        final Button scoresButton = (Button) findViewById(R.id.scoresButton);
         final NavigationButton button = new NavigationButton();
 
         // Setting up the sensor.
@@ -50,6 +51,7 @@ public class MainMenu extends Activity
         button.isPressed(playButton, this, SelectionScreen.class);
         button.isPressed(optionsButton, this, Options.class);
         button.isPressed(creditsButton, this, Credits.class);
+        button.isPressed(scoresButton, this, HighScores.class);
     }
 
     //////////////////////////////////////////////////

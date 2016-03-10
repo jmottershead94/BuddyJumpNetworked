@@ -16,6 +16,11 @@
     <uses-permission android:name="ANDROID.PERMISSION.READ_SMS" />
     <uses-permission android:name="ANDROID.PERMISSION.WRITE_SMS"/>
 
+    <!-- Setting the user permission to access internet features. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+
     <!-- Setting the Buddy Jump! application up. -->
     <application
         android:allowBackup="true"
@@ -89,6 +94,18 @@
         <!-- Setting the Credits activity. -->
         <activity
             android:name=".app.GameStates.Credits"
+            android:label="@string/app_name">
+        </activity>
+
+        <!-- Setting the High Scores activity. -->
+        <activity
+            android:name=".app.GameStates.HighScores"
+            android:label="@string/app_name">
+        </activity>
+
+        <!-- Setting the Scores Screen activity. -->
+        <activity
+            android:name=".app.GameStates.ScoresScreen"
             android:label="@string/app_name">
         </activity>
 

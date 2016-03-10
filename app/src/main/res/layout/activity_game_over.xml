@@ -37,8 +37,8 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Distance"
         android:id="@+id/gameOverDistanceText"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@+id/gameOverMainMenuButton" />
+        android:layout_below="@+id/gameOverText"
+        android:layout_alignEnd="@+id/gameOverLevelNumberText" />
 
     <!-- This text will display the current level that the player has reached. -->
     <TextView
@@ -47,7 +47,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Level Number"
         android:id="@+id/gameOverLevelNumberText"
-        android:layout_alignTop="@+id/gameOverDistanceText"
+        android:layout_alignTop="@+id/textFriendButton"
         android:layout_toEndOf="@+id/gameOverText" />
 
     <!-- Setting up the main menu button. -->
@@ -57,19 +57,33 @@
         android:text="Main Menu"
         android:id="@+id/gameOverMainMenuButton"
         android:background="@color/reallyLightBlue"
-        android:layout_alignTop="@+id/gameOverText"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="117dp" />
+        android:layout_marginStart="117dp"
+        android:layout_alignBottom="@+id/gameOverDistanceText"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
 
     <!-- Setting up the text a friend button. -->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Text A Friend!"
+        android:text="Brag!"
         android:id="@+id/textFriendButton"
         android:background="@color/reallyLightBlue"
-        android:layout_alignBottom="@+id/gameOverMainMenuButton"
-        android:layout_alignStart="@+id/gameOverLevelNumberText"
-        android:layout_marginStart="30dp" />
+        android:layout_below="@+id/gameOverMainMenuButton"
+        android:layout_alignStart="@+id/gameOverMainMenuButton"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+    <!-- Setting up the view scores button. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save Score"
+        android:onClick="addToScores"
+        android:id="@+id/saveScoresButton"
+        android:background="@color/reallyLightBlue"
+        android:layout_below="@+id/textFriendButton"
+        android:layout_alignStart="@+id/textFriendButton"
+        android:layout_alignEnd="@+id/textFriendButton"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
 
 </RelativeLayout>

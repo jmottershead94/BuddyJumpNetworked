@@ -105,13 +105,25 @@ public class GameOver extends Activity implements View.OnClickListener
                 //
                     // its current place in the score board increments.
 
-        // Add in the score no matter what.
-        dataDatabaseHelper.addData(new Data(level, distance));
+        // Check if the scores doesn't already exist to avoid duplicate entries.
+        if (!dataDatabaseHelper.dataExists(new Data(level, distance)))
+        {
+            // Add in the new score if there isn't already the same score in the list.
+            dataDatabaseHelper.addData(new Data(level, distance));
 
-        checkNumberOfDataEntries();
+            // Check how many entries we have.
+            checkNumberOfDataEntries();
 
-        // DEBUG.
-        Toast.makeText(getApplicationContext(), "New score has been added!", Toast.LENGTH_SHORT).show();
+            // Feedback message.
+            Toast.makeText(getApplicationContext(), "New score has been added!", Toast.LENGTH_SHORT).show();
+        }
+        // Otherwise, the score already exists.
+        else
+        {
+            // Feedback message.
+            Toast.makeText(getApplicationContext(), "You have a similar score already saved!", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void checkNumberOfDataEntries()

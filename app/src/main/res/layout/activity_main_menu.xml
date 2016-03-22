@@ -22,12 +22,24 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Play!"
+        android:text="Single Player"
         android:id="@+id/playButton"
         android:background="@color/reallyLightBlue"
         android:layout_below="@+id/mainMenuTextView"
         android:layout_alignParentStart="true"
         android:layout_marginTop="58dp" />
+
+    <!-- This is the button to start the game up. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Multi-Player"
+        android:id="@+id/multiplayerButton"
+        android:background="@color/reallyLightBlue"
+        android:layout_below="@+id/playButton"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/playButton" />
 
     <!-- This is the button to go to the options menu. -->
     <Button
@@ -36,9 +48,10 @@
         android:text="Options"
         android:id="@+id/optionsButton"
         android:background="@color/reallyLightBlue"
-        android:layout_below="@+id/playButton"
+        android:layout_below="@+id/multiplayerButton"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_alignEnd="@+id/playButton" />
 
     <!-- This is the button to go to the credits. -->
     <Button
@@ -49,7 +62,8 @@
         android:background="@color/reallyLightBlue"
         android:layout_below="@+id/optionsButton"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_alignEnd="@+id/playButton" />
 
     <!-- This is the button to go to the scores screen. -->
     <Button
@@ -60,6 +74,7 @@
         android:background="@color/reallyLightBlue"
         android:layout_below="@+id/creditsButton"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_alignEnd="@+id/playButton" />
 
 </RelativeLayout>

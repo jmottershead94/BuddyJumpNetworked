@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightBlue">
+
+    <!-- This is the text to tell the player that they are selecting a connection type. -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"
+        android:text="CONNECTION TYPE"
+        android:id="@+id/connectionSelectionTextView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <!-- This is the button to use a bluetooth connection. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bluetooth"
+        android:id="@+id/bluetoothButton"
+        android:background="@color/reallyLightBlue"
+        android:layout_marginTop="90dp"
+        android:layout_below="@+id/connectionSelectionTextView"
+        android:layout_centerHorizontal="true" />
+
+    <!-- This is the button to use a wifi connection. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WiFi"
+        android:id="@+id/wifiButton"
+        android:background="@color/reallyLightBlue"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/bluetoothButton" />
+
+    <!-- This is the button to go back to the main menu. -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Main Menu"
+        android:id="@+id/connectionSelectionMainMenuButton"
+        android:background="@color/reallyLightBlue"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

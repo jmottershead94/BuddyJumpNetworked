@@ -3,8 +3,10 @@ package com.example.app.jason.ragerelease.app.GameStates;
 
 // All of the extra includes here.
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
@@ -20,6 +22,8 @@ public class MainMenu extends Activity
 {
     // Attributes.
     // Private.
+    private static final String PREFS_NAME = "MyPrefsFile";
+    private final String multiplayerKeyName = "multiplayer";
     private SensorHandler sensorHandler = null;
 
     // Methods.
@@ -38,6 +42,7 @@ public class MainMenu extends Activity
 
         // Setting up each button to access them from the main menu xml file.
         final Button playButton = (Button) findViewById(R.id.playButton);
+        final Button multiplayerButton = (Button) findViewById(R.id.multiplayerButton);
         final Button optionsButton = (Button) findViewById(R.id.optionsButton);
         final Button creditsButton = (Button) findViewById(R.id.creditsButton);
         final Button scoresButton = (Button) findViewById(R.id.scoresButton);
@@ -49,9 +54,12 @@ public class MainMenu extends Activity
         // If any of the buttons are pressed on the main menu.
         // Take the user to the correct activity depending on the button pressed.
         button.isPressed(playButton, this, SelectionScreen.class);
+        button.isPressed(multiplayerButton, this, ConnectionSelection.class);
         button.isPressed(optionsButton, this, Options.class);
         button.isPressed(creditsButton, this, Credits.class);
         button.isPressed(scoresButton, this, HighScores.class);
+
+
     }
 
     //////////////////////////////////////////////////
@@ -72,14 +80,51 @@ public class MainMenu extends Activity
     //////////////////////////////////////////////////
     //                  On Pause                    //
     //==============================================//
-    //  When we are leaving the activity, we no     //
-    //  longer want to listen out for sensor data,  //
-    //  so unregister the sensor handler.           //
+    //  This will save the current multiplayer      //
+    //  state, and save it to the device            //
+    //  for future reference.                       //
+    //  And also unregister the sensor listener.    //
+    //  This will be called when we are leaving     //
+    //  this activity.                              //
+    //  When another activity is in the foreground. //
     //////////////////////////////////////////////////
     @Override
     protected void onPause()
     {
         super.onPause();
+
         sensorHandler.unregisterListener();
+
+        SharedPreferences multiplayerSettings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = multiplayerSettings.edit();
+
+        // Saving the player option status.
+        editor.putBoolean(multiplayerKeyName, false);
+
+        editor.apply();
+    }
+
+    //////////////////////////////////////////////////
+    //              On Save Instance State          //
+    //==============================================//
+    //  This will save the current game status,     //
+    //  e.g. if we are using multiplayer.           //
+    //  This is called if the phone orientation     //
+    //  changes, or if for any reason the phone     //
+    //  is forced out of this activity and into     //
+    //  another application (i.e. like a phone      //
+    //  call).                                      //
+    //////////////////////////////////////////////////
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        final CharSequence saveMessage = "Multiplayer shouldn't be active.";
+
+        // Save changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is killed or restarted.
+        savedInstanceState.putBoolean(multiplayerKeyName, false);
+
+        // Save the current state.
+        super.onSaveInstanceState(savedInstanceState);
     }
 }

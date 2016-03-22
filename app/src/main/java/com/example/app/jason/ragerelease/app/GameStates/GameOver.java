@@ -81,8 +81,10 @@ public class GameOver extends Activity implements View.OnClickListener
         // If we have clicked on the text a friend button.
         if(view == textAFriendButton)
         {
+            String overallScore = levelNumberText.getText().toString() + "\n" + distanceText.getText().toString();
+
             // Go to the sms application.
-            final SMSHandler smsHandler = new SMSHandler(this);
+            final SMSHandler smsHandler = new SMSHandler(this, overallScore);
         }
 
 //        if(view == saveScoresButton)

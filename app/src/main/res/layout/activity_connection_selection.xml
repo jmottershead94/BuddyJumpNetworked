@@ -21,7 +21,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bluetooth"
+        android:text="Activate Bluetooth"
         android:id="@+id/bluetoothButton"
         android:background="@color/reallyLightBlue"
         android:layout_marginTop="90dp"
@@ -32,11 +32,12 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="WiFi"
+        android:text="Activate WiFi"
         android:id="@+id/wifiButton"
         android:background="@color/reallyLightBlue"
         android:layout_centerVertical="true"
-        android:layout_alignStart="@+id/bluetoothButton" />
+        android:layout_alignStart="@+id/bluetoothButton"
+        android:layout_alignEnd="@+id/bluetoothButton" />
 
     <!-- This is the button to go back to the main menu. -->
     <Button

@@ -43,8 +43,6 @@ public class SelectionScreen extends Activity
         SharedPreferences multiplayerSettings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         multiplayerStatus = multiplayerSettings.getBoolean(multiplayerKeyName, false);
 
-        Toast.makeText(getApplicationContext(), "Multiplayer Status: " + multiplayerStatus, Toast.LENGTH_SHORT).show();
-
         // Initialising variables.
         final Button playerSelectionButton = (Button) findViewById(R.id.playerSelectionButton);
         final Button mainMenuButton = (Button) findViewById(R.id.mainMenuButton);

@@ -1,5 +1,5 @@
 // The package location of this class.
-package com.example.app.jason.ragerelease.app.Framework.Network.Bluetooth;
+package com.example.app.jason.ragerelease.app.Framework.Network.External.Bluetooth;
 
 // All of the extra includes here.
 import android.app.Activity;
@@ -7,8 +7,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
-
-import com.example.app.jason.ragerelease.app.Framework.Resources;
 
 /**
  * Created by Jason Mottershead on 22/03/2016.

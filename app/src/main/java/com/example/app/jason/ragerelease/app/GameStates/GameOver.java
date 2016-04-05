@@ -12,10 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.app.jason.ragerelease.R;
-import com.example.app.jason.ragerelease.app.Framework.AndroidOSHandlers.SMSHandler;
+import com.example.app.jason.ragerelease.app.Framework.Network.Internal.AndroidOSHandlers.SMSHandler;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
-import com.example.app.jason.ragerelease.app.Framework.Network.SQLiteDatabase.Data;
-import com.example.app.jason.ragerelease.app.Framework.Network.SQLiteDatabase.DataDatabaseHelper;
+import com.example.app.jason.ragerelease.app.Framework.Network.Internal.SQLiteDatabase.Data;
+import com.example.app.jason.ragerelease.app.Framework.Network.Internal.SQLiteDatabase.DataDatabaseHelper;
 
 /**
  * Created by Jason Mottershead on 21/11/2015.

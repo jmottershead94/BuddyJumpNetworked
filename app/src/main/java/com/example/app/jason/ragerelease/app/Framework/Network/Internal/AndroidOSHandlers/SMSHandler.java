@@ -1,5 +1,5 @@
 // The package location of this class.
-package com.example.app.jason.ragerelease.app.Framework.AndroidOSHandlers;
+package com.example.app.jason.ragerelease.app.Framework.Network.Internal.AndroidOSHandlers;
 
 // All of the extra includes here.
 import android.app.Activity;

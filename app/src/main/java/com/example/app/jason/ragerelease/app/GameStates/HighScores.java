@@ -13,9 +13,9 @@ import android.widget.Toast;
 
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
-import com.example.app.jason.ragerelease.app.Framework.Network.SQLiteDatabase.Data;
-import com.example.app.jason.ragerelease.app.Framework.Network.SQLiteDatabase.DataAdapter;
-import com.example.app.jason.ragerelease.app.Framework.Network.SQLiteDatabase.DataDatabaseHelper;
+import com.example.app.jason.ragerelease.app.Framework.Network.Internal.SQLiteDatabase.Data;
+import com.example.app.jason.ragerelease.app.Framework.Network.Internal.SQLiteDatabase.DataAdapter;
+import com.example.app.jason.ragerelease.app.Framework.Network.Internal.SQLiteDatabase.DataDatabaseHelper;
 
 import java.util.ArrayList;
 

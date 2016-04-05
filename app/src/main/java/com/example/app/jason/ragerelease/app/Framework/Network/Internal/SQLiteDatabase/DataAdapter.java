@@ -1,5 +1,5 @@
 // The package location of this class.
-package com.example.app.jason.ragerelease.app.Framework.Network.SQLiteDatabase;
+package com.example.app.jason.ragerelease.app.Framework.Network.Internal.SQLiteDatabase;
 
 // All of the extra includes here.
 import android.content.Context;

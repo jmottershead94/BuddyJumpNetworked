@@ -2,7 +2,6 @@
 package com.example.app.jason.ragerelease.app.GameStates;
 
 // All of the extra includes here.
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,14 +11,15 @@ import android.os.Handler;
 
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
-import com.example.app.jason.ragerelease.app.Framework.Network.Bluetooth.BluetoothHandler;
+import com.example.app.jason.ragerelease.app.Framework.Network.External.Bluetooth.BluetoothHandler;
+import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 
 /**
  * Created by Jason Mottershead on 22/03/2016.
  */
 
-// Connection Selection IS AN activity, therefore inherits from it.
-public class ConnectionSelection extends Activity implements View.OnClickListener
+// Connection Selection IS A network activity, therefore inherits from it.
+public class ConnectionSelection extends NetworkActivity implements View.OnClickListener
 {
     // Attributes.
     private static final String PREFS_NAME = "MyPrefsFile";
@@ -74,75 +74,6 @@ public class ConnectionSelection extends Activity implements View.OnClickListene
         checkEnabledStatus();
     }
 
-    public void checkEnabledStatus()
-    {
-        // Setting up a handler and runnable to handle button text changes.
-        final Handler handler = new Handler();
-        handler.post(new Runnable()
-        {
-            // What happens after delay.
-            @Override
-            public void run()
-            {
-                // Check to see if bluetooth is already enabled.
-                if(bluetoothHandler.getBluetoothAdapter().isEnabled())
-                {
-                    // If so, use the correct text message for the button.
-                    bluetoothButton.setText(acceptedBluetoothMessage);
-                }
-                else
-                {
-                    // If so, use the correct text message for the button.
-                    bluetoothButton.setText(activateBluetoothMessage);
-                }
-
-                // Do the same for WiFi.
-
-                handler.postDelayed(this, 500);
-            }
-        });
-    }
-
-    public void onClick(View view)
-    {
-        // If we want bluetooth access.
-        if(view == bluetoothButton)
-        {
-            // Turn off wifi.
-            // wifiHandler.TurnOff();
-            wifiButton.setText(activateWiFiMessage);
-
-            // Attempt to turn bluetooth on.
-            bluetoothHandler.TurnOn(this);
-
-            // If bluetooth has been enabled.
-            if(bluetoothHandler.getBluetoothAdapter().isEnabled())
-            {
-                // Move to the next game state.
-                Intent matchMakerActivity = new Intent(this, MatchMaker.class);
-                startActivity(matchMakerActivity);
-            }
-        }
-        // Otherwise, we are using wifi.
-        else if(view == wifiButton)
-        {
-            // Turn off bluetooth.
-            bluetoothHandler.TurnOff();
-
-            // Attempt to turn on WiFi.
-            // wifiHandler.TurnOn(this);
-            wifiButton.setText(acceptedWiFiMessage);
-
-            // If wifi has been enabled.
-//            if(wifiHandler.getWiFiAdapter().isEnabled())
-//            {
-//                // Move to the next game state.
-//                Intent matchMakerActivity = new Intent(this, MatchMaker.class);
-//                startActivity(matchMakerActivity);
-//            }
-        }
-    }
-
     //////////////////////////////////////////////////
     //              On Save Instance State          //
     //==============================================//
@@ -157,16 +88,12 @@ public class ConnectionSelection extends Activity implements View.OnClickListene
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState)
     {
-        final CharSequence saveMessage = "Multiplayer should be active.";
-
         // Save changes to the savedInstanceState.
         // This bundle will be passed to onCreate if the process is killed or restarted.
         savedInstanceState.putBoolean(multiplayerKeyName, true);
 
         // Save the current state.
         super.onSaveInstanceState(savedInstanceState);
-
-        //Toast.makeText(this, saveMessage, Toast.LENGTH_SHORT).show();
     }
 
     //////////////////////////////////////////////////
@@ -213,4 +140,78 @@ public class ConnectionSelection extends Activity implements View.OnClickListene
 
         editor.apply();
     }
+
+    public void checkEnabledStatus()
+    {
+        // Setting up a handler and runnable to handle button text changes.
+        final Handler handler = new Handler();
+        handler.post(new Runnable()
+        {
+            // What happens after delay.
+            @Override
+            public void run()
+            {
+                // Check to see if bluetooth is already enabled.
+                if(bluetoothHandler.getBluetoothAdapter().isEnabled())
+                {
+                    // If so, use the correct text message for the button.
+                    bluetoothButton.setText(acceptedBluetoothMessage);
+                }
+                else
+                {
+                    // If so, use the correct text message for the button.
+                    bluetoothButton.setText(activateBluetoothMessage);
+                }
+
+                // Do the same for WiFi.
+                if(wifiManager.isWifiEnabled())
+                {
+                    wifiButton.setText(acceptedWiFiMessage);
+                }
+                else
+                {
+                    wifiButton.setText(activateWiFiMessage);
+                }
+
+                handler.postDelayed(this, 500);
+            }
+        });
+    }
+
+    public void onClick(View view)
+    {
+        Intent matchMakerActivity = new Intent(this, MatchMaker.class);
+
+        // If we want bluetooth access.
+        if(view == bluetoothButton)
+        {
+            // Attempt to turn bluetooth on.
+            bluetoothHandler.TurnOn(this);
+
+            // If bluetooth has been enabled.
+            if(bluetoothHandler.getBluetoothAdapter().isEnabled())
+            {
+                // Move to the next game state.
+                startActivity(matchMakerActivity);
+            }
+        }
+        // Otherwise, we are using wifi.
+        else if(view == wifiButton)
+        {
+            // Attempt to turn on WiFi.
+            wifiButton.setText(acceptedWiFiMessage);
+
+            // Turn on wifi connection.
+            // Look for proper way to ask user permission - later.
+            connectionApplication.getConnectionManagement().getWifiHandler().turnOn();
+
+            // If wifi has been enabled.
+            if(wifiManager.isWifiEnabled())
+            {
+                startActivity(matchMakerActivity);
+            }
+        }
+    }
+
+
 }

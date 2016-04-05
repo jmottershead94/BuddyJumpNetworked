@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.app.jason.ragerelease.R;
-import com.example.app.jason.ragerelease.app.Framework.AndroidOSHandlers.CameraHandler;
+import com.example.app.jason.ragerelease.app.Framework.Network.Internal.AndroidOSHandlers.CameraHandler;
 import com.example.app.jason.ragerelease.app.GameStates.SelectionScreen;
 
 /**

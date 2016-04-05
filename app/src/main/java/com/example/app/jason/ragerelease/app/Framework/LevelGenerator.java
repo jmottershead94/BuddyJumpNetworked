@@ -5,7 +5,7 @@ package com.example.app.jason.ragerelease.app.Framework;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
-import com.example.app.jason.ragerelease.app.Framework.AndroidOSHandlers.CameraHandler;
+import com.example.app.jason.ragerelease.app.Framework.Network.Internal.AndroidOSHandlers.CameraHandler;
 import com.example.app.jason.ragerelease.app.Framework.Graphics.AnimatedSprite;
 import com.example.app.jason.ragerelease.app.Framework.Maths.Vector2;
 import com.example.app.jason.ragerelease.R;

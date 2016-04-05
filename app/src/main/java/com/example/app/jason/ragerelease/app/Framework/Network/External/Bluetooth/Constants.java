@@ -1,5 +1,5 @@
 // The package location of this class.
-package com.example.app.jason.ragerelease.app.Framework.Network.Bluetooth;
+package com.example.app.jason.ragerelease.app.Framework.Network.External.Bluetooth;
 
 // All of the extra includes here.
 

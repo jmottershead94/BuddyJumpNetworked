@@ -6,11 +6,10 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
-import com.example.app.jason.ragerelease.app.Framework.AndroidOSHandlers.SensorHandler;
+import com.example.app.jason.ragerelease.app.Framework.Network.Internal.AndroidOSHandlers.SensorHandler;
 
 /**
  * Created by Jason Mottershead on 17/10/2015.

@@ -3,14 +3,19 @@ package com.example.app.jason.ragerelease.app.Framework.Network.External.WiFi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
+import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 
 import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
+import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
 
+import java.net.InetAddress;
 import java.util.List;
 
 /**
@@ -25,6 +30,7 @@ public class WiFiBroadcastReceiver extends BroadcastReceiver
 //    private PeerListListener peerListListener = null;
     private NetworkActivity currentActivity = null;
     private WifiP2pDeviceList peers = null;
+    private int playerMatchStatus = 0;
 
     // Methods.
     public WiFiBroadcastReceiver(WifiP2pManager manager, Channel channel, NetworkActivity activity)
@@ -32,6 +38,13 @@ public class WiFiBroadcastReceiver extends BroadcastReceiver
         wifiP2pManager = manager;
         wifiChannel = channel;
         currentActivity = activity;
+        int currentMatchID = currentActivity.getIntent().getIntExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, 0);
+
+        if(currentMatchID != 0)
+        {
+            playerMatchStatus = currentMatchID;
+        }
+
         peers = new WifiP2pDeviceList();
     }
 
@@ -79,13 +92,31 @@ public class WiFiBroadcastReceiver extends BroadcastReceiver
             // Respond to new connection or disconnections.
             //DebugInformation.displayShortToastMessage(currentActivity, "Wifi Connection Changed");
 
+            // If we have declared a match ID.
+            //if(playerMatchStatus == NetworkConstants.HOST_ID)
+            //{
+                if (wifiP2pManager == null)
+                {
+                    return;
+                }
+
+                NetworkInfo networkInfo = (NetworkInfo) intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+
+                if (networkInfo.isConnected())
+                {
+                    // We are connected to the other device!
+                    // Info to find the group owner IP.
+                    DebugInformation.displayShortToastMessage(currentActivity, "Connected to other device");
+                    wifiP2pManager.requestConnectionInfo(wifiChannel, connectionInfoListener);
+                }
+            //}
+
         }
         // Otherwise, if this device's details have changed.
         else if(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action))
         {
             // Respond to this device's wifi state changing.
             //DebugInformation.displayShortToastMessage(currentActivity, "Wifi State Changing");
-
         }
     }
 
@@ -95,6 +126,28 @@ public class WiFiBroadcastReceiver extends BroadcastReceiver
         public void onPeersAvailable(WifiP2pDeviceList wifiP2pDeviceList)
         {
             peers = wifiP2pDeviceList;
+        }
+    };
+
+    private ConnectionInfoListener connectionInfoListener = new ConnectionInfoListener()
+    {
+        @Override
+        public void onConnectionInfoAvailable(final WifiP2pInfo wifiP2pInfo)
+        {
+            String groupOwnerAddress = wifiP2pInfo.groupOwnerAddress.getHostAddress();
+
+            if (wifiP2pInfo.groupFormed && wifiP2pInfo.isGroupOwner && (playerMatchStatus == NetworkConstants.HOST_ID))
+            {
+                // If we have formed a group and we are the group owner.
+                // Set up the server thread, accept incoming data connections?
+                DebugInformation.displayShortToastMessage(currentActivity, "Should start server thread.");
+            }
+            else if (wifiP2pInfo.groupFormed && (playerMatchStatus == NetworkConstants.JOIN_ID))
+            {
+                // The other device acts as a client.
+                // Create a client thread here?
+                DebugInformation.displayShortToastMessage(currentActivity, "Should start client thread.");
+            }
         }
     };
 

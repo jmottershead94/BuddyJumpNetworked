@@ -74,6 +74,18 @@ public class DeviceList extends NetworkActivity// implements WifiP2pManager.Peer
 //        newDevicesListView.setOnItemClickListener(deviceClickListener);
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+    }
+
 //    @Override
 //    public void onPeersAvailable(WifiP2pDeviceList peerList)
 //    {

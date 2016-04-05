@@ -59,25 +59,42 @@ public class MatchMaker extends NetworkActivity implements View.OnClickListener
     }
 
     @Override
+    protected void onResume()
+    {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+    }
+
+    @Override
     public void onClick(View view)
     {
-        Intent deviceListActivity = new Intent(this, DeviceList.class);
+        Intent nextActivity = null;
 
         // If the user wants to host a match.
         if(view == hostButton)
         {
+            nextActivity = new Intent(this, DeviceList.class);
+
             // Start a server connection.
             DebugInformation.displayShortToastMessage(this, "Hosting");
-            deviceListActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.HOST_ID);
+            nextActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.HOST_ID);
         }
         // Otherwise, if the user wants to join a match.
         else if(view == joinButton)
         {
+            //nextActivity = new Intent(this, SelectionScreen.class);
+            nextActivity = new Intent(this, DeviceList.class);
+
             // Start a client connection.
             DebugInformation.displayShortToastMessage(this, "Joining");
-            deviceListActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.JOIN_ID);
+            nextActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.JOIN_ID);
         }
 
-        startActivity(deviceListActivity);
+        startActivity(nextActivity);
     }
 }

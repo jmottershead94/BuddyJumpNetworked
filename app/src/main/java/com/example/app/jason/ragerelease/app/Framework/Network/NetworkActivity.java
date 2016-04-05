@@ -5,8 +5,10 @@ import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
+import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.os.Bundle;
 
 import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
@@ -40,6 +42,12 @@ public class NetworkActivity extends Activity
         super.onResume();
         connectionApplication.setConnectionManagement(wifiP2pManager, wifiManager, wifiChannel, this);
         registerReceiver(connectionApplication.getConnectionManagement().getWifiHandler().getWifiBroadcastReceiver(), connectionApplication.getConnectionManagement().getWifiHandler().getWifiFilter());
+        //wifiManager.setWifiEnabled(true);
+
+        if(!wifiManager.isWifiEnabled())
+        {
+            wifiManager.setWifiEnabled(true);
+        }
     }
 
     @Override
@@ -47,28 +55,49 @@ public class NetworkActivity extends Activity
     {
         super.onPause();
         unregisterReceiver(connectionApplication.getConnectionManagement().getWifiHandler().getWifiBroadcastReceiver());
+        //wifiManager.setWifiEnabled(false);
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+
+        if(wifiManager.isWifiEnabled())
+        {
+            wifiManager.setWifiEnabled(false);
+        }
     }
 
     protected void connectToPeer(WifiP2pDevice connectedDevice)
     {
         WifiP2pConfig config = new WifiP2pConfig();
         config.deviceAddress = connectedDevice.deviceAddress;
-        wifiP2pManager.connect(wifiChannel, config, new WifiP2pManager.ActionListener()
-        {
+        wifiP2pManager.connect(wifiChannel, config, new WifiP2pManager.ActionListener() {
             @Override
-            public void onSuccess()
-            {
+            public void onSuccess() {
                 // We have successfully connected.
                 DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Connected!");
             }
 
             @Override
-            public void onFailure(int reason)
-            {
+            public void onFailure(int reason) {
                 // We have not connected.
                 // Retry the connection?
                 DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Not connected!");
             }
         });
+    }
+
+    protected void connectionInformation()
+    {
+        ConnectionInfoListener connectionInfoListener = new ConnectionInfoListener()
+        {
+            @Override
+            public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo)
+            {
+
+            }
+        };
     }
 }

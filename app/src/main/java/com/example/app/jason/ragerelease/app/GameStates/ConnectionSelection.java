@@ -212,6 +212,4 @@ public class ConnectionSelection extends NetworkActivity implements View.OnClick
             }
         }
     }
-
-
 }

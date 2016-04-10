@@ -101,7 +101,7 @@ public class NetworkActivity extends Activity
             {
                 // We have not connected.
                 // Retry the connection?
-                DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "P2P not connected");
+                //DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "P2P not connected");
             }
         });
     }
@@ -133,17 +133,5 @@ public class NetworkActivity extends Activity
             peerNames.add(peers.get(i).deviceName);
             DebugInformation.displayShortToastMessage(this, "Peer name: " + peerNames.getItem(i));
         }
-    }
-
-    protected void connectionInformation()
-    {
-        ConnectionInfoListener connectionInfoListener = new ConnectionInfoListener()
-        {
-            @Override
-            public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo)
-            {
-
-            }
-        };
     }
 }

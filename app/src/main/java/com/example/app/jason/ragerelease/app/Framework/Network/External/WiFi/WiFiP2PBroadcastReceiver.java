@@ -89,7 +89,7 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
 
             if (wifiP2pManager == null)
             {
-                DebugInformation.displayShortToastMessage(currentActivity, "Wifi P2P manager is null");
+                //DebugInformation.displayShortToastMessage(currentActivity, "Wifi P2P manager is null");
                 return;
             }
 
@@ -101,7 +101,7 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
 
                 // We are connected to the other device!
                 // Info to find the group owner IP.
-                DebugInformation.displayShortToastMessage(currentActivity, "Connected to other device");
+                //DebugInformation.displayShortToastMessage(currentActivity, "Connected to other device");
                 wifiP2pManager.requestConnectionInfo(wifiChannel, connectionInfoListener);
             }
 

@@ -8,7 +8,11 @@ import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -38,33 +42,42 @@ public class WiFiClientAsyncTask extends AsyncTask<String, Void, String>
         try
         {
             // Create a client socket with the host, port number and timeout information.
-            socket.bind(null);
-            socket.connect(new InetSocketAddress(serverAddress, NetworkConstants.SOCKET_SERVER_PORT), 500);
+            //socket.bind(null);
+            //socket.connect(new InetSocketAddress(serverAddress, NetworkConstants.SOCKET_SERVER_PORT), 500);
+            socket = new Socket(serverAddress, NetworkConstants.SOCKET_SERVER_PORT);
+
+            String message = "client is here";
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            dataOutputStream.writeUTF(message);
+
+            String response = "";
+            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+            response = dataInputStream.readUTF();
 
             // If we arrive here, we have connected to the server.
-            return "Done";
+            return ("Done " + response);
         }
         catch (IOException e)
         {
             return "Not done";
         }
-        finally
-        {
-            if(socket != null)
-            {
-                if(socket.isConnected())
-                {
-                    try
-                    {
-                        socket.close();
-                    }
-                    catch(IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+//        finally
+//        {
+//            if(socket != null)
+//            {
+//                if(socket.isConnected())
+//                {
+//                    try
+//                    {
+//                        socket.close();
+//                    }
+//                    catch(IOException e)
+//                    {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }
     }
 
     @Override

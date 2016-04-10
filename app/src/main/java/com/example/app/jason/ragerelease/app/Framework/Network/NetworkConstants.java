@@ -10,6 +10,7 @@ public class NetworkConstants
     // Ints.
     public static final int HOST_ID = 1;
     public static final int JOIN_ID = 2;
+    public static final int SOCKET_SERVER_PORT = 8888;
 
     // Strings.
     public static final String EXTRA_DEVICE_ADDRESS = "deviceAddress";

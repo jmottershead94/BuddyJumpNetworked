@@ -27,10 +27,11 @@ public class WiFiBroadcastReceiver extends BroadcastReceiver
     // Attributes.
     private WifiP2pManager wifiP2pManager = null;
     private Channel wifiChannel = null;
-//    private PeerListListener peerListListener = null;
     private NetworkActivity currentActivity = null;
     private WifiP2pDeviceList peers = null;
     private int playerMatchStatus = 0;
+    private WiFiServerAsyncTask wifiServerAsyncTask = null;
+    private WiFiClientAsyncTask wifiClientAsyncTask = null;
 
     // Methods.
     public WiFiBroadcastReceiver(WifiP2pManager manager, Channel channel, NetworkActivity activity)
@@ -90,25 +91,29 @@ public class WiFiBroadcastReceiver extends BroadcastReceiver
         else if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action))
         {
             // Respond to new connection or disconnections.
-            //DebugInformation.displayShortToastMessage(currentActivity, "Wifi Connection Changed");
+            DebugInformation.displayShortToastMessage(currentActivity, "Wifi Connection Changed");
 
             // If we have declared a match ID.
             //if(playerMatchStatus == NetworkConstants.HOST_ID)
             //{
-                if (wifiP2pManager == null)
-                {
-                    return;
-                }
 
-                NetworkInfo networkInfo = (NetworkInfo) intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+            if (wifiP2pManager == null)
+            {
+                DebugInformation.displayShortToastMessage(currentActivity, "Wifi P2P manager is null");
+                return;
+            }
 
-                if (networkInfo.isConnected())
-                {
-                    // We are connected to the other device!
-                    // Info to find the group owner IP.
-                    DebugInformation.displayShortToastMessage(currentActivity, "Connected to other device");
-                    wifiP2pManager.requestConnectionInfo(wifiChannel, connectionInfoListener);
-                }
+            NetworkInfo networkInfo = (NetworkInfo) intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+
+            if (networkInfo.isConnected())
+            {
+                DebugInformation.displayShortToastMessage(currentActivity, "Network information connected.");
+
+                // We are connected to the other device!
+                // Info to find the group owner IP.
+                DebugInformation.displayShortToastMessage(currentActivity, "Connected to other device");
+                wifiP2pManager.requestConnectionInfo(wifiChannel, connectionInfoListener);
+            }
             //}
 
         }
@@ -141,12 +146,16 @@ public class WiFiBroadcastReceiver extends BroadcastReceiver
                 // If we have formed a group and we are the group owner.
                 // Set up the server thread, accept incoming data connections?
                 DebugInformation.displayShortToastMessage(currentActivity, "Should start server thread.");
+
+                wifiServerAsyncTask = new WiFiServerAsyncTask(currentActivity);
             }
             else if (wifiP2pInfo.groupFormed && (playerMatchStatus == NetworkConstants.JOIN_ID))
             {
                 // The other device acts as a client.
                 // Create a client thread here?
                 DebugInformation.displayShortToastMessage(currentActivity, "Should start client thread.");
+
+                wifiClientAsyncTask = new WiFiClientAsyncTask(currentActivity, groupOwnerAddress);
             }
         }
     };

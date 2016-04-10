@@ -35,10 +35,10 @@ public class DeviceList extends NetworkActivity// implements WifiP2pManager.Peer
     // Attributes.
     private Set<WifiP2pDevice> wifiP2pDevices = null;
     private ListView newDevicesListView = null;
-    private ArrayAdapter<String> peerNames = null;
-    private List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
     private int playerMatchStatus = 0;
-    private WifiP2pDevice wifiP2pDevice = new WifiP2pDevice();
+//    private ArrayAdapter<String> peerNames = null;
+//    private List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
+//    private WifiP2pDevice wifiP2pDevice = new WifiP2pDevice();
 
     // Methods.
     @Override
@@ -50,7 +50,7 @@ public class DeviceList extends NetworkActivity// implements WifiP2pManager.Peer
         setResult(Activity.RESULT_CANCELED);
 
         Button scanButton = (Button) findViewById(R.id.button_scan);
-        peerNames = new ArrayAdapter<String>(this, R.layout.device_name);
+        //peerNames = new ArrayAdapter<String>(this, R.layout.device_name);
         newDevicesListView = (ListView) findViewById(R.id.new_devices);
         playerMatchStatus = getIntent().getIntExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, 0);
 
@@ -64,8 +64,14 @@ public class DeviceList extends NetworkActivity// implements WifiP2pManager.Peer
                 peers.clear();
                 peerNames.clear();
 
+                findViewById(R.id.deviceListProgressBar).setVisibility(View.VISIBLE);
+
                 // Start a new scan.
                 searchForDevices();
+
+                newDevicesListView.setAdapter(peerNames);
+                newDevicesListView.setOnItemClickListener(deviceClickListener);
+                newDevicesListView.setVisibility(View.VISIBLE);
                 //view.setVisibility(View.GONE);
             }
         });
@@ -104,47 +110,47 @@ public class DeviceList extends NetworkActivity// implements WifiP2pManager.Peer
 //        }
 //    }
 
-    private void searchForDevices()
-    {
-        findViewById(R.id.deviceListProgressBar).setVisibility(View.VISIBLE);
-
-        wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener()
-        {
-            @Override
-            public void onSuccess()
-            {
-                DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Peer discovered!");
-
-                peers.addAll(connectionApplication.getConnectionManagement().getWifiHandler().getWifiBroadcastReceiver().getPeers().getDeviceList());
-                getDeviceName();
-                newDevicesListView.setAdapter(peerNames);
-                newDevicesListView.setOnItemClickListener(deviceClickListener);
-                newDevicesListView.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onFailure(int i)
-            {
-                //newDevicesListView.setVisibility(View.INVISIBLE);
-            }
-        });
-
-//        if(peers.size() == 0)
+//    private void searchForDevices()
+//    {
+//        wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener()
 //        {
-//            DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "No more peers.");
-//            findViewById(R.id.deviceListProgressBar).setVisibility(View.INVISIBLE);
-//            return;
-//        }
-    }
+//            @Override
+//            public void onSuccess()
+//            {
+//                DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Peer discovered!");
+//
+//                peers.addAll(connectionApplication.getConnectionManagement().getWifiHandler().getWifiBroadcastReceiver().getPeers().getDeviceList());
+//
+//                getDeviceName();
+//
+//                newDevicesListView.setAdapter(peerNames);
+//                newDevicesListView.setOnItemClickListener(deviceClickListener);
+//                newDevicesListView.setVisibility(View.VISIBLE);
+//            }
+//
+//            @Override
+//            public void onFailure(int i)
+//            {
+//                //newDevicesListView.setVisibility(View.INVISIBLE);
+//            }
+//        });
+//
+////        if(peers.size() == 0)
+////        {
+////            DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "No more peers.");
+////            findViewById(R.id.deviceListProgressBar).setVisibility(View.INVISIBLE);
+////            return;
+////        }
+//    }
 
-    private void getDeviceName()
-    {
-        for(int i = 0; i < peers.size(); i++)
-        {
-            peerNames.add(peers.get(i).deviceName);
-            DebugInformation.displayShortToastMessage(this, "Peer name: " + peerNames.getItem(i));
-        }
-    }
+//    private void getDeviceName()
+//    {
+//        for(int i = 0; i < peers.size(); i++)
+//        {
+//            peerNames.add(peers.get(i).deviceName);
+//            DebugInformation.displayShortToastMessage(this, "Peer name: " + peerNames.getItem(i));
+//        }
+//    }
 
     private AdapterView.OnItemClickListener deviceClickListener = new AdapterView.OnItemClickListener()
     {

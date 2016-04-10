@@ -10,8 +10,14 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
 
+import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Jason Mottershead on 04/04/2016.
@@ -24,6 +30,9 @@ public class NetworkActivity extends Activity
     protected WifiManager wifiManager = null;
     protected Channel wifiChannel = null;
     protected ConnectionApplication connectionApplication = null;
+    protected ArrayAdapter<String> peerNames = null;
+    protected List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
+    protected WifiP2pDevice wifiP2pDevice = new WifiP2pDevice();
 
     // Methods.
     @Override
@@ -34,6 +43,7 @@ public class NetworkActivity extends Activity
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         wifiChannel = wifiP2pManager.initialize(this, getMainLooper(), null);
         connectionApplication = (ConnectionApplication)this.getApplicationContext();
+        peerNames = new ArrayAdapter<String>(this, R.layout.device_name);
     }
 
     @Override
@@ -87,6 +97,36 @@ public class NetworkActivity extends Activity
                 DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Not connected!");
             }
         });
+    }
+
+    protected void searchForDevices()
+    {
+        wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Peer discovered!");
+
+                peers.addAll(connectionApplication.getConnectionManagement().getWifiHandler().getWifiBroadcastReceiver().getPeers().getDeviceList());
+                getDeviceName();
+//                newDevicesListView.setAdapter(peerNames);
+//                newDevicesListView.setOnItemClickListener(deviceClickListener);
+//                newDevicesListView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFailure(int i) {
+                //newDevicesListView.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    protected void getDeviceName()
+    {
+        for(int i = 0; i < peers.size(); i++)
+        {
+            peerNames.add(peers.get(i).deviceName);
+            DebugInformation.displayShortToastMessage(this, "Peer name: " + peerNames.getItem(i));
+        }
     }
 
     protected void connectionInformation()

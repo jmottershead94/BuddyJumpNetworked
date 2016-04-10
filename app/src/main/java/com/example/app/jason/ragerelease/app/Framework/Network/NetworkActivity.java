@@ -10,7 +10,6 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
 
 import com.example.app.jason.ragerelease.R;
@@ -51,19 +50,21 @@ public class NetworkActivity extends Activity
     {
         super.onResume();
         connectionApplication.setConnectionManagement(wifiP2pManager, wifiManager, wifiChannel, this);
+        registerReceiver(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver(), connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PFilter());
         registerReceiver(connectionApplication.getConnectionManagement().getWifiHandler().getWifiBroadcastReceiver(), connectionApplication.getConnectionManagement().getWifiHandler().getWifiFilter());
         //wifiManager.setWifiEnabled(true);
 
-        if(!wifiManager.isWifiEnabled())
-        {
-            wifiManager.setWifiEnabled(true);
-        }
+//        if(!wifiManager.isWifiEnabled())
+//        {
+//            wifiManager.setWifiEnabled(true);
+//        }
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
+        unregisterReceiver(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver());
         unregisterReceiver(connectionApplication.getConnectionManagement().getWifiHandler().getWifiBroadcastReceiver());
         //wifiManager.setWifiEnabled(false);
     }
@@ -73,10 +74,10 @@ public class NetworkActivity extends Activity
     {
         super.onDestroy();
 
-        if(wifiManager.isWifiEnabled())
-        {
-            wifiManager.setWifiEnabled(false);
-        }
+//        if(wifiManager.isWifiEnabled())
+//        {
+//            wifiManager.setWifiEnabled(false);
+//        }
     }
 
     protected void connectToPeer(WifiP2pDevice connectedDevice)
@@ -101,20 +102,17 @@ public class NetworkActivity extends Activity
 
     protected void searchForDevices()
     {
-        wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener()
-        {
+        wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener() {
             @Override
-            public void onSuccess()
-            {
+            public void onSuccess() {
                 DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Peer discovered!");
 
-                peers.addAll(connectionApplication.getConnectionManagement().getWifiHandler().getWifiBroadcastReceiver().getPeers().getDeviceList());
+                peers.addAll(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getPeers().getDeviceList());
                 getDeviceName();
             }
 
             @Override
-            public void onFailure(int i)
-            {
+            public void onFailure(int i) {
                 //newDevicesListView.setVisibility(View.INVISIBLE);
             }
         });

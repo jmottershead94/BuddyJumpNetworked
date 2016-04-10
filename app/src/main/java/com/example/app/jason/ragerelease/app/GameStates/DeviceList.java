@@ -119,7 +119,7 @@ public class DeviceList extends NetworkActivity// implements WifiP2pManager.Peer
 //            {
 //                DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Peer discovered!");
 //
-//                peers.addAll(connectionApplication.getConnectionManagement().getWifiHandler().getWifiBroadcastReceiver().getPeers().getDeviceList());
+//                peers.addAll(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getPeers().getDeviceList());
 //
 //                getDeviceName();
 //

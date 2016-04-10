@@ -101,20 +101,20 @@ public class NetworkActivity extends Activity
 
     protected void searchForDevices()
     {
-        wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener() {
+        wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener()
+        {
             @Override
-            public void onSuccess() {
+            public void onSuccess()
+            {
                 DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Peer discovered!");
 
                 peers.addAll(connectionApplication.getConnectionManagement().getWifiHandler().getWifiBroadcastReceiver().getPeers().getDeviceList());
                 getDeviceName();
-//                newDevicesListView.setAdapter(peerNames);
-//                newDevicesListView.setOnItemClickListener(deviceClickListener);
-//                newDevicesListView.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onFailure(int i) {
+            public void onFailure(int i)
+            {
                 //newDevicesListView.setVisibility(View.INVISIBLE);
             }
         });

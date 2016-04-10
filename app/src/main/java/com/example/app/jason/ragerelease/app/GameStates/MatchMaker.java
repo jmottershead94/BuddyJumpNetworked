@@ -78,7 +78,9 @@ public class MatchMaker extends NetworkActivity implements View.OnClickListener
         // If the user wants to host a match.
         if(view == hostButton)
         {
-            nextActivity = new Intent(this, DeviceList.class);
+            nextActivity = new Intent(this, SelectionScreen.class);
+
+            searchForDevices();
 
             // Start a server connection.
             DebugInformation.displayShortToastMessage(this, "Hosting");
@@ -89,6 +91,8 @@ public class MatchMaker extends NetworkActivity implements View.OnClickListener
         {
             //nextActivity = new Intent(this, SelectionScreen.class);
             nextActivity = new Intent(this, DeviceList.class);
+
+            //searchForDevices();
 
             // Start a client connection.
             DebugInformation.displayShortToastMessage(this, "Joining");

@@ -54,45 +54,21 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
         // Get our current action in the activity.
         String action = intent.getAction();
 
-//        if(WifiManager.WIFI_STATE_CHANGED_ACTION.equals(action))
-//        {
-//            // Obtain the current wifi state.
-//            int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
-//
-//            // If we have wifi turned on.
-//            if(state == WifiManager.WIFI_STATE_ENABLED)
-//            {
-//                // Wifi is enabled.
-//                DebugInformation.displayShortToastMessage(currentActivity, "Wifi P2P is enabled");
-//            }
-//            // Otherwise, wifi is turned off.
-//            else
-//            {
-//                // Wifi is disabled.
-//                DebugInformation.displayShortToastMessage(currentActivity, "Wifi P2P is not enabled");
-//            }
-//        }
-
         // Otherwise, if there is a change in the WiFi P2P status.
         if(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action))
         {
-            // Check to see if wifi is enabled and notify appropriate activity.
-            //DebugInformation.displayShortToastMessage(currentActivity, "Wifi Peer State Changed");
-
             // Obtain the current wifi state.
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
 
             // If we have wifi turned on.
             if(state == WifiP2pManager.WIFI_P2P_STATE_ENABLED)
             {
-                // Wifi is enabled.
-                //DebugInformation.displayShortToastMessage(currentActivity, "Wifi P2P is enabled");
+                // Wifi P2P has been enabled.
             }
             // Otherwise, wifi is turned off.
             else
             {
-                // Wifi is disabled.
-                //DebugInformation.displayShortToastMessage(currentActivity, "Wifi P2P is not enabled");
+                // Wifi P2P has been disabled.
             }
         }
         // Otherwise, if there is a change in the list of available peers.
@@ -109,11 +85,7 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
         else if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action))
         {
             // Respond to new connection or disconnections.
-            DebugInformation.displayShortToastMessage(currentActivity, "Wifi Connection Changed");
-
-            // If we have declared a match ID.
-            //if(playerMatchStatus == NetworkConstants.HOST_ID)
-            //{
+            DebugInformation.displayShortToastMessage(currentActivity, "Wifi P2P Connection Changed");
 
             if (wifiP2pManager == null)
             {
@@ -132,7 +104,6 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
                 DebugInformation.displayShortToastMessage(currentActivity, "Connected to other device");
                 wifiP2pManager.requestConnectionInfo(wifiChannel, connectionInfoListener);
             }
-            //}
 
         }
         // Otherwise, if this device's details have changed.
@@ -157,21 +128,22 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
         @Override
         public void onConnectionInfoAvailable(final WifiP2pInfo wifiP2pInfo)
         {
+            DebugInformation.displayShortToastMessage(currentActivity, "Connection info is available");
             String groupOwnerAddress = wifiP2pInfo.groupOwnerAddress.getHostAddress();
 
-            if (wifiP2pInfo.groupFormed && wifiP2pInfo.isGroupOwner && (playerMatchStatus == NetworkConstants.HOST_ID))
+            if (playerMatchStatus == NetworkConstants.HOST_ID)
             {
                 // If we have formed a group and we are the group owner.
                 // Set up the server thread, accept incoming data connections?
-                DebugInformation.displayShortToastMessage(currentActivity, "Should start server thread.");
+                DebugInformation.displayShortToastMessage(currentActivity, "Should start server thread");
 
                 wifiServerAsyncTask = new WiFiServerAsyncTask(currentActivity);
             }
-            else if (wifiP2pInfo.groupFormed && (playerMatchStatus == NetworkConstants.JOIN_ID))
+            else if (playerMatchStatus == NetworkConstants.JOIN_ID)
             {
                 // The other device acts as a client.
                 // Create a client thread here?
-                DebugInformation.displayShortToastMessage(currentActivity, "Should start client thread.");
+                DebugInformation.displayShortToastMessage(currentActivity, "Should start client thread");
 
                 wifiClientAsyncTask = new WiFiClientAsyncTask(currentActivity, groupOwnerAddress);
             }

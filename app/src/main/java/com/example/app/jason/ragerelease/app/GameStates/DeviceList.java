@@ -92,66 +92,6 @@ public class DeviceList extends NetworkActivity// implements WifiP2pManager.Peer
         super.onPause();
     }
 
-//    @Override
-//    public void onPeersAvailable(WifiP2pDeviceList peerList)
-//    {
-//        peers.addAll(peerList.getDeviceList());
-//        getDeviceName();
-//        newDevicesListView.setAdapter(peerNames);
-//        newDevicesListView.setOnItemClickListener(deviceClickListener);
-//        newDevicesListView.setVisibility(View.VISIBLE);
-//        //newDevicesListView.notify
-//
-//        if(peers.size() == 0)
-//        {
-//            DebugInformation.displayShortToastMessage(this, "No more peers.");
-//            findViewById(R.id.deviceListProgressBar).setVisibility(View.INVISIBLE);
-//            return;
-//        }
-//    }
-
-//    private void searchForDevices()
-//    {
-//        wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener()
-//        {
-//            @Override
-//            public void onSuccess()
-//            {
-//                DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Peer discovered!");
-//
-//                peers.addAll(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getPeers().getDeviceList());
-//
-//                getDeviceName();
-//
-//                newDevicesListView.setAdapter(peerNames);
-//                newDevicesListView.setOnItemClickListener(deviceClickListener);
-//                newDevicesListView.setVisibility(View.VISIBLE);
-//            }
-//
-//            @Override
-//            public void onFailure(int i)
-//            {
-//                //newDevicesListView.setVisibility(View.INVISIBLE);
-//            }
-//        });
-//
-////        if(peers.size() == 0)
-////        {
-////            DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "No more peers.");
-////            findViewById(R.id.deviceListProgressBar).setVisibility(View.INVISIBLE);
-////            return;
-////        }
-//    }
-
-//    private void getDeviceName()
-//    {
-//        for(int i = 0; i < peers.size(); i++)
-//        {
-//            peerNames.add(peers.get(i).deviceName);
-//            DebugInformation.displayShortToastMessage(this, "Peer name: " + peerNames.getItem(i));
-//        }
-//    }
-
     private AdapterView.OnItemClickListener deviceClickListener = new AdapterView.OnItemClickListener()
     {
         @Override

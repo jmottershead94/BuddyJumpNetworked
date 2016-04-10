@@ -3,6 +3,7 @@ package com.example.app.jason.ragerelease.app.Framework.Network;
 import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pInfo;
@@ -84,18 +85,23 @@ public class NetworkActivity extends Activity
     {
         WifiP2pConfig config = new WifiP2pConfig();
         config.deviceAddress = connectedDevice.deviceAddress;
-        wifiP2pManager.connect(wifiChannel, config, new WifiP2pManager.ActionListener() {
+        config.wps.setup = WpsInfo.PBC;
+
+        wifiP2pManager.connect(wifiChannel, config, new WifiP2pManager.ActionListener()
+        {
             @Override
-            public void onSuccess() {
+            public void onSuccess()
+            {
                 // We have successfully connected.
-                DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Connected!");
+                DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "P2P connected");
             }
 
             @Override
-            public void onFailure(int reason) {
+            public void onFailure(int reason)
+            {
                 // We have not connected.
                 // Retry the connection?
-                DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Not connected!");
+                DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "P2P not connected");
             }
         });
     }
@@ -104,7 +110,8 @@ public class NetworkActivity extends Activity
     {
         wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener() {
             @Override
-            public void onSuccess() {
+            public void onSuccess()
+            {
                 DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Peer discovered!");
 
                 peers.addAll(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getPeers().getDeviceList());
@@ -112,7 +119,8 @@ public class NetworkActivity extends Activity
             }
 
             @Override
-            public void onFailure(int i) {
+            public void onFailure(int i)
+            {
                 //newDevicesListView.setVisibility(View.INVISIBLE);
             }
         });

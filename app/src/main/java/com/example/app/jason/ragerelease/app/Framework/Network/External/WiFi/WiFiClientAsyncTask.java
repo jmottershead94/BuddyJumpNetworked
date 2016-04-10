@@ -42,13 +42,11 @@ public class WiFiClientAsyncTask extends AsyncTask<String, Void, String>
             socket.connect(new InetSocketAddress(serverAddress, NetworkConstants.SOCKET_SERVER_PORT), 500);
 
             // If we arrive here, we have connected to the server.
-            DebugInformation.displayShortToastMessage(activity, "Connected to server");
-            return null;
+            return "Done";
         }
         catch (IOException e)
         {
-            DebugInformation.displayShortToastMessage(activity, "Not connected to server");
-            return null;
+            return "Not done";
         }
         finally
         {
@@ -59,11 +57,10 @@ public class WiFiClientAsyncTask extends AsyncTask<String, Void, String>
                     try
                     {
                         socket.close();
-                        DebugInformation.displayShortToastMessage(activity, "Close client socket");
                     }
                     catch(IOException e)
                     {
-                        DebugInformation.displayShortToastMessage(activity, "Unable to close client socket");
+                        e.printStackTrace();
                     }
                 }
             }
@@ -73,6 +70,6 @@ public class WiFiClientAsyncTask extends AsyncTask<String, Void, String>
     @Override
     protected void onPostExecute(String result)
     {
-        DebugInformation.displayShortToastMessage(activity, "Executing");
+        DebugInformation.displayShortToastMessage(activity, "Client: " + result);
     }
 }

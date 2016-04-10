@@ -85,7 +85,7 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
         else if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action))
         {
             // Respond to new connection or disconnections.
-            DebugInformation.displayShortToastMessage(currentActivity, "Wifi P2P Connection Changed");
+            //DebugInformation.displayShortToastMessage(currentActivity, "Wifi P2P Connection Changed");
 
             if (wifiP2pManager == null)
             {
@@ -97,7 +97,7 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
 
             if (networkInfo.isConnected())
             {
-                DebugInformation.displayShortToastMessage(currentActivity, "Network information connected.");
+                //DebugInformation.displayShortToastMessage(currentActivity, "Network information connected.");
 
                 // We are connected to the other device!
                 // Info to find the group owner IP.
@@ -128,24 +128,26 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
         @Override
         public void onConnectionInfoAvailable(final WifiP2pInfo wifiP2pInfo)
         {
-            DebugInformation.displayShortToastMessage(currentActivity, "Connection info is available");
+            //DebugInformation.displayShortToastMessage(currentActivity, "Connection info is available");
             String groupOwnerAddress = wifiP2pInfo.groupOwnerAddress.getHostAddress();
 
             if (playerMatchStatus == NetworkConstants.HOST_ID)
             {
                 // If we have formed a group and we are the group owner.
                 // Set up the server thread, accept incoming data connections?
-                DebugInformation.displayShortToastMessage(currentActivity, "Should start server thread");
+                //DebugInformation.displayShortToastMessage(currentActivity, "Should start server thread");
 
                 wifiServerAsyncTask = new WiFiServerAsyncTask(currentActivity);
+                wifiServerAsyncTask.execute();
             }
             else if (playerMatchStatus == NetworkConstants.JOIN_ID)
             {
                 // The other device acts as a client.
                 // Create a client thread here?
-                DebugInformation.displayShortToastMessage(currentActivity, "Should start client thread");
+                //DebugInformation.displayShortToastMessage(currentActivity, "Should start client thread");
 
                 wifiClientAsyncTask = new WiFiClientAsyncTask(currentActivity, groupOwnerAddress);
+                wifiClientAsyncTask.execute();
             }
         }
     };

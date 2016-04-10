@@ -18,7 +18,7 @@ import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
  * Created by Jason Mottershead on 17/10/2015.
  */
 
-// Single Player Selection Screen IS AN Activity, therefore inherits from it.
+// Selection screen IS A network activity, therefore inherits from it.
 // This will provide the player with the options of selecting their character sprites.
 public class SelectionScreen extends NetworkActivity
 {

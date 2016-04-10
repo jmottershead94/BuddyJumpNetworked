@@ -33,31 +33,22 @@ public class WiFiServerAsyncTask extends AsyncTask<String, Void, String>
     {
         try
         {
-            /**
-             * Create a server socket and wait for client connections. This
-             * call blocks until a connection is accepted from a client
-             */
+            // Create a server socket and wait for client connections.
             ServerSocket serverSocket = new ServerSocket(NetworkConstants.SOCKET_SERVER_PORT);
             Socket client = serverSocket.accept();
 
-            /**
-             * If this code is reached, a client has connected and transferred data
-             * Save the input stream from the client as a JPEG file
-             */
-            DebugInformation.displayShortToastMessage(activity, "Client has connected");
-            return null;
+            // If we are here, we have accepted a connection from the client.
+            return "Done";
         }
         catch (IOException e)
         {
-            //Log.e(WiFiDirectActivity.TAG, e.getMessage());
-            DebugInformation.displayShortToastMessage(activity, "Client has not connected");
-            return null;
+            return "Not done";
         }
     }
 
     @Override
     protected void onPostExecute(String result)
     {
-        DebugInformation.displayShortToastMessage(activity, "Executing");
+        DebugInformation.displayShortToastMessage(activity, "Server: " + result);
     }
 }

@@ -2,13 +2,10 @@
 package com.example.app.jason.ragerelease.app.GameStates;
 
 // All of the extra includes here.
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
@@ -52,8 +49,6 @@ public class MatchMaker extends NetworkActivity implements View.OnClickListener
         joinButton.setOnClickListener(this);
 
         // If any of the buttons are pressed on the match maker screen.
-//        button.isPressed(hostButton, this, SelectionScreen.class);
-//        button.isPressed(joinButton, this, SelectionScreen.class);
         button.isPressed(mainMenuButton, this, MainMenu.class);
         button.isPressed(backButton, this, ConnectionSelection.class);
     }
@@ -78,7 +73,7 @@ public class MatchMaker extends NetworkActivity implements View.OnClickListener
         // If the user wants to host a match.
         if(view == hostButton)
         {
-            nextActivity = new Intent(this, SelectionScreen.class);
+            nextActivity = new Intent(this, MultiplayerSelection.class);
 
             searchForDevices();
 
@@ -89,7 +84,6 @@ public class MatchMaker extends NetworkActivity implements View.OnClickListener
         // Otherwise, if the user wants to join a match.
         else if(view == joinButton)
         {
-            //nextActivity = new Intent(this, SelectionScreen.class);
             nextActivity = new Intent(this, DeviceList.class);
 
             //searchForDevices();

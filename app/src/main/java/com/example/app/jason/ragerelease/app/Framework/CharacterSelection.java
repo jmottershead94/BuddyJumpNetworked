@@ -17,7 +17,9 @@ import android.widget.Toast;
 
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.Network.Internal.AndroidOSHandlers.CameraHandler;
-import com.example.app.jason.ragerelease.app.GameStates.SelectionScreen;
+import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
+import com.example.app.jason.ragerelease.app.GameStates.MultiplayerSelection;
+import com.example.app.jason.ragerelease.app.GameStates.SinglePlayerSelection;
 
 /**
  * Created by Jason Mottershead on 17/10/2015.
@@ -43,6 +45,8 @@ public class CharacterSelection extends Activity implements AdapterView.OnItemCl
     private String gameSettingsName = null;
     private String imageSettingsName = null;
     private CameraHandler cameraHandler = null;
+    private final String multiplayerKeyName = "multiplayer";
+    private boolean multiplayerStatus = false;
 
     // Methods.
     //////////////////////////////////////////////////
@@ -71,6 +75,7 @@ public class CharacterSelection extends Activity implements AdapterView.OnItemCl
         SharedPreferences gameSettings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         optionOneChecked = gameSettings.getBoolean("moptionOneCheckedStatus", false);
         currentImageIndex = gameSettings.getInt(gameSettingsName, 0);
+        multiplayerStatus = gameSettings.getBoolean(multiplayerKeyName, false);
 
         // Setting the text view for the activity.
         textView.setTextSize(20.0f);
@@ -81,7 +86,18 @@ public class CharacterSelection extends Activity implements AdapterView.OnItemCl
 
         // If the main menu button has been pressed.
         // Navigate the user back to the main menu.
-        button.isPressed(saveButton, this, SelectionScreen.class);
+        // If we are using multiplayer.
+        if(multiplayerStatus)
+        {
+            // Go back to the multiplayer selection screen.
+            button.isPressed(saveButton, this, MultiplayerSelection.class);
+        }
+        // Otherwise, we are in single player.
+        else
+        {
+            // Go back to the single player selection screen.
+            button.isPressed(saveButton, this, SinglePlayerSelection.class);
+        }
     }
 
     //////////////////////////////////////////////////

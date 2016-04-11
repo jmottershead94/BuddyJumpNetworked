@@ -5,15 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
-import android.os.Debug;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,8 +18,6 @@ import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -110,7 +104,7 @@ public class DeviceList extends NetworkActivity// implements WifiP2pManager.Peer
                 }
             }
 
-            Intent selectionScreenActivity = new Intent(connectionApplication.getConnectionManagement().getNetworkActivity(), SelectionScreen.class);
+            Intent selectionScreenActivity = new Intent(connectionApplication.getConnectionManagement().getNetworkActivity(), MultiplayerSelection.class);
             selectionScreenActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, playerMatchStatus);
             selectionScreenActivity.putExtra(NetworkConstants.EXTRA_DEVICE_ADDRESS, wifiP2pDevice.deviceAddress);
 

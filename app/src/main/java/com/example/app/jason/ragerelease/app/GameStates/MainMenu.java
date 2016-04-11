@@ -52,7 +52,7 @@ public class MainMenu extends Activity
 
         // If any of the buttons are pressed on the main menu.
         // Take the user to the correct activity depending on the button pressed.
-        button.isPressed(playButton, this, SelectionScreen.class);
+        button.isPressed(playButton, this, SinglePlayerSelection.class);
         button.isPressed(multiplayerButton, this, ConnectionSelection.class);
         button.isPressed(optionsButton, this, Options.class);
         button.isPressed(creditsButton, this, Credits.class);

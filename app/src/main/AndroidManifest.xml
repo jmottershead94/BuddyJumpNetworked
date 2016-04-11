@@ -95,10 +95,15 @@
             android:label="@string/app_name">
         </activity>
 
-
-        <!-- Setting the Player Selection activity. -->
+        <!-- Setting the Single Player Selection activity. -->
         <activity
-            android:name=".app.GameStates.SelectionScreen"
+            android:name=".app.GameStates.SinglePlayerSelection"
+            android:label="@string/app_name">
+        </activity>
+
+        <!-- Setting the Multiplayer Selection activity. -->
+        <activity
+            android:name=".app.GameStates.MultiplayerSelection"
             android:label="@string/app_name">
         </activity>
 

@@ -20,7 +20,7 @@ import com.example.app.jason.ragerelease.R;
  */
 
 // Sprite IS A View, therefore inherits from it.
-// This class will provide a custom view for all types of game objects in our game.
+// This class will provide a custom view for all types of singlePlayerGame objects in our singlePlayerGame.
 public class Sprite extends View
 {
     // Attributes.
@@ -157,7 +157,7 @@ public class Sprite extends View
     //  This will reduce the size of a bitmap image //
     //  that we pass to it, with a desired width    //
     //  and height.                                 //
-    //  This is used to make sure that the game     //
+    //  This is used to make sure that the singlePlayerGame     //
     //  does not lag when using camera image        //
     //  sprites.                                    //
     //////////////////////////////////////////////////

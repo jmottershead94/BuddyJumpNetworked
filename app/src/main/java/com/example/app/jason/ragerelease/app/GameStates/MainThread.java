@@ -1,6 +1,11 @@
 // The package location for this class.
 package com.example.app.jason.ragerelease.app.GameStates;
 
+import android.content.SharedPreferences;
+
+import com.example.app.jason.ragerelease.app.GameStates.Multiplayer.MultiplayerGame;
+import com.example.app.jason.ragerelease.app.GameStates.SinglePlayer.SinglePlayerGame;
+
 /**
  * Created by Jason Mottershead on 08/07/2015.
  */
@@ -12,23 +17,49 @@ public class MainThread extends Thread
     // Private attributes.
     private static long FPS = 0;
     private boolean isRunning = false;
-    private Game gameView = null;
+    private SinglePlayerGame singlePlayerGameView = null;
+    private MultiplayerGame multiplayerGameView = null;
+    private boolean multiplayerStatus = false;
+    private static final String PREFS_NAME = "MyPrefsFile";
+    private final String multiplayerKeyName = "multiplayer";
 
     // Methods.
     //////////////////////////////////////////////////
     //					Constructor				    //
     //==============================================//
     // This will set up the main thread attributes, //
-    // some passed down from the game activity.     //
+    // some passed down from the single player game //
+    // activity.                                    //
     //////////////////////////////////////////////////
-    public MainThread(final Game game, final long desiredFPS)
+    public MainThread(final SinglePlayerGame singlePlayerGame, final long desiredFPS)
     {
         // Setting up the main thread constructor.
         super();
 
         // Initialising local attributes.
-        gameView = game;
+        singlePlayerGameView = singlePlayerGame;
         FPS = desiredFPS;
+    }
+
+    //////////////////////////////////////////////////
+    //					Constructor				    //
+    //==============================================//
+    // This will set up the main thread attributes, //
+    // some passed down from the multiplayer game   //
+    // activity.                                    //
+    //////////////////////////////////////////////////
+    public MainThread(final MultiplayerGame multiplayerGame, final long desiredFPS)
+    {
+        // Setting up the main thread constructor.
+        super();
+
+        // Initialising local attributes.
+        multiplayerGameView = multiplayerGame;
+        FPS = desiredFPS;
+
+        // Loading multiplayer status for repeated use.
+        SharedPreferences multiplayerSettings = multiplayerGame.getSharedPreferences(PREFS_NAME, multiplayerGame.MODE_PRIVATE);
+        multiplayerStatus = multiplayerSettings.getBoolean(multiplayerKeyName, true);
     }
 
     //////////////////////////////////////////////////
@@ -48,17 +79,24 @@ public class MainThread extends Thread
         long nextGameTick = System.currentTimeMillis();
         int loops = 0;
 
-        // While the game thread is currently running.
+        // While the singlePlayerGame thread is currently running.
         while (isRunning)
         {
             loops = 0;
 
-            // While the current time is greater than the next game frame/tick.
+            // While the current time is greater than the next singlePlayerGame frame/tick.
             // AND the number of loops is less than the maximum number of frames skipped.
             while ((System.currentTimeMillis() > nextGameTick) && (loops < maxFrameSkip))
             {
-                // Update the game.
-                gameView.update(dt);
+                if(multiplayerStatus)
+                {
+                    multiplayerGameView.update(dt);
+                }
+                else
+                {
+                    // Update the singlePlayerGame.
+                    singlePlayerGameView.update(dt);
+                }
 
                 // Add on any skipped frames.
                 nextGameTick += skipTicks;

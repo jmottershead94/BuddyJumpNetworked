@@ -93,7 +93,7 @@ public class NetworkActivity extends Activity
             public void onSuccess()
             {
                 // We have successfully connected.
-                DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "P2P connected");
+                //DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "P2P connected");
             }
 
             @Override
@@ -108,11 +108,12 @@ public class NetworkActivity extends Activity
 
     protected void searchForDevices()
     {
-        wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener() {
+        wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener()
+        {
             @Override
             public void onSuccess()
             {
-                DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Peer discovered!");
+                //DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "Peer discovered!");
 
                 peers.addAll(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getPeers().getDeviceList());
                 getDeviceName();

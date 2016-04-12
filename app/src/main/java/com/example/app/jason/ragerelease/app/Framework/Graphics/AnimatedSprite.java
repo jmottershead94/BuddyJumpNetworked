@@ -43,7 +43,7 @@ public class AnimatedSprite extends Sprite
     //                  Constructor                 //
     //==============================================//
     //  This will initialise the sprite object, and //
-    //  set up access to common game properties.    //
+    //  set up access to common singlePlayerGame properties.    //
     //////////////////////////////////////////////////
     public AnimatedSprite(final Resources gameResources, int objectID)
     {

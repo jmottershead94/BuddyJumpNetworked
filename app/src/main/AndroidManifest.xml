@@ -79,31 +79,31 @@
 
         <!-- Setting up the connection selection activity. -->
         <activity
-            android:name=".app.GameStates.ConnectionSelection"
+            android:name=".app.GameStates.Multiplayer.ConnectionSelection"
             android:label="@string/app_name">
         </activity>
 
         <!-- Setting up the match maker activity. -->
         <activity
-            android:name=".app.GameStates.MatchMaker"
+            android:name=".app.GameStates.Multiplayer.MatchMaker"
             android:label="@string/app_name">
         </activity>
 
         <!-- Setting up the device list activity. -->
         <activity
-            android:name=".app.GameStates.DeviceList"
+            android:name=".app.GameStates.Multiplayer.DeviceList"
             android:label="@string/app_name">
         </activity>
 
         <!-- Setting the Single Player Selection activity. -->
         <activity
-            android:name=".app.GameStates.SinglePlayerSelection"
+            android:name=".app.GameStates.SinglePlayer.SinglePlayerSelection"
             android:label="@string/app_name">
         </activity>
 
         <!-- Setting the Multiplayer Selection activity. -->
         <activity
-            android:name=".app.GameStates.MultiplayerSelection"
+            android:name=".app.GameStates.Multiplayer.MultiplayerSelection"
             android:label="@string/app_name">
         </activity>
 
@@ -115,19 +115,27 @@
 
         <!-- Setting the Companion Selection activity. -->
         <activity
-            android:name=".app.GameStates.CompanionSelection"
+            android:name=".app.GameStates.SinglePlayer.CompanionSelection"
             android:label="@string/app_name">
         </activity>
 
-        <!-- Setting the Game activity. -->
+        <!-- Setting the SinglePlayerGame activity. -->
         <activity
-            android:name=".app.GameStates.Game"
+            android:name=".app.GameStates.SinglePlayer.SinglePlayerGame"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
             android:configChanges="orientation|keyboardHidden">
         </activity>
 
-        <!-- Setting the Game Over activity. -->
+        <!-- Setting the MultiplayerGame activity. -->
+        <activity
+            android:name=".app.GameStates.Multiplayer.MultiplayerGame"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|keyboardHidden">
+        </activity>
+
+        <!-- Setting the SinglePlayerGame Over activity. -->
         <activity
             android:name=".app.GameStates.GameOver"
             android:label="@string/app_name"

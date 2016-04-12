@@ -55,7 +55,7 @@ public class CameraHandler extends Activity
     //                  Constructor                 //
     //==============================================//
     //  This will set up this class to have access  //
-    //  to common game properties.                  //
+    //  to common singlePlayerGame properties.                  //
     //////////////////////////////////////////////////
     public CameraHandler(final Resources gameResources)
     {

@@ -8,7 +8,8 @@ import android.view.View;
 import com.example.app.jason.ragerelease.app.Framework.Graphics.AnimatedSprite;
 import com.example.app.jason.ragerelease.app.Framework.Maths.Vector2;
 import com.example.app.jason.ragerelease.app.Framework.Physics.StaticBody;
-import com.example.app.jason.ragerelease.app.GameStates.Game;
+import com.example.app.jason.ragerelease.app.GameStates.Multiplayer.MultiplayerGame;
+import com.example.app.jason.ragerelease.app.GameStates.SinglePlayer.SinglePlayerGame;
 import com.example.app.jason.ragerelease.app.Framework.Physics.DynamicBody;
 
 import org.jbox2d.common.Vec2;
@@ -31,13 +32,15 @@ public class Level implements View.OnTouchListener
     // Attributes.
     // Public.
     public int levelNumber = 1;
-    public Game game = null;
+    public SinglePlayerGame singlePlayerGame = null;
+    public MultiplayerGame multiplayerGame = null;
     public LevelGenerator levelGenerator = null;
     public Player player = null;
 
     // Private.
     private Resources resources = null;
     private int interval = 1;
+    private boolean multiplayerStatus = false;
     private ScheduledExecutorService scheduler = null;
     private ScheduledFuture<?> distanceIncrementer = null;
 
@@ -48,11 +51,11 @@ public class Level implements View.OnTouchListener
     //  This will set up access to common game      //
     //  properties, and set up the touch listener.  //
     //////////////////////////////////////////////////
-    public void init(final Resources gameResources, final Game gameView, final int gamePlayerImage, final int gameCompanionImage)
+    public void init(final Resources gameResources, final SinglePlayerGame singlePlayerGameView, final int gamePlayerImage, final int gameCompanionImage)
     {
         // Initialising local variables.
         resources = gameResources;
-        game = gameView;
+        singlePlayerGame = singlePlayerGameView;
         player = new Player(resources, this);
         levelGenerator = new LevelGenerator(resources, this, gamePlayerImage, gameCompanionImage);
         levelGenerator.buildLevel(1, 1);    // Builds the first level.
@@ -61,8 +64,49 @@ public class Level implements View.OnTouchListener
         player.setGameOver(false);
         player.setPaused(false);
         scheduler = Executors.newSingleThreadScheduledExecutor();
+        multiplayerStatus = false;
 
-        // This schedules incrementing player distance every second.
+        // This schedule is incrementing player distance every second.
+        // Running on a new thread.
+        distanceIncrementer = scheduler.scheduleAtFixedRate(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if(!player.isPaused() && !player.isGameOver())
+                {
+                    player.distance++;
+                }
+            }
+            // Executing at a regular interval of 1 second.
+        }, interval, interval, TimeUnit.SECONDS);
+
+        // Listen out for touches in the level.
+        resources.getBackground().setOnTouchListener(this);
+    }
+
+    //////////////////////////////////////////////////
+    //                  Constructor                 //
+    //==============================================//
+    //  This will set up access to common game      //
+    //  properties, and set up the touch listener.  //
+    //////////////////////////////////////////////////
+    public void init(final Resources gameResources, final MultiplayerGame multiplayerGameView, final int gamePlayerImage, final int gameCompanionImage)
+    {
+        // Initialising local variables.
+        resources = gameResources;
+        multiplayerGame = multiplayerGameView;
+        player = new Player(resources, this);
+        levelGenerator = new LevelGenerator(resources, this, gamePlayerImage, gameCompanionImage);
+        levelGenerator.buildLevel(1, 1);    // Builds the first level.
+        levelGenerator.addToView();
+        player.distanceText.bringToFront();
+        player.setGameOver(false);
+        player.setPaused(false);
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        multiplayerStatus = true;
+
+        // This schedule is incrementing player distance every second.
         // Running on a new thread.
         distanceIncrementer = scheduler.scheduleAtFixedRate(new Runnable()
         {
@@ -116,8 +160,15 @@ public class Level implements View.OnTouchListener
             levelGenerator.buildLevel(2, 2);
         }
 
-        // Updates the UI thread to add all of the new level objects to the screen.
-        game.render();
+        if(multiplayerStatus)
+        {
+            multiplayerGame.render();
+        }
+        else
+        {
+            // Updates the UI thread to add all of the new level objects to the screen.
+            singlePlayerGame.render();
+        }
     }
 
     //////////////////////////////////////////////////
@@ -400,7 +451,7 @@ public class Level implements View.OnTouchListener
                     // Slight loading time, without this, below catch gives an error.
                     Thread.sleep(300);
                 }
-                // Catch any expections with this thread.
+                // Catch any exceptions with this thread.
                 catch (InterruptedException e)
                 {
                     // Print a stack trace so we know where we went wrong.

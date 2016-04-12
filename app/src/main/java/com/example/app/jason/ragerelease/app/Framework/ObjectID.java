@@ -20,4 +20,6 @@ public class ObjectID
     public static final int SPRITE = ENEMY + 1;                 // The ID number for a standard sprite.
     public static final int ANIMATEDSPRITE = SPRITE + 1;        // The ID number for an animated sprite.
     public static final int OBSTACLE = ANIMATEDSPRITE + 1;      // The ID number for the obstacles.
+    public static final int PLAYERONE = OBSTACLE + 1;           // The ID number for the players.
+    public static final int PLAYERTWQ = PLAYERONE + 1;
 }

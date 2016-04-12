@@ -1,5 +1,5 @@
 // The package location of this activity.
-package com.example.app.jason.ragerelease.app.GameStates;
+package com.example.app.jason.ragerelease.app.GameStates.Multiplayer;
 
 // All of the extra includes here.
 import android.content.Intent;
@@ -12,6 +12,7 @@ import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
+import com.example.app.jason.ragerelease.app.GameStates.MainMenu;
 
 /**
  * Created by Jason Mottershead on 22/03/2016.

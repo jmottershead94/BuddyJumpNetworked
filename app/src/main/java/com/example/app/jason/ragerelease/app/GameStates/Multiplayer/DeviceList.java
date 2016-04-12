@@ -1,11 +1,8 @@
-package com.example.app.jason.ragerelease.app.GameStates;
+package com.example.app.jason.ragerelease.app.GameStates.Multiplayer;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -108,7 +105,7 @@ public class DeviceList extends NetworkActivity// implements WifiP2pManager.Peer
             selectionScreenActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, playerMatchStatus);
             selectionScreenActivity.putExtra(NetworkConstants.EXTRA_DEVICE_ADDRESS, wifiP2pDevice.deviceAddress);
 
-            DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "You want to connect with: " + deviceName);
+            DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "You are connecting with: " + deviceName);
 
             // Attempt to connect to the device.
             connectToPeer(wifiP2pDevice);
@@ -117,20 +114,6 @@ public class DeviceList extends NetworkActivity// implements WifiP2pManager.Peer
             startActivity(selectionScreenActivity);
 
             //finish();
-        }
-    };
-
-    private BroadcastReceiver wifiBroadcastPeerReceiver = new BroadcastReceiver()
-    {
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            String action = intent.getAction();
-
-            if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action))
-            {
-                //if()
-            }
         }
     };
 }

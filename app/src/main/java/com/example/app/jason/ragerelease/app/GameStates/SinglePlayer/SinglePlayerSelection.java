@@ -1,22 +1,23 @@
 // The package location of this class.
-package com.example.app.jason.ragerelease.app.GameStates;
+package com.example.app.jason.ragerelease.app.GameStates.SinglePlayer;
 
-import android.content.SharedPreferences;
+// All of the extra includes here.
+import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
-import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
+import com.example.app.jason.ragerelease.app.GameStates.MainMenu;
+import com.example.app.jason.ragerelease.app.GameStates.PlayerSelection;
 
 /**
- * Created by Win8 on 11/04/2016.
+ * Created by Jason Mottershead on 11/04/2016.
  */
 
-// Multiplayer selection IS A network activity, therefore inherits from it.
-// This class will allow both players to select their character sprites.
-public class MultiplayerSelection extends NetworkActivity
+// Single player selection IS AN activity, therefore inherits from it.
+// This class will be used to allow the player to select their characters for single player use.
+public class SinglePlayerSelection extends Activity
 {
     // Attributes.
     protected Button companionSelectionButton = null;
@@ -45,22 +46,8 @@ public class MultiplayerSelection extends NetworkActivity
         // If the main menu button has been pressed.
         // Navigate the user back to the main menu.
         button.isPressed(playerSelectionButton, this, PlayerSelection.class);
+        button.isPressed(companionSelectionButton, this, CompanionSelection.class);
         button.isPressed(mainMenuButton, this, MainMenu.class);
-        button.isPressed(playGameButton, this, Game.class);
-
-        // We are using multiplayer, there are no companions.
-        companionSelectionButton.setVisibility(View.GONE);
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
+        button.isPressed(playGameButton, this, SinglePlayerGame.class);
     }
 }

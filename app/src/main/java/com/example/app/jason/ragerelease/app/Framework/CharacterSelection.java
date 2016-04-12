@@ -17,9 +17,8 @@ import android.widget.Toast;
 
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.Network.Internal.AndroidOSHandlers.CameraHandler;
-import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
-import com.example.app.jason.ragerelease.app.GameStates.MultiplayerSelection;
-import com.example.app.jason.ragerelease.app.GameStates.SinglePlayerSelection;
+import com.example.app.jason.ragerelease.app.GameStates.Multiplayer.MultiplayerSelection;
+import com.example.app.jason.ragerelease.app.GameStates.SinglePlayer.SinglePlayerSelection;
 
 /**
  * Created by Jason Mottershead on 17/10/2015.
@@ -160,7 +159,7 @@ public class CharacterSelection extends Activity implements AdapterView.OnItemCl
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState)
     {
-        final CharSequence saveMessage = "Image selection saved.";
+        final CharSequence saveMessage = "Image selection saved: " + currentImageIndex ;
 
         // Save UI changes to the savedInstanceState.
         // This bundle will be passed to onCreate if the process is killed or restarted.
@@ -215,7 +214,7 @@ public class CharacterSelection extends Activity implements AdapterView.OnItemCl
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
-        final CharSequence saveMessage = "Image selection saved.";
+        final CharSequence saveMessage = "Image selection saved: " + currentImageIndex;
 
         if(keyCode == KeyEvent.KEYCODE_BACK)
         {

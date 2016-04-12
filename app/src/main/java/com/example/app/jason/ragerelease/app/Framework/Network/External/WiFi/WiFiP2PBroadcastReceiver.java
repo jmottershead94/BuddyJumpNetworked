@@ -84,8 +84,8 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
         // Otherwise, if the state of WiFi P2P connectivity has changed.
         else if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action))
         {
-            // Respond to new connection or disconnections.
-            //DebugInformation.displayShortToastMessage(currentActivity, "Wifi P2P Connection Changed");
+//            // Respond to new connection or disconnections.
+//            //DebugInformation.displayShortToastMessage(currentActivity, "Wifi P2P Connection Changed");
 
             if (wifiP2pManager == null)
             {
@@ -128,7 +128,6 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
         @Override
         public void onConnectionInfoAvailable(final WifiP2pInfo wifiP2pInfo)
         {
-            //DebugInformation.displayShortToastMessage(currentActivity, "Connection info is available");
             String groupOwnerAddress = wifiP2pInfo.groupOwnerAddress.getHostAddress();
 
             if (playerMatchStatus == NetworkConstants.HOST_ID)
@@ -154,5 +153,11 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
 
     // Getters.
     // Getting our peers.
-    public WifiP2pDeviceList getPeers() { return peers; }
+    public WifiP2pDeviceList getPeers()             { return peers; }
+
+    // Getting our server asynchronous task.
+    public WiFiServerAsyncTask getServerAsyncTask() { return wifiServerAsyncTask; }
+
+    // Getting our client asynchronous task.
+    public WiFiClientAsyncTask getClientAsyncTask() { return wifiClientAsyncTask; }
 }

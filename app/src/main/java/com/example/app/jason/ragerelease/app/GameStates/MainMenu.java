@@ -10,6 +10,8 @@ import android.widget.Button;
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
 import com.example.app.jason.ragerelease.app.Framework.Network.Internal.AndroidOSHandlers.SensorHandler;
+import com.example.app.jason.ragerelease.app.GameStates.Multiplayer.ConnectionSelection;
+import com.example.app.jason.ragerelease.app.GameStates.SinglePlayer.SinglePlayerSelection;
 
 /**
  * Created by Jason Mottershead on 17/10/2015.
@@ -57,8 +59,6 @@ public class MainMenu extends Activity
         button.isPressed(optionsButton, this, Options.class);
         button.isPressed(creditsButton, this, Credits.class);
         button.isPressed(scoresButton, this, HighScores.class);
-
-
     }
 
     //////////////////////////////////////////////////

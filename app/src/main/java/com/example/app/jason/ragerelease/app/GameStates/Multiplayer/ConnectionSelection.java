@@ -1,5 +1,5 @@
 // The package location for this class.
-package com.example.app.jason.ragerelease.app.GameStates;
+package com.example.app.jason.ragerelease.app.GameStates.Multiplayer;
 
 // All of the extra includes here.
 import android.content.Intent;
@@ -13,6 +13,7 @@ import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
 import com.example.app.jason.ragerelease.app.Framework.Network.External.Bluetooth.BluetoothHandler;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
+import com.example.app.jason.ragerelease.app.GameStates.MainMenu;
 
 /**
  * Created by Jason Mottershead on 22/03/2016.
@@ -77,7 +78,7 @@ public class ConnectionSelection extends NetworkActivity implements View.OnClick
     //////////////////////////////////////////////////
     //              On Save Instance State          //
     //==============================================//
-    //  This will save the current game status,     //
+    //  This will save the current singlePlayerGame status,     //
     //  e.g. if we are using multiplayer.           //
     //  This is called if the phone orientation     //
     //  changes, or if for any reason the phone     //
@@ -99,7 +100,7 @@ public class ConnectionSelection extends NetworkActivity implements View.OnClick
     //////////////////////////////////////////////////
     //              On Restore Instance State       //
     //==============================================//
-    //  This will save the current game status,     //
+    //  This will save the current singlePlayerGame status,     //
     //  e.g. if we are using multiplayer.           //
     //  This is called if the phone orientation     //
     //  changes, or if for any reason the phone     //
@@ -191,7 +192,7 @@ public class ConnectionSelection extends NetworkActivity implements View.OnClick
             // If bluetooth has been enabled.
             if(bluetoothHandler.getBluetoothAdapter().isEnabled())
             {
-                // Move to the next game state.
+                // Move to the next singlePlayerGame state.
                 startActivity(matchMakerActivity);
             }
         }

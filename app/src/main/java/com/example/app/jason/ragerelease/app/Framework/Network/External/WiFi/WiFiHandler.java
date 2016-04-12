@@ -65,14 +65,14 @@ public class WiFiHandler
 
     // Getters.
     // This will return our wifi p2p filters.
-    public IntentFilter getWifiP2PFilter()                  { return wifiP2PFilter; }
+    public IntentFilter getWifiP2PFilter()                          { return wifiP2PFilter; }
 
     // This will return our wifi filters.
-    public IntentFilter getWifiFilter()                     { return wifiFilter; }
+    public IntentFilter getWifiFilter()                             { return wifiFilter; }
 
     // This will return a wifi broadcast receiver.
-    public WiFiBroadcastReceiver getWifiBroadcastReceiver() { return wifiBroadcastReceiver; }
+    public WiFiBroadcastReceiver getWifiBroadcastReceiver()         { return wifiBroadcastReceiver; }
 
     // This will return a wifi broadcast receiver.
-    public WiFiP2PBroadcastReceiver getWifiP2PBroadcastReceiver() { return wifiP2PBroadcastReceiver; }
+    public WiFiP2PBroadcastReceiver getWifiP2PBroadcastReceiver()   { return wifiP2PBroadcastReceiver; }
 }

@@ -45,7 +45,7 @@ public class LevelGenerator
     //////////////////////////////////////////////////
     //                  Constructor                 //
     //==============================================//
-    //  This will set up access to common game      //
+    //  This will set up access to common singlePlayerGame      //
     //  properties and access saved options.        //
     //////////////////////////////////////////////////
     public LevelGenerator(final Resources gameResources, Level gameLevel, final int gamePlayerImage, final int gameCompanionImage)
@@ -380,6 +380,6 @@ public class LevelGenerator
     }
 
     // Getters.
-    // This will return our collection of game objects.
+    // This will return our collection of singlePlayerGame objects.
     public Vector<AnimatedSprite> getObjects()  { return objects; }
 }

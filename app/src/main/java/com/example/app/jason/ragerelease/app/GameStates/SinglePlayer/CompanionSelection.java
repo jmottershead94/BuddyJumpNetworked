@@ -1,5 +1,5 @@
 // The package location of this class.
-package com.example.app.jason.ragerelease.app.GameStates;
+package com.example.app.jason.ragerelease.app.GameStates.SinglePlayer;
 
 // All of the extra includes here.
 import android.content.SharedPreferences;

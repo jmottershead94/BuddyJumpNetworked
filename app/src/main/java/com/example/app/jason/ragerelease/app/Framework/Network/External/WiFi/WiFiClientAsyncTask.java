@@ -7,6 +7,8 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Debug;
+import android.os.Handler;
+import android.os.Message;
 
 import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
@@ -27,7 +29,8 @@ import java.net.Socket;
  */
 
 // WiFi client async task IS AN async task, therefore inherits from it.
-public class WiFiClientAsyncTask extends AsyncTask<String, Void, String>
+//public class WiFiClientAsyncTask extends AsyncTask<String, Void, String>
+public class WiFiClientAsyncTask extends Thread
 {
     // Attributes.
     private ProgressDialog progressLoading = null;
@@ -38,6 +41,7 @@ public class WiFiClientAsyncTask extends AsyncTask<String, Void, String>
     private int peerImageIndexInt = 0;
     private static String PREFS_NAME = "MyPrefsFile";                      // Where the options will be saved to, whether they are true or false.
     private static String PLAYER_IMAGE_INDEX_KEY = "mplayerImage";         // The key used to access the player image index.
+    private int clientState = NetworkConstants.STATE_SEND_READY_MESSAGE;
 
     // Methods.
     public WiFiClientAsyncTask(NetworkActivity networkActivity, String connectedDeviceAddress)
@@ -49,40 +53,77 @@ public class WiFiClientAsyncTask extends AsyncTask<String, Void, String>
     }
 
     @Override
-    protected void onPreExecute()
+    public void start()
     {
-        super.onPreExecute();
+        super.start();
 
         progressLoading.setMessage("Loading...");
         progressLoading.show();
+
+        handler.sendEmptyMessage(clientState);
     }
 
     @Override
-    protected String doInBackground(String... params)
+    public void run()
     {
-        try
-        {
-            // Create a client socket with the host, port number and timeout information.
-            socket = new Socket(serverAddress, NetworkConstants.SOCKET_SERVER_PORT);
+        String message = "";
+        String response = "";
 
-            String message = "true";
+        //while(true)
+        //{
+            try
+            {
+                switch (clientState)
+                {
+                    // If we need to send the ready message.
+                    case NetworkConstants.STATE_SEND_READY_MESSAGE:
+                    {
+                        // Create a client socket with the host, port number and timeout information.
+                        socket = new Socket(serverAddress, NetworkConstants.SOCKET_SERVER_PORT);
 
-            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            dataOutputStream.writeUTF(message);
+                        message = String.valueOf(clientState);
 
-            String response = "";
-            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-            response = dataInputStream.readUTF();
+                        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                        dataOutputStream.writeUTF(message);
 
-            //new SendImageMessage().run();
+                        DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+                        response = dataInputStream.readUTF();
+//                    handler.sendEmptyMessage(clientState);
+                        handler.sendEmptyMessage(Integer.parseInt(response));
 
-            // If we arrive here, we have connected to the server.
-            return (response);
-        }
-        catch (IOException e)
-        {
-            return "Not done";
-        }
+                        //new SendImageMessage().run();
+                        //clientState = NetworkConstants.STATE_SEND_IMAGE_MESSAGE;
+
+                        // If we arrive here, we have connected to the server.
+                        //return (response);
+                        break;
+                    }
+                    case NetworkConstants.STATE_SEND_IMAGE_MESSAGE:
+                    {
+                        sendImageThread.start();
+                        handler.sendEmptyMessage(clientState);
+
+                        clientState = NetworkConstants.STATE_SEND_GAME_MESSAGES;
+                        message = String.valueOf(clientState);
+
+                        break;
+                    }
+                    case NetworkConstants.STATE_SEND_GAME_MESSAGES:
+                    {
+                        handler.sendEmptyMessage(clientState);
+
+                        message = String.valueOf(clientState);
+
+                        break;
+                    }
+                }
+            }
+            catch (IOException e)
+            {
+                message = "Not done";
+                //break;
+            }
+        //}
 //        finally
 //        {
 //            if(socket != null)
@@ -102,20 +143,20 @@ public class WiFiClientAsyncTask extends AsyncTask<String, Void, String>
 //        }
     }
 
-    @Override
-    protected void onPostExecute(String result)
-    {
-        // If the peer is ready.
-        if(Boolean.valueOf(result))
-        {
-            // Send over image index message.
-            DebugInformation.displayShortToastMessage(activity, "Peer successfully connected");
-            progressLoading.dismiss();
-
-            //new SendImageMessage().run();
-            //DebugInformation.displayShortToastMessage(activity, "Image index: " + peerImageIndexInt);
-        }
-    }
+//    @Override
+//    protected void onPostExecute(String result)
+//    {
+//        // If the peer is ready.
+//        if(Boolean.valueOf(result))
+//        {
+//            // Send over image index message.
+//            DebugInformation.displayShortToastMessage(activity, "Peer successfully connected");
+//            progressLoading.dismiss();
+//
+//            //new SendImageMessage().run();
+//            //DebugInformation.displayShortToastMessage(activity, "Image index: " + peerImageIndexInt);
+//        }
+//    }
 
     // This class will handle sending over the image index to the other peer.
     public class SendImageMessage extends Thread
@@ -172,4 +213,39 @@ public class WiFiClientAsyncTask extends AsyncTask<String, Void, String>
             }
         }
     }
+
+    private Handler handler = new Handler()
+    {
+        @Override
+        public void handleMessage(Message message)
+        {
+            switch (message.what)
+            {
+                case NetworkConstants.STATE_SEND_READY_MESSAGE:
+                {
+                    DebugInformation.displayShortToastMessage(activity, "SERVER READY MESSAGE");
+                    progressLoading.dismiss();
+                    break;
+                }
+                case NetworkConstants.STATE_SEND_IMAGE_MESSAGE:
+                {
+                    DebugInformation.displayShortToastMessage(activity, "SERVER IMAGE MESSAGE");
+                    progressLoading.dismiss();
+                    break;
+                }
+                case NetworkConstants.STATE_SEND_GAME_MESSAGES:
+                {
+                    DebugInformation.displayShortToastMessage(activity, "SERVER GAME MESSAGES");
+                    progressLoading.dismiss();
+                    break;
+                }
+            }
+        }
+    };
+
+    // Getters.
+    public int getClientState() { return clientState; }
+
+    // Setters.
+    public void setClientState(int value) { clientState = value; }
 }

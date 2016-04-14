@@ -171,14 +171,20 @@ public class MultiplayerGame extends NetworkActivity
         if(playerMatchStatus == NetworkConstants.HOST_ID)
         {
             connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().sendImageThread.setImageIndex(playerImage);
-            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().sendImageThread.start();
+            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().run();
+
+            //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().execute();
+            //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().sendImageThread.start();
 
             DebugInformation.displayShortToastMessage(this, "HOST: sent image thread");
         }
         else if(playerMatchStatus == NetworkConstants.JOIN_ID)
         {
             connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().sendImageThread.setImageIndex(playerImage);
-            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().sendImageThread.start();
+            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().start();
+
+            //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().execute();
+            //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().sendImageThread.start();
 
             DebugInformation.displayShortToastMessage(this, "JOIN: sent image thread");
         }

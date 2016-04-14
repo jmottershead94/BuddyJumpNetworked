@@ -15,4 +15,7 @@ public class NetworkConstants
     // Strings.
     public static final String EXTRA_DEVICE_ADDRESS = "deviceAddress";
     public static final String EXTRA_PLAYER_MATCH_STATUS = "playerMatchStatus";
+    public static final int STATE_SEND_READY_MESSAGE = 2;
+    public static final int STATE_SEND_IMAGE_MESSAGE = STATE_SEND_READY_MESSAGE + 1;
+    public static final int STATE_SEND_GAME_MESSAGES = STATE_SEND_IMAGE_MESSAGE + 1;
 }

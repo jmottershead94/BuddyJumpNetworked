@@ -1,11 +1,13 @@
 // The package location of this class.
 package com.example.app.jason.ragerelease.app.GameStates.Multiplayer;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import com.example.app.jason.ragerelease.R;
+import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
@@ -25,6 +27,8 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
     protected Button companionSelectionButton = null;
     private Button playGameButton = null;
     private int playerMatchStatus = 0;
+    private int playerImage = 0;
+    private static final String PREFS_NAME = "MyPrefsFile";                     // Where the options will be saved to, whether they are true or false.
 
     // Methods.
     //////////////////////////////////////////////////
@@ -40,6 +44,11 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selection_screen);
 
+        // Load in options here...
+        SharedPreferences gameSettings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        //playerImage = gameSettings.getInt("mplayerImage", 0);
+        playerImage = gameSettings.getInt("mplayerImageIndex", 0);
+
         // Initialising variables.
         final Button playerSelectionButton = (Button) findViewById(R.id.playerSelectionButton);
         final Button mainMenuButton = (Button) findViewById(R.id.mainMenuButton);
@@ -52,11 +61,13 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
         // Navigate the user back to the main menu.
         button.isPressed(playerSelectionButton, this, PlayerSelection.class);
         button.isPressed(mainMenuButton, this, MainMenu.class);
-        button.isPressed(playGameButton, this, MultiplayerGame.class);
+        //button.isPressed(playGameButton, this, MultiplayerGame.class);
 
         // We are using multiplayer, there are no companions.
         companionSelectionButton.setVisibility(View.GONE);
-        //playGameButton.setOnClickListener(this);
+        playGameButton.setOnClickListener(this);
+
+        DebugInformation.displayShortToastMessage(this, "Image index: " + playerImage);
     }
 
     @Override
@@ -80,21 +91,29 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
     @Override
     public void onClick(View view)
     {
-//        if(view == playGameButton)
-//        {
-//            Intent gameActivity = new Intent(this, SinglePlayerGame.class);
-//
-//            // Send the current player image index to the other player.
-//            // Start another async task here?
-//            if(playerMatchStatus == NetworkConstants.HOST_ID)
-//            {
-//                //(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().sendImageThread).start();
-//            }
-//            else if(playerMatchStatus ==  NetworkConstants.JOIN_ID)
-//            {
-//                //(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().sendImageThread).start();
-//            }
-//        }
+        if(view == playGameButton)
+        {
+            // gameActivity = new Intent(this, SinglePlayerGame.class);
+
+            // Send the current player image index to the other player.
+            // Start another async task here?3
+            if(playerMatchStatus == NetworkConstants.HOST_ID)
+            {
+                //(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().sendImageThread).start();
+                (connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().sendImageThread).setImageIndex(playerImage);
+                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().setServerState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
+                //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().execute();
+                //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().start();
+            }
+            else if(playerMatchStatus ==  NetworkConstants.JOIN_ID)
+            {
+                //(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().sendImageThread).start();
+                (connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().sendImageThread).setImageIndex(playerImage);
+                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().setClientState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
+                //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().execute();
+                //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().start();
+            }
+        }
     }
 
 //    // This class will handle sending over the image index to the other peer.

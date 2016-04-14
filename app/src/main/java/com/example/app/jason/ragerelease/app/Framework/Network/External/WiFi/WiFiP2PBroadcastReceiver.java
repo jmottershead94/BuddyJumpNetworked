@@ -137,7 +137,8 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
                 //DebugInformation.displayShortToastMessage(currentActivity, "Should start server thread");
 
                 wifiServerAsyncTask = new WiFiServerAsyncTask(currentActivity);
-                wifiServerAsyncTask.execute();
+                //wifiServerAsyncTask.execute();
+                wifiServerAsyncTask.start();
             }
             else if (playerMatchStatus == NetworkConstants.JOIN_ID)
             {
@@ -146,7 +147,8 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
                 //DebugInformation.displayShortToastMessage(currentActivity, "Should start client thread");
 
                 wifiClientAsyncTask = new WiFiClientAsyncTask(currentActivity, groupOwnerAddress);
-                wifiClientAsyncTask.execute();
+                //wifiClientAsyncTask.execute();
+                wifiClientAsyncTask.start();
             }
         }
     };

@@ -35,6 +35,13 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
     private final String peerImageIndexKey = "peerImageKey";        // The key used to store the current peer image index.
     private int peerImage = 0;
     private Integer peerImageIndexInteger = 0;
+    private int[] playerImages =
+    {
+            R.drawable.p1_front, R.drawable.p2_front,
+            R.drawable.p3_front, R.drawable.p4_front,
+            R.drawable.p5_front, R.drawable.p6_front,
+            R.drawable.p7_front, R.drawable.p8_front
+    };
 
     // Methods.
     //////////////////////////////////////////////////
@@ -129,6 +136,21 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
     protected void onPause()
     {
         super.onPause();
+
+        SharedPreferences gameSettings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = gameSettings.edit();
+
+        if(playerMatchStatus == NetworkConstants.HOST_ID)
+        {
+            // Saving the player option status.
+            editor.putInt(peerImageIndexKey, playerImages[connectionApplication.getServerPeerIndexImage()]);
+        }
+        else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+        {
+            editor.putInt(peerImageIndexKey, playerImages[connectionApplication.getClientPeerIndexImage()]);
+        }
+
+        editor.apply();
     }
 
     @Override
@@ -177,12 +199,12 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
                 {
                     if(playerMatchStatus == NetworkConstants.HOST_ID)
                     {
-                        DebugInformation.displayShortToastMessage(activityReference, "Client Image: " + connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().getPeerImageIndexInt());
+                        DebugInformation.displayShortToastMessage(activityReference, "Client Image: " + connectionApplication.getServerPeerIndexImage());
                         //DebugInformation.displayShortToastMessage(activityReference, "Client Image Integer: " + peerImage);
                     }
                     else if(playerMatchStatus == NetworkConstants.JOIN_ID)
                     {
-                        DebugInformation.displayShortToastMessage(activityReference, "Server Image: " + connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().getPeerImageIndexInt());
+                        DebugInformation.displayShortToastMessage(activityReference, "Server Image: " + connectionApplication.getClientPeerIndexImage());
                         //DebugInformation.displayShortToastMessage(activityReference, "Server Image Integer: " + peerImage);
                     }
                 }

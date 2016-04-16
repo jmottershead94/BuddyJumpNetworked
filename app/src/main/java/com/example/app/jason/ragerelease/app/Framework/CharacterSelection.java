@@ -159,7 +159,7 @@ public class CharacterSelection extends Activity implements AdapterView.OnItemCl
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState)
     {
-        final CharSequence saveMessage = "Image selection saved: " + currentImageIndex ;
+        final CharSequence saveMessage = "Image selection saved: " + currentImageIndex;
 
         // Save UI changes to the savedInstanceState.
         // This bundle will be passed to onCreate if the process is killed or restarted.

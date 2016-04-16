@@ -49,6 +49,8 @@ public class LevelGenerator
     private int peerImage = 0;
     private Activity activityReference = null;
     private final String peerImageIndexKey = "peerImageKey";        // The key used to store the current peer image index.
+    private Vector2 hostStartPosition = null;
+    private Vector2 joinStartPosition = null;
 
     // Methods.
     //////////////////////////////////////////////////
@@ -101,8 +103,9 @@ public class LevelGenerator
         objects = new Vector<AnimatedSprite>();             // Initialising the vector of level objects.
         playerMatchStatus = gamePlayerMatchStatus;
         peerImageInteger = gamePeerImage;
-        //peerImage = gamePeerImage;
         activityReference = gameActivity;
+        hostStartPosition = new Vector2(gameResources.getScreenWidth() * 0.45f, gameResources.getScreenHeight() * 0.25f);
+        joinStartPosition = new Vector2(gameResources.getScreenWidth() * 0.15f, gameResources.getScreenHeight() * 0.25f);
 
 //        if(gamePlayerMatchStatus == NetworkConstants.HOST_ID)
 //        {
@@ -126,7 +129,16 @@ public class LevelGenerator
         createGround();
         createStaticBackground();
         createAnimatedBackground();
-        createPlayer(new Vector2(resources.getScreenWidth() * 0.45f, resources.getScreenHeight() * 0.25f), playerImage, ObjectID.CHARACTERONE);
+
+        if(playerMatchStatus == NetworkConstants.HOST_ID)
+        {
+            createPlayer(hostStartPosition, playerImage, ObjectID.CHARACTERONE);
+        }
+        else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+        {
+            createPlayer(joinStartPosition, playerImage, ObjectID.CHARACTERONE);
+        }
+
         createObstacle(new Vector2(resources.getScreenWidth() * 0.95f, resources.getScreenHeight() * 0.5f));
 
         // PROBLEM IS BELOW.
@@ -140,34 +152,15 @@ public class LevelGenerator
         {
             if(playerMatchStatus == NetworkConstants.HOST_ID)
             {
-                activityReference.runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        DebugInformation.displayShortToastMessage(activityReference, "Peer image: " + peerImage);
-                    }
-                });
-
                 // Place this character a little bit further back than our first character.
                 //createPlayer(new Vector2(resources.getScreenWidth() * 0.15f, resources.getScreenHeight() * 0.25f), resources.getConnectionApplication().getServerPeerIndexImage(), ObjectID.CHARACTERTWO);
-                createPlayer(new Vector2(resources.getScreenWidth() * 0.15f, resources.getScreenHeight() * 0.25f), peerImage, ObjectID.CHARACTERTWO);
+                createPlayer(joinStartPosition, peerImage, ObjectID.CHARACTERTWO);
             }
             else if(playerMatchStatus == NetworkConstants.JOIN_ID)
             {
-                activityReference.runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        DebugInformation.displayShortToastMessage(activityReference, "Peer image: " + peerImage);
-                    }
-                });
-
-
                 // Place this character a little bit further back than our first character.
                 //createPlayer(new Vector2(resources.getScreenWidth() * 0.15f, resources.getScreenHeight() * 0.25f), resources.getConnectionApplication().getClientPeerIndexImage(), ObjectID.CHARACTERTWO);
-                createPlayer(new Vector2(resources.getScreenWidth() * 0.15f, resources.getScreenHeight() * 0.25f), peerImage, ObjectID.CHARACTERTWO);
+                createPlayer(hostStartPosition, peerImage, ObjectID.CHARACTERTWO);
             }
         }
 

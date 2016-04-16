@@ -1,8 +1,11 @@
 // The package location of this class.
 package com.example.app.jason.ragerelease.app.GameStates.Multiplayer;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 
@@ -28,7 +31,10 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
     private Button playGameButton = null;
     private int playerMatchStatus = 0;
     private int playerImage = 0;
-    private static final String PREFS_NAME = "MyPrefsFile";                     // Where the options will be saved to, whether they are true or false.
+    private static final String PREFS_NAME = "MyPrefsFile";         // Where the options will be saved to, whether they are true or false.
+    private final String peerImageIndexKey = "peerImageKey";        // The key used to store the current peer image index.
+    private int peerImage = 0;
+    private Integer peerImageIndexInteger = 0;
 
     // Methods.
     //////////////////////////////////////////////////
@@ -70,6 +76,49 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
         DebugInformation.displayShortToastMessage(this, "Image index: " + playerImage);
     }
 
+    //////////////////////////////////////////////////
+    //              On Save Instance State          //
+    //==============================================//
+    //  This will save the current player distance. //
+    //  This is called if the phone orientation     //
+    //  changes, or if for any reason the phone     //
+    //  is forced out of this activity and into     //
+    //  another application (i.e. like a phone      //
+    //  call).                                      //
+    //////////////////////////////////////////////////
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        // Save UI changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is killed or restarted.
+        //savedInstanceState.putInt("mplayerDistance", level.player.distance);
+        //savedInstanceState.putInt("mlevelNumber", level.levelNumber);
+        savedInstanceState.putInt(NetworkConstants.EXTRA_PEER_INDEX, peerImage);
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    //////////////////////////////////////////////////
+    //            On Restore Instance State         //
+    //==============================================//
+    //  This will place the current selected image  //
+    //  index back into the local int attribute.    //
+    //  This will be called once the application    //
+    //  returns to this activity when being         //
+    //  previously forced out of it. From a phone   //
+    //  call or a screen rotation.                  //
+    //////////////////////////////////////////////////
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        // Just in case the application is killed off.
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Once the activity has been restored, place the previous image index into the current one.
+        // So that we have not lost the number for it.
+        peerImage = savedInstanceState.getInt(NetworkConstants.EXTRA_PEER_INDEX);
+    }
+
     @Override
     protected void onResume()
     {
@@ -93,26 +142,65 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
     {
         if(view == playGameButton)
         {
-            // gameActivity = new Intent(this, SinglePlayerGame.class);
+            final Intent gameActivity = new Intent(this, MultiplayerGame.class);
 
-            // Send the current player image index to the other player.
-            // Start another async task here?3
+            // If we are hosting a match.
             if(playerMatchStatus == NetworkConstants.HOST_ID)
             {
-                //(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().sendImageThread).start();
+                // Send the current player image index to the other player via the server.
                 (connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().sendImageThread).setImageIndex(playerImage);
                 connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().setServerState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
-                //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().execute();
-                //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().start();
+                peerImage = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().getPeerImageIndexInt();
+                peerImageIndexInteger = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().getPeerImageIndexInt();
+                gameActivity.putExtra(NetworkConstants.EXTRA_PEER_INDEX, peerImageIndexInteger);
+                gameActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.HOST_ID);
             }
             else if(playerMatchStatus ==  NetworkConstants.JOIN_ID)
             {
-                //(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().sendImageThread).start();
                 (connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().sendImageThread).setImageIndex(playerImage);
                 connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().setClientState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
-                //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().execute();
-                //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().start();
+                peerImage = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().getPeerImageIndexInt();
+                peerImageIndexInteger = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().getPeerImageIndexInt();
+                gameActivity.putExtra(NetworkConstants.EXTRA_PEER_INDEX, peerImageIndexInteger);
+                gameActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.JOIN_ID);
             }
+
+            final Activity activityReference = this;
+
+            // Create a delay.
+            final Handler debugHandler = new Handler();
+            debugHandler.postDelayed(new Runnable()
+            {
+                // After 4 seconds.
+                @Override
+                public void run()
+                {
+                    if(playerMatchStatus == NetworkConstants.HOST_ID)
+                    {
+                        DebugInformation.displayShortToastMessage(activityReference, "Client Image: " + connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().getPeerImageIndexInt());
+                        //DebugInformation.displayShortToastMessage(activityReference, "Client Image Integer: " + peerImage);
+                    }
+                    else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+                    {
+                        DebugInformation.displayShortToastMessage(activityReference, "Server Image: " + connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().getPeerImageIndexInt());
+                        //DebugInformation.displayShortToastMessage(activityReference, "Server Image Integer: " + peerImage);
+                    }
+                }
+            }, 6000);
+
+            // Create a delay.
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable()
+            {
+                // After 6 seconds.
+                @Override
+                public void run()
+                {
+                    startActivity(gameActivity);
+                }
+            }, 10000);
+
+
         }
     }
 

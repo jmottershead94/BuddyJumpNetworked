@@ -5,12 +5,14 @@ package com.example.app.jason.ragerelease.app.GameStates.Multiplayer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Network;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
@@ -38,9 +40,11 @@ public class MultiplayerGame extends NetworkActivity
     // Standard library attributes.
     private static final long desiredFPS = 60;                                  // The desired frame rate for the singlePlayerGame.
     private static final String PREFS_NAME = "MyPrefsFile";                     // Where the options will be saved to, whether they are true or false.
+    private final String peerImageIndexKey = "peerImageKey";                    // The key used to store the current peer image index.
     private int playerImage = 0;                                                // The current player image.
-    private int companionImage = 0;                                             // The current companion image.
+    private int peerImage = 0;                                                  // The current companion image.
     private int playerMatchStatus = 0;
+    private Integer peerImageInteger = 0;
 
     // Android attributes.
     private RelativeLayout background = null;                                   // Gives access to the relative layout background for the singlePlayerGame.
@@ -72,7 +76,7 @@ public class MultiplayerGame extends NetworkActivity
         // Initialise the singlePlayerGame.
         init();
 
-        // Setting the singlePlayerGame thread to run.
+        // Setting the game thread to run.
         gameThread.setRunning(true);
         gameThread.start();
     }
@@ -94,8 +98,30 @@ public class MultiplayerGame extends NetworkActivity
         // This bundle will be passed to onCreate if the process is killed or restarted.
         savedInstanceState.putInt("mplayerDistance", level.player.distance);
         savedInstanceState.putInt("mlevelNumber", level.levelNumber);
+        savedInstanceState.putInt(NetworkConstants.EXTRA_PEER_INDEX, peerImage);
 
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    //////////////////////////////////////////////////
+    //            On Restore Instance State         //
+    //==============================================//
+    //  This will place the current selected image  //
+    //  index back into the local int attribute.    //
+    //  This will be called once the application    //
+    //  returns to this activity when being         //
+    //  previously forced out of it. From a phone   //
+    //  call or a screen rotation.                  //
+    //////////////////////////////////////////////////
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        // Just in case the application is killed off.
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Once the activity has been restored, place the previous image index into the current one.
+        // So that we have not lost the number for it.
+        peerImage = savedInstanceState.getInt(NetworkConstants.EXTRA_PEER_INDEX);
     }
 
     //////////////////////////////////////////////////
@@ -140,8 +166,8 @@ public class MultiplayerGame extends NetworkActivity
     //////////////////////////////////////////////////
     //                   Init                       //
     //==============================================//
-    //  This will initialise the singlePlayerGame, load in      //
-    //  options, set up Box2D, and set up the singlePlayerGame  //
+    //  This will initialise the game, load in      //
+    //  options, set up Box2D, and set up the game  //
     //  thread.                                     //
     //////////////////////////////////////////////////
     private void init()
@@ -149,7 +175,8 @@ public class MultiplayerGame extends NetworkActivity
         // Load in options here...
         SharedPreferences gameSettings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         playerImage = gameSettings.getInt("mplayerImage", 0);
-        playerMatchStatus = gameSettings.getInt(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, 0);
+        //playerMatchStatus = gameSettings.getInt(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, 0);
+        playerMatchStatus = getIntent().getIntExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, 0);
 
         // Setting up the screen dimensions.
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -164,34 +191,41 @@ public class MultiplayerGame extends NetworkActivity
         pauseButton = (Button) findViewById(R.id.pauseButton);
         level = new Level();
         gameThread = new MainThread(this, desiredFPS);
-        resources = new Resources(this, getApplicationContext(), background, displayMetrics.widthPixels, displayMetrics.heightPixels, world);
+        //connectionApplication.getConnectionManagement().setNetworkActivity(this);
+        //resources = new Resources(this, getApplicationContext(), background, displayMetrics.widthPixels, displayMetrics.heightPixels, world);
+        resources = new Resources(this, getApplicationContext(), background, displayMetrics.widthPixels, displayMetrics.heightPixels, world, connectionApplication);
 
         pauseButton.setVisibility(View.GONE);
 
-        if(playerMatchStatus == NetworkConstants.HOST_ID)
-        {
-            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().sendImageThread.setImageIndex(playerImage);
-            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().run();
-
-            //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().execute();
-            //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().sendImageThread.start();
-
-            DebugInformation.displayShortToastMessage(this, "HOST: sent image thread");
-        }
-        else if(playerMatchStatus == NetworkConstants.JOIN_ID)
-        {
-            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().sendImageThread.setImageIndex(playerImage);
-            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().start();
-
-            //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().execute();
-            //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().sendImageThread.start();
-
-            DebugInformation.displayShortToastMessage(this, "JOIN: sent image thread");
-        }
+        //peerImageInteger = getIntent().getIntExtra(NetworkConstants.EXTRA_PEER_INDEX, 0);
 
         // Initialising the level.
         //level.init(resources, this, playerImages[playerImageIndex], enemyImages[enemyImageIndex]);
-        level.init(resources, this, playerImage, companionImage);
+        //level.init(resources, this, playerImage, companionImage);
+
+        if(playerMatchStatus == NetworkConstants.HOST_ID)
+        {
+            peerImageInteger = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().getPeerImageIndexInt();
+
+            //DebugInformation.displayShortToastMessage(this, "Client image index: " + peerImageInteger);
+
+            // Initialise the level.
+            level.init(resources, this, playerImage, playerMatchStatus, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().getPeerImageIndexInt(), this);
+
+            //level.init(resources, this, playerImage, playerMatchStatus, peerImageInteger, this);
+        }
+        else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+        {
+            peerImageInteger = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().getPeerImageIndexInt();
+
+            //DebugInformation.displayShortToastMessage(this, "Server image index: " + peerImageInteger);
+
+            // Initialise the level.
+            level.init(resources, this, playerImage, playerMatchStatus, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().getPeerImageIndexInt(), this);
+
+            //level.init(resources, this, playerImage, playerMatchStatus, peerImageInteger, this);
+        }
+
     }
 
     //////////////////////////////////////////////////
@@ -220,7 +254,7 @@ public class MultiplayerGame extends NetworkActivity
             level.update(dt);
         }
 
-        // If the singlePlayerGame is paused, the player should be able to unpause the singlePlayerGame.
+        // If the game is paused, the player should be able to unpause the singlePlayerGame.
         // They can still control the pause menu even if the singlePlayerGame is paused.
         level.player.uiControls(pauseButton);
     }

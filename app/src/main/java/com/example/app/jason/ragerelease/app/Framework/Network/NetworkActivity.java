@@ -135,4 +135,8 @@ public class NetworkActivity extends Activity
             DebugInformation.displayShortToastMessage(this, "Peer name: " + peerNames.getItem(i));
         }
     }
+
+    // Getters.
+    // This will return our current instance of connection application.
+    public ConnectionApplication getConnectionApplication() { return connectionApplication; }
 }

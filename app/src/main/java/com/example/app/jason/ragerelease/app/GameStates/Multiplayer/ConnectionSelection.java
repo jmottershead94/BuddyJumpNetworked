@@ -78,7 +78,7 @@ public class ConnectionSelection extends NetworkActivity implements View.OnClick
     //////////////////////////////////////////////////
     //              On Save Instance State          //
     //==============================================//
-    //  This will save the current singlePlayerGame status,     //
+    //  This will save the current game status,     //
     //  e.g. if we are using multiplayer.           //
     //  This is called if the phone orientation     //
     //  changes, or if for any reason the phone     //

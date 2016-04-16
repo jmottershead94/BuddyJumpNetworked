@@ -30,4 +30,8 @@ public class ConnectionManagement
 
     // This will return our current network activity.
     public NetworkActivity getNetworkActivity() { return currentActivity; }
+
+    // Setters.
+    // This will set our new network activity.
+    public void setNetworkActivity(NetworkActivity activity) { currentActivity = activity; }
 }

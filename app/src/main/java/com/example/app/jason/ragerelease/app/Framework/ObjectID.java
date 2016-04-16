@@ -21,5 +21,5 @@ public class ObjectID
     public static final int ANIMATEDSPRITE = SPRITE + 1;        // The ID number for an animated sprite.
     public static final int OBSTACLE = ANIMATEDSPRITE + 1;      // The ID number for the obstacles.
     public static final int PLAYERONE = OBSTACLE + 1;           // The ID number for the players.
-    public static final int PLAYERTWQ = PLAYERONE + 1;
+    public static final int PLAYERTWO = PLAYERONE + 1;
 }

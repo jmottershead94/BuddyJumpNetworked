@@ -2,13 +2,17 @@
 package com.example.app.jason.ragerelease.app.Framework;
 
 // All of the extra includes here.
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
+import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Network.Internal.AndroidOSHandlers.CameraHandler;
 import com.example.app.jason.ragerelease.app.Framework.Graphics.AnimatedSprite;
 import com.example.app.jason.ragerelease.app.Framework.Maths.Vector2;
 import com.example.app.jason.ragerelease.R;
+import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
+import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
 import com.example.app.jason.ragerelease.app.Framework.Physics.DynamicBody;
 import com.example.app.jason.ragerelease.app.Framework.Physics.StaticBody;
 
@@ -40,12 +44,16 @@ public class LevelGenerator
     private boolean optionOneChecked = false;
     private boolean morningSky = false, afternoonSky = false, nightSky = false;
     private ScheduledFuture<?> respawner = null;
+    private int playerMatchStatus = 0;
+    private Integer peerImageInteger = 0;
+    private int peerImage = 0;
+    private Activity activityReference = null;
 
     // Methods.
     //////////////////////////////////////////////////
     //                  Constructor                 //
     //==============================================//
-    //  This will set up access to common singlePlayerGame      //
+    //  This will set up access to common game      //
     //  properties and access saved options.        //
     //////////////////////////////////////////////////
     public LevelGenerator(final Resources gameResources, Level gameLevel, final int gamePlayerImage, final int gameCompanionImage)
@@ -60,11 +68,48 @@ public class LevelGenerator
 
         // Load in options here...
         // Accessing saved options.
-        SharedPreferences gameSettings = resources.getActivity().getSharedPreferences(PREFS_NAME, resources.getActivity().MODE_PRIVATE);
+        SharedPreferences gameSettings = resources.getNetworkActivity().getSharedPreferences(PREFS_NAME, resources.getActivity().MODE_PRIVATE);
         optionOneChecked = gameSettings.getBoolean("moptionOneCheckedStatus", false);
         morningSky = gameSettings.getBoolean("mmorningSky", false);
         afternoonSky = gameSettings.getBoolean("mafternoonSky", false);
         nightSky = gameSettings.getBoolean("mnightSky", false);
+    }
+
+    //////////////////////////////////////////////////
+    //                  Constructor                 //
+    //==============================================//
+    //  This will set up access to common game      //
+    //  properties and access saved options.        //
+    //////////////////////////////////////////////////
+    public LevelGenerator(final Resources gameResources, Level gameLevel, final int gamePlayerImage, final int gamePlayerMatchStatus, final int gamePeerImage, final Activity gameActivity)
+    {
+        // Load in options here...
+        // Accessing saved options.
+        SharedPreferences gameSettings = gameActivity.getSharedPreferences(PREFS_NAME, gameActivity.MODE_PRIVATE);
+        optionOneChecked = gameSettings.getBoolean("moptionOneCheckedStatus", false);
+        morningSky = gameSettings.getBoolean("mmorningSky", false);
+        afternoonSky = gameSettings.getBoolean("mafternoonSky", false);
+        nightSky = gameSettings.getBoolean("mnightSky", false);
+
+        // Setting the local level parameters.
+        resources = gameResources;
+        playerImage = gamePlayerImage;
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        level = gameLevel;
+        objects = new Vector<AnimatedSprite>();             // Initialising the vector of level objects.
+        playerMatchStatus = gamePlayerMatchStatus;
+        peerImageInteger = gamePeerImage;
+        peerImage = gamePeerImage;
+        activityReference = gameActivity;
+
+//        if(gamePlayerMatchStatus == NetworkConstants.HOST_ID)
+//        {
+//
+//        }
+//        else if(gamePlayerMatchStatus == NetworkConstants.JOIN_ID)
+//        {
+//
+//        }
     }
 
     //////////////////////////////////////////////////
@@ -82,11 +127,25 @@ public class LevelGenerator
         createPlayer(new Vector2(resources.getScreenWidth() * 0.45f, resources.getScreenHeight() * 0.25f), playerImage, ObjectID.CHARACTERONE);
         createObstacle(new Vector2(resources.getScreenWidth() * 0.95f, resources.getScreenHeight() * 0.5f));
 
+        // PROBLEM IS BELOW.
+        // Crashes with more than 1 character.
+
+        // Create player.
+        // Might be the image index being passed in?
+
         // If there should be more than one player character.
         if(numberOfCharacters > 1)
         {
-            // Place this character a little bit further back than our first character.
-            createPlayer(new Vector2(resources.getScreenWidth() * 0.15f, resources.getScreenHeight() * 0.25f), companionImage, ObjectID.CHARACTERTWO);
+            if(playerMatchStatus == NetworkConstants.HOST_ID)
+            {
+                // Place this character a little bit further back than our first character.
+                createPlayer(new Vector2(resources.getScreenWidth() * 0.15f, resources.getScreenHeight() * 0.25f), resources.getConnectionApplication().getServerPeerIndexImage(), ObjectID.CHARACTERTWO);
+            }
+            else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+            {
+                // Place this character a little bit further back than our first character.
+                createPlayer(new Vector2(resources.getScreenWidth() * 0.15f, resources.getScreenHeight() * 0.25f), resources.getConnectionApplication().getClientPeerIndexImage(), ObjectID.CHARACTERTWO);
+            }
         }
 
         // If there should be more than one obstacle.
@@ -242,6 +301,11 @@ public class LevelGenerator
             sprite.loadTexture(R.drawable.p8_spritesheet);
             sprite.setTexture(new Vector2(0.0f, 0.0f), new Vector2(textureWidth, textureHeight));
         }
+        else
+        {
+            sprite.loadTexture(R.drawable.p1_spritesheet);
+            sprite.setTexture(new Vector2(0.0f, 0.0f), new Vector2(textureWidth, textureHeight));
+        }
     }
 
     //////////////////////////////////////////////////
@@ -252,7 +316,7 @@ public class LevelGenerator
     //////////////////////////////////////////////////
     private void setImage(final AnimatedSprite object)
     {
-        resources.getActivity().runOnUiThread(new Runnable()
+        resources.getNetworkActivity().runOnUiThread(new Runnable()
         {
             @Override
             public void run()
@@ -280,6 +344,9 @@ public class LevelGenerator
     private void createPlayer(Vector2 position, int image, final int id)
     {
         DynamicBody player = new DynamicBody(resources, id);
+        //int imageIndex = new int(image);
+        //String imageIndexString = String.valueOf(image);
+        //int imageIndex = Integer.parseInt(imageIndexString);
 
         // Used with camera code.
         if(optionOneChecked)
@@ -291,11 +358,49 @@ public class LevelGenerator
         else
         {
             player.bodyInit(position, new Vector2(resources.getScreenWidth() * 0.125f, resources.getScreenWidth() * 0.125f), 0.0f);
+
+//            activityReference.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    DebugInformation.displayShortToastMessage(activityReference, "Body initialised.");
+//                }
+//            });
+
+            // Image int that is passed in is not correct?
+            // Don't know what else to try?
+            // Try passing in 0/1.. etc.
+            // HAVE TEA.
+
             setSprite(image, player);
+            //setSprite(imageIndex, player);
+
+//            activityReference.runOnUiThread(new Runnable()
+//            {
+//                @Override
+//                public void run()
+//                {
+//                    DebugInformation.displayShortToastMessage(activityReference, "Sprite set.");
+//                }
+//            });
+
             player.setAnimationFrames(6);
+
+//            activityReference.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    DebugInformation.displayShortToastMessage(activityReference, "Animation frame set.");
+//                }
+//            });
         }
 
         objects.add(player);
+
+//        activityReference.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                DebugInformation.displayShortToastMessage(activityReference, "Added to vector.");
+//            }
+//        });
     }
 
     //////////////////////////////////////////////////

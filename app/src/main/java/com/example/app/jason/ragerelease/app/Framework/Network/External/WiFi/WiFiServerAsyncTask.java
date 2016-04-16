@@ -254,7 +254,11 @@ public class WiFiServerAsyncTask extends Thread
     };
 
     // Getters.
-    public int getServerState() { return serverState; }
+    // Get the current server state.
+    public int getServerState()         { return serverState; }
+
+    // Get the current peer image.
+    public int getPeerImageIndexInt()   { return peerImageIndexInt; }
 
     // Setters.
     public void setServerState(int value)

@@ -4,7 +4,11 @@ package com.example.app.jason.ragerelease.app.Framework;
 // All of the extra includes here.
 import android.app.Activity;
 import android.content.Context;
+import android.net.Network;
 import android.widget.RelativeLayout;
+
+import com.example.app.jason.ragerelease.app.Framework.Network.ConnectionApplication;
+import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 
 import org.jbox2d.dynamics.World;
 
@@ -20,11 +24,13 @@ public class Resources
     // Attributes.
     // Private.
     private Activity activity = null;
+    private NetworkActivity networkActivity = null;
     private Context context = null;
     private RelativeLayout background = null;
     private int screenWidth = 0;
     private int screenHeight = 0;
     private World world;
+    private ConnectionApplication connectionApplication = null;
 
     // Methods.
     //////////////////////////////////////////////////
@@ -48,26 +54,44 @@ public class Resources
         world = gameWorld;
     }
 
+    public Resources(final NetworkActivity gameActivity, final Context gameContext, final RelativeLayout gameBackground, final int gameScreenWidth, final int gameScreenHeight, final World gameWorld, final ConnectionApplication gameConnectionApplication)
+    {
+        networkActivity = gameActivity;
+        activity = gameActivity;
+        context = gameContext;
+        background = gameBackground;
+        screenWidth = gameScreenWidth;
+        screenHeight = gameScreenHeight;
+        world = gameWorld;
+        connectionApplication = gameConnectionApplication;
+    }
+
     // Setters.
     // This will set the current background being used by us.
     public void setBackground(final RelativeLayout gameBackground) { background = gameBackground; }
 
     // Getters.
     // This will return the current game activity.
-    public Activity getActivity()       { return activity; }
+    public Activity getActivity()               { return activity; }
+
+    // This will return our network activity.
+    public NetworkActivity getNetworkActivity() { return networkActivity; }
 
     // This function will return the game context.
-    public Context getContext()             { return context; }
+    public Context getContext()                 { return context; }
 
     // This function will return the current background that we are working with.
-    public RelativeLayout getBackground()   { return background; }
+    public RelativeLayout getBackground()       { return background; }
 
     // This function will return the device screen width.
-    public int getScreenWidth()             { return screenWidth; }
+    public int getScreenWidth()                 { return screenWidth; }
 
     // This function will return the device screen height.
-    public int getScreenHeight()            { return screenHeight; }
+    public int getScreenHeight()                { return screenHeight; }
 
     // This function will return the current Box2D world we are using.
-    public World getWorld() { return world; }
+    public World getWorld()                     { return world; }
+
+    // This will return our current connected application.
+    public ConnectionApplication getConnectionApplication() { return connectionApplication; }
 }

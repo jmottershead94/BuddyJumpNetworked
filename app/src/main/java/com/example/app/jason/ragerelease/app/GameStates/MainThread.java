@@ -39,6 +39,7 @@ public class MainThread extends Thread
         // Initialising local attributes.
         singlePlayerGameView = singlePlayerGame;
         FPS = desiredFPS;
+        multiplayerStatus = false;
     }
 
     //////////////////////////////////////////////////
@@ -84,7 +85,7 @@ public class MainThread extends Thread
         {
             loops = 0;
 
-            // While the current time is greater than the next singlePlayerGame frame/tick.
+            // While the current time is greater than the next game frame/tick.
             // AND the number of loops is less than the maximum number of frames skipped.
             while ((System.currentTimeMillis() > nextGameTick) && (loops < maxFrameSkip))
             {

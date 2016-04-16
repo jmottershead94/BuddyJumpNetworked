@@ -95,28 +95,11 @@ public class WiFiServerAsyncTask extends Thread
                     }
                     case NetworkConstants.STATE_SEND_IMAGE_MESSAGE:
                     {
-                        // Send the image message.
-                        sendImageThread.start();
-                        handler.sendEmptyMessage(serverState);
-
-                        //serverState = NetworkConstants.STATE_SEND_GAME_MESSAGES;
-                        message = String.valueOf(serverState);
-
                         break;
-                        //return;
-                        //return message;
                     }
                     case NetworkConstants.STATE_SEND_GAME_MESSAGES:
                     {
-                        handler.sendEmptyMessage(serverState);
-
-                        message = String.valueOf(serverState);
-
-                        // while loop here.
-                        // constantly send player input.
                         break;
-
-                        //return message;
                     }
                 }
 
@@ -188,15 +171,15 @@ public class WiFiServerAsyncTask extends Thread
                 final int playerImage = playerImageIndex;
                 final String imageIndexMessage = String.valueOf(playerImage);
 
-                activity.runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        DebugInformation.displayShortToastMessage(activity, "Int image index: " + playerImage);
-                        DebugInformation.displayShortToastMessage(activity, "String image index: " + imageIndexMessage);
-                    }
-                });
+//                activity.runOnUiThread(new Runnable()
+//                {
+//                    @Override
+//                    public void run()
+//                    {
+//                        DebugInformation.displayShortToastMessage(activity, "Int image index: " + playerImage);
+//                        DebugInformation.displayShortToastMessage(activity, "String image index: " + imageIndexMessage);
+//                    }
+//                });
 
                 DataOutputStream dataOutputStream = new DataOutputStream(client.getOutputStream());
                 dataOutputStream.writeUTF(imageIndexMessage);
@@ -212,7 +195,7 @@ public class WiFiServerAsyncTask extends Thread
                         @Override
                         public void run()
                         {
-                            DebugInformation.displayShortToastMessage(activity, "Image index: " + peerImageIndexInt);
+                            DebugInformation.displayShortToastMessage(activity, "Client image index: " + peerImageIndexInt);
                         }
                     });
                 }
@@ -243,7 +226,20 @@ public class WiFiServerAsyncTask extends Thread
                 }
                 case NetworkConstants.STATE_SEND_IMAGE_MESSAGE:
                 {
-                    DebugInformation.displayShortToastMessage(activity, "CLIENT IMAGE MESSAGE");
+                    // We are about to send over the image index.
+                    progressLoading.setMessage("Sending image over...");
+                    progressLoading.show();
+                    //DebugInformation.displayShortToastMessage(activity, "Sending image.");
+
+                    // Start the thread to send the image index.
+                    sendImageThread.start();
+
+                    // Switch the state for the client to the next state.
+                    serverState = NetworkConstants.STATE_SEND_GAME_MESSAGES;
+                    String clientMessage = String.valueOf(serverState);
+
+                    // We have received our server image here.
+                    DebugInformation.displayShortToastMessage(activity, "Image received from client");
                     progressLoading.dismiss();
                     break;
                 }
@@ -261,5 +257,9 @@ public class WiFiServerAsyncTask extends Thread
     public int getServerState() { return serverState; }
 
     // Setters.
-    public void setServerState(int value) { serverState = value; }
+    public void setServerState(int value)
+    {
+        serverState = value;
+        handler.sendEmptyMessage(value);
+    }
 }

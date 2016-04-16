@@ -178,15 +178,15 @@ public class WiFiClientAsyncTask extends Thread
                 final int playerImage = playerImageIndex;
                 final String imageIndexMessage = String.valueOf(playerImage);
 
-                activity.runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        DebugInformation.displayShortToastMessage(activity, "Int image index: " + playerImage);
-                        DebugInformation.displayShortToastMessage(activity, "String image index: " + imageIndexMessage);
-                    }
-                });
+//                activity.runOnUiThread(new Runnable()
+//                {
+//                    @Override
+//                    public void run()
+//                    {
+//                        DebugInformation.displayShortToastMessage(activity, "Int image index: " + playerImage);
+//                        DebugInformation.displayShortToastMessage(activity, "String image index: " + imageIndexMessage);
+//                    }
+//                });
 
                 DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 dataOutputStream.writeUTF(imageIndexMessage);
@@ -202,7 +202,7 @@ public class WiFiClientAsyncTask extends Thread
                         @Override
                         public void run()
                         {
-                            DebugInformation.displayShortToastMessage(activity, "Image index: " + peerImageIndexInt);
+                            DebugInformation.displayShortToastMessage(activity, "Server Image index: " + peerImageIndexInt);
                         }
                     });
                 }
@@ -229,7 +229,20 @@ public class WiFiClientAsyncTask extends Thread
                 }
                 case NetworkConstants.STATE_SEND_IMAGE_MESSAGE:
                 {
-                    DebugInformation.displayShortToastMessage(activity, "SERVER IMAGE MESSAGE");
+                    // We are about to send over the image index.
+                    progressLoading.setMessage("Sending image over...");
+                    progressLoading.show();
+                    //DebugInformation.displayShortToastMessage(activity, "Sending image.");
+
+                    // Start the thread to send the image index.
+                    sendImageThread.start();
+
+                    // Switch the state for the client to the next state.
+                    clientState = NetworkConstants.STATE_SEND_GAME_MESSAGES;
+                    String clientMessage = String.valueOf(clientState);
+
+                    // We have received our server image here.
+                    DebugInformation.displayShortToastMessage(activity, "Image received from server");
                     progressLoading.dismiss();
                     break;
                 }
@@ -247,5 +260,9 @@ public class WiFiClientAsyncTask extends Thread
     public int getClientState() { return clientState; }
 
     // Setters.
-    public void setClientState(int value) { clientState = value; }
+    public void setClientState(int value)
+    {
+        clientState = value;
+        handler.sendEmptyMessage(value);
+    }
 }

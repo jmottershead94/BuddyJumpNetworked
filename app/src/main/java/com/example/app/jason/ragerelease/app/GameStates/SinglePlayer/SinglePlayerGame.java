@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.app.jason.ragerelease.R;
+import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.ImageAdapter;
 import com.example.app.jason.ragerelease.app.Framework.Level;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
@@ -144,8 +145,8 @@ public class SinglePlayerGame extends Activity
     //////////////////////////////////////////////////
     //                   Init                       //
     //==============================================//
-    //  This will initialise the singlePlayerGame, load in      //
-    //  options, set up Box2D, and set up the singlePlayerGame  //
+    //  This will initialise the game, load in      //
+    //  options, set up Box2D, and set up the game  //
     //  thread.                                     //
     //////////////////////////////////////////////////
     private void init()
@@ -154,6 +155,8 @@ public class SinglePlayerGame extends Activity
         SharedPreferences gameSettings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         playerImage = gameSettings.getInt("mplayerImage", 0);
         companionImage = gameSettings.getInt("mcompanionImage", 0);
+
+        DebugInformation.displayShortToastMessage(this, "Player Image: " + playerImage);
 
         // Setting up the screen dimensions.
         DisplayMetrics displayMetrics = new DisplayMetrics();

@@ -3,11 +3,13 @@ package com.example.app.jason.ragerelease.app.GameStates.SinglePlayer;
 
 // All of the extra includes here.
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
+import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
 import com.example.app.jason.ragerelease.app.GameStates.MainMenu;
 import com.example.app.jason.ragerelease.app.GameStates.PlayerSelection;
 
@@ -21,6 +23,14 @@ public class SinglePlayerSelection extends Activity
 {
     // Attributes.
     protected Button companionSelectionButton = null;
+    private static final String PREFS_NAME = "MyPrefsFile";         // Where the options will be saved to, whether they are true or false.
+    private int[] playerImages =
+    {
+            R.drawable.p1_front, R.drawable.p2_front,
+            R.drawable.p3_front, R.drawable.p4_front,
+            R.drawable.p5_front, R.drawable.p6_front,
+            R.drawable.p7_front, R.drawable.p8_front
+    };
 
     // Methods.
     //////////////////////////////////////////////////
@@ -49,5 +59,19 @@ public class SinglePlayerSelection extends Activity
         button.isPressed(companionSelectionButton, this, CompanionSelection.class);
         button.isPressed(mainMenuButton, this, MainMenu.class);
         button.isPressed(playGameButton, this, SinglePlayerGame.class);
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+
+        SharedPreferences gameSettings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = gameSettings.edit();
+
+        // Saving the player option status.
+        editor.putInt("mplayerImage", playerImages[gameSettings.getInt("mplayerImageIndex", 0)]);
+
+        editor.apply();
     }
 }

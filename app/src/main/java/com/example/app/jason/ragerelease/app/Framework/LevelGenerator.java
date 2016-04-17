@@ -51,6 +51,7 @@ public class LevelGenerator
     private final String peerImageIndexKey = "peerImageKey";        // The key used to store the current peer image index.
     private Vector2 hostStartPosition = null;
     private Vector2 joinStartPosition = null;
+    private boolean multiplayerStatus = false;
 
     // Methods.
     //////////////////////////////////////////////////
@@ -68,14 +69,19 @@ public class LevelGenerator
         scheduler = Executors.newSingleThreadScheduledExecutor();
         level = gameLevel;
         objects = new Vector<AnimatedSprite>();             // Initialising the vector of level objects.
+        multiplayerStatus = false;
 
         // Load in options here...
         // Accessing saved options.
-        SharedPreferences gameSettings = resources.getNetworkActivity().getSharedPreferences(PREFS_NAME, resources.getActivity().MODE_PRIVATE);
+        SharedPreferences gameSettings = resources.getActivity().getSharedPreferences(PREFS_NAME, resources.getActivity().MODE_PRIVATE);
         optionOneChecked = gameSettings.getBoolean("moptionOneCheckedStatus", false);
         morningSky = gameSettings.getBoolean("mmorningSky", false);
         afternoonSky = gameSettings.getBoolean("mafternoonSky", false);
         nightSky = gameSettings.getBoolean("mnightSky", false);
+        //playerImage = gameSettings.getInt("mplayerImage", 0);
+
+        hostStartPosition = new Vector2(gameResources.getScreenWidth() * 0.45f, gameResources.getScreenHeight() * 0.25f);
+        joinStartPosition = new Vector2(gameResources.getScreenWidth() * 0.15f, gameResources.getScreenHeight() * 0.25f);
     }
 
     //////////////////////////////////////////////////
@@ -106,15 +112,7 @@ public class LevelGenerator
         activityReference = gameActivity;
         hostStartPosition = new Vector2(gameResources.getScreenWidth() * 0.45f, gameResources.getScreenHeight() * 0.25f);
         joinStartPosition = new Vector2(gameResources.getScreenWidth() * 0.15f, gameResources.getScreenHeight() * 0.25f);
-
-//        if(gamePlayerMatchStatus == NetworkConstants.HOST_ID)
-//        {
-//
-//        }
-//        else if(gamePlayerMatchStatus == NetworkConstants.JOIN_ID)
-//        {
-//
-//        }
+        multiplayerStatus = true;
     }
 
     //////////////////////////////////////////////////
@@ -130,37 +128,45 @@ public class LevelGenerator
         createStaticBackground();
         createAnimatedBackground();
 
-        if(playerMatchStatus == NetworkConstants.HOST_ID)
+        if(multiplayerStatus)
+        {
+            if (playerMatchStatus == NetworkConstants.HOST_ID)
+            {
+                createPlayer(hostStartPosition, playerImage, ObjectID.CHARACTERONE);
+            }
+            else if (playerMatchStatus == NetworkConstants.JOIN_ID)
+            {
+                createPlayer(joinStartPosition, playerImage, ObjectID.CHARACTERONE);
+            }
+        }
+        else
         {
             createPlayer(hostStartPosition, playerImage, ObjectID.CHARACTERONE);
-        }
-        else if(playerMatchStatus == NetworkConstants.JOIN_ID)
-        {
-            createPlayer(joinStartPosition, playerImage, ObjectID.CHARACTERONE);
         }
 
         createObstacle(new Vector2(resources.getScreenWidth() * 0.95f, resources.getScreenHeight() * 0.5f));
 
-        // PROBLEM IS BELOW.
-        // Crashes with more than 1 character.
-
-        // Create player.
-        // Might be the image index being passed in?
-
         // If there should be more than one player character.
         if(numberOfCharacters > 1)
         {
-            if(playerMatchStatus == NetworkConstants.HOST_ID)
+            if(multiplayerStatus)
             {
-                // Place this character a little bit further back than our first character.
-                //createPlayer(new Vector2(resources.getScreenWidth() * 0.15f, resources.getScreenHeight() * 0.25f), resources.getConnectionApplication().getServerPeerIndexImage(), ObjectID.CHARACTERTWO);
-                createPlayer(joinStartPosition, peerImage, ObjectID.CHARACTERTWO);
+                // If the player is hosting the game.
+                if (playerMatchStatus == NetworkConstants.HOST_ID)
+                {
+                    // Place this character a little bit further back than our first character.
+                    createPlayer(joinStartPosition, peerImage, ObjectID.CHARACTERTWO);
+                }
+                // Otherwise, the player is joining the game.
+                else if (playerMatchStatus == NetworkConstants.JOIN_ID)
+                {
+                    // Place this character a little bit further back than our first character.
+                    createPlayer(hostStartPosition, peerImage, ObjectID.CHARACTERTWO);
+                }
             }
-            else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+            else
             {
-                // Place this character a little bit further back than our first character.
-                //createPlayer(new Vector2(resources.getScreenWidth() * 0.15f, resources.getScreenHeight() * 0.25f), resources.getConnectionApplication().getClientPeerIndexImage(), ObjectID.CHARACTERTWO);
-                createPlayer(hostStartPosition, peerImage, ObjectID.CHARACTERTWO);
+                createPlayer(hostStartPosition, companionImage, ObjectID.CHARACTERTWO);
             }
         }
 
@@ -374,39 +380,8 @@ public class LevelGenerator
         else
         {
             player.bodyInit(position, new Vector2(resources.getScreenWidth() * 0.125f, resources.getScreenWidth() * 0.125f), 0.0f);
-
-//            activityReference.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    DebugInformation.displayShortToastMessage(activityReference, "Body initialised.");
-//                }
-//            });
-
-            // Image int that is passed in is not correct?
-            // Don't know what else to try?
-            // Try passing in 0/1.. etc.
-            // HAVE TEA.
-
             setSprite(image, player);
-            //setSprite(imageIndex, player);
-
-//            activityReference.runOnUiThread(new Runnable()
-//            {
-//                @Override
-//                public void run()
-//                {
-//                    DebugInformation.displayShortToastMessage(activityReference, "Sprite set.");
-//                }
-//            });
-
             player.setAnimationFrames(6);
-
-//            activityReference.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    DebugInformation.displayShortToastMessage(activityReference, "Animation frame set.");
-//                }
-//            });
         }
 
         objects.add(player);

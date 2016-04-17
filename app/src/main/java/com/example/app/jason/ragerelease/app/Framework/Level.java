@@ -217,21 +217,24 @@ public class Level implements View.OnTouchListener
                 {
                     for (AnimatedSprite object : getLevelObjects())
                     {
-                        if ((object.getID() == ObjectID.CHARACTERONE) || (object.getID() == ObjectID.CHARACTERTWO))
+                        if(multiplayerStatus)
                         {
-                            if (touchCollisionTest(object))
+                            if ((object.getID() == ObjectID.CHARACTERONE))
                             {
-                                player.tap = true;
-
-                                if (!object.isUsingCameraImage())
+                                if (touchCollisionTest(object))
                                 {
-                                    // Change to a jumping animation.
-                                    object.changeTexture(new Vector2((5.0f / 7.0f), (1.0f / 3.0f)));
-                                    object.setAnimationFrames(2);
+                                    tappedResponse(object);
                                 }
-
-                                // Make the object jump.
-                                object.getBody().applyLinearImpulse(new Vec2(0.0f, 4.0f), object.getBody().getWorldCenter());
+                            }
+                        }
+                        else
+                        {
+                            if ((object.getID() == ObjectID.CHARACTERONE) || (object.getID() == ObjectID.CHARACTERTWO))
+                            {
+                                if (touchCollisionTest(object))
+                                {
+                                    tappedResponse(object);
+                                }
                             }
                         }
                     }
@@ -280,6 +283,21 @@ public class Level implements View.OnTouchListener
         }
 
         return true;
+    }
+
+    private void tappedResponse(AnimatedSprite object)
+    {
+        player.tap = true;
+
+        if (!object.isUsingCameraImage())
+        {
+            // Change to a jumping animation.
+            object.changeTexture(new Vector2((5.0f / 7.0f), (1.0f / 3.0f)));
+            object.setAnimationFrames(2);
+        }
+
+        // Make the object jump.
+        object.getBody().applyLinearImpulse(new Vec2(0.0f, 4.0f), object.getBody().getWorldCenter());
     }
 
     //////////////////////////////////////////////////
@@ -441,11 +459,15 @@ public class Level implements View.OnTouchListener
                     // Make sure that the new level objects are added to the background on the correct thread.
                     activityReference.runOnUiThread(new Runnable() {
                         @Override
-                        public void run() {
-                            if (!player.isGameOver()) {
+                        public void run()
+                        {
+                            if (!player.isGameOver())
+                            {
                                 // Update the player score.
                                 player.distanceText.setText("Distance: " + player.distance);
-                            } else {
+                            }
+                            else
+                            {
                                 distanceIncrementer.cancel(true);
                             }
                         }

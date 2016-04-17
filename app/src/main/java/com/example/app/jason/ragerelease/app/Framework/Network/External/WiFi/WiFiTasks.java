@@ -150,6 +150,18 @@ public class WiFiTasks extends Thread
                     final boolean playerTapped = tapped;
                     final String tappedMessage = String.valueOf(playerTapped);
 
+                    if(playerTapped)
+                    {
+                        activity.runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                DebugInformation.displayShortToastMessage(activity, "Player has tapped");
+                            }
+                        });
+                    }
+
                     DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
                     dataOutputStream.writeUTF(tappedMessage);
 
@@ -157,7 +169,28 @@ public class WiFiTasks extends Thread
                     {
                         DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
                         String peerTappedMessage = dataInputStream.readUTF();
-                        peerTapped = Boolean.valueOf(peerTappedMessage);
+                        peerTapped = Boolean.parseBoolean(peerTappedMessage);
+
+//                        activity.runOnUiThread(new Runnable()
+//                        {
+//                            @Override
+//                            public void run()
+//                            {
+//                                DebugInformation.displayShortToastMessage(activity, "Peer tapped: " + peerTapped);
+//                            }
+//                        });
+
+                        if(peerTapped)
+                        {
+                            activity.runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    DebugInformation.displayShortToastMessage(activity, "Peer has tapped: " + peerTapped);
+                                }
+                            });
+                        }
                     }
                 }
 

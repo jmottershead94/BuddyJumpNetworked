@@ -3,6 +3,7 @@ package com.example.app.jason.ragerelease.app.Framework;
 
 // All of the extra includes here.
 import android.app.Activity;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -285,7 +286,7 @@ public class Level implements View.OnTouchListener
                 // If none of the above cases are met, then just default to not being touched.
                 default:
                 {
-                    player.tap = false;
+                    //player.tap = false;
                     break;
                 }
             }
@@ -310,20 +311,20 @@ public class Level implements View.OnTouchListener
         // Make the object jump.
         object.getBody().applyLinearImpulse(new Vec2(0.0f, 4.0f), object.getBody().getWorldCenter());
 
-        // If we are using multiplayer.
-        if(multiplayerStatus)
-        {
-            // Send this boolean message to the other client.
-            // Receive the any tapped info.
-            if(playerMatchStatus == NetworkConstants.HOST_ID)
-            {
-                resources.getConnectionApplication().getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setTapped(player.tap);
-            }
-            else
-            {
-                resources.getConnectionApplication().getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setTapped(player.tap);
-            }
-        }
+//        // If we are using multiplayer.
+//        if(multiplayerStatus)
+//        {
+//            // Send this boolean message to the other client.
+//            // Receive the any tapped info.
+//            if(playerMatchStatus == NetworkConstants.HOST_ID)
+//            {
+//                resources.getConnectionApplication().getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setTapped(player.tap);
+//            }
+//            else
+//            {
+//                resources.getConnectionApplication().getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setTapped(player.tap);
+//            }
+//        }
     }
 
     private void peerTappedResponse(AnimatedSprite object, boolean peerTapped)
@@ -334,6 +335,15 @@ public class Level implements View.OnTouchListener
             {
                 if(peerTapped)
                 {
+                    activityReference.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            DebugInformation.displayShortToastMessage(activityReference, "Client has tapped");
+                        }
+                    });
+
                     // Make them jump.
                     if (!object.isUsingCameraImage())
                     {
@@ -350,6 +360,15 @@ public class Level implements View.OnTouchListener
             {
                 if(peerTapped)
                 {
+                    activityReference.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            DebugInformation.displayShortToastMessage(activityReference, "Server has tapped");
+                        }
+                    });
+
                     // Make them jump.
                     if (!object.isUsingCameraImage())
                     {
@@ -402,9 +421,9 @@ public class Level implements View.OnTouchListener
                         playerSprite.setRespawnState(false);
                     }
 
-                    if(object.getID() == ObjectID.CHARACTERTWO)
+                    if(playerSprite.getID() == ObjectID.CHARACTERTWO)
                     {
-                        peerTappedResponse(object, peerTapped);
+                        peerTappedResponse(playerSprite, peerTapped);
                     }
                 }
 

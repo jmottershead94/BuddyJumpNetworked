@@ -220,7 +220,6 @@ public class MultiplayerGame extends NetworkActivity
             @Override
             public void run()
             {
-                DebugInformation.displayShortToastMessage(activityReference, "Run peer checks now");
                 runPeerChecks = true;
             }
         }, 3000);
@@ -255,14 +254,18 @@ public class MultiplayerGame extends NetworkActivity
                 {
                     // All other update calls here.
                     // Update the level.
-                    peerTappedStatus = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().hasPeerTapped();
+                    //peerTappedStatus = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().hasPeerTapped();
+                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setTapped(level.player.tap);
+                    level.update(dt, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().hasPeerTapped());
                 }
                 else if (playerMatchStatus == NetworkConstants.JOIN_ID)
                 {
-                    peerTappedStatus = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().hasPeerTapped();
+                    //peerTappedStatus = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().hasPeerTapped();
+                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setTapped(level.player.tap);
+                    level.update(dt, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().hasPeerTapped());
                 }
 
-                level.update(dt, peerTappedStatus);
+                //level.update(dt, peerTappedStatus);
             }
         }
 

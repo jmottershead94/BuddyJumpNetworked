@@ -17,7 +17,6 @@ import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
 import com.example.app.jason.ragerelease.app.GameStates.MainMenu;
 import com.example.app.jason.ragerelease.app.GameStates.PlayerSelection;
-import com.example.app.jason.ragerelease.app.GameStates.SinglePlayer.SinglePlayerGame;
 
 /**
  * Created by Win8 on 11/04/2016.
@@ -177,14 +176,14 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
             if(playerMatchStatus == NetworkConstants.HOST_ID)
             {
                 // Send the current player image index to the other player via the server.
-                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().setServerPeerImage(playerImage);
-                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().setServerState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
+                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setServerPeerImage(playerImage);
+                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
                 gameActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.HOST_ID);
             }
             else if(playerMatchStatus ==  NetworkConstants.JOIN_ID)
             {
-                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().setClientPeerImage(playerImage);
-                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().setClientState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
+                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setClientPeerImage(playerImage);
+                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
                 gameActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.JOIN_ID);
             }
 
@@ -194,17 +193,23 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
             final Handler debugHandler = new Handler();
             debugHandler.postDelayed(new Runnable()
             {
-                // After 4 seconds.
+                // After 6 seconds.
                 @Override
                 public void run()
                 {
                     if(playerMatchStatus == NetworkConstants.HOST_ID)
                     {
                         DebugInformation.displayShortToastMessage(activityReference, "Client Image: " + connectionApplication.getServerPeerIndexImage());
+
+                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setGameIsRunning(true);
+                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
                     }
                     else if(playerMatchStatus == NetworkConstants.JOIN_ID)
                     {
                         DebugInformation.displayShortToastMessage(activityReference, "Server Image: " + connectionApplication.getClientPeerIndexImage());
+
+                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setGameIsRunning(true);
+                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
                     }
                 }
             }, 6000);
@@ -217,9 +222,20 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
                 @Override
                 public void run()
                 {
+//                    if(playerMatchStatus == NetworkConstants.HOST_ID)
+//                    {
+//                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setGameIsRunning(true);
+//                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
+//                    }
+//                    else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+//                    {
+//                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setGameIsRunning(true);
+//                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
+//                    }
+
                     startActivity(gameActivity);
                 }
-            }, 10000);
+            }, 12000);
 
 
         }

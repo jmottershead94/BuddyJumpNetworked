@@ -110,8 +110,8 @@ public class LevelGenerator
         playerMatchStatus = gamePlayerMatchStatus;
         peerImageInteger = gamePeerImage;
         activityReference = gameActivity;
-        hostStartPosition = new Vector2(gameResources.getScreenWidth() * 0.45f, gameResources.getScreenHeight() * 0.25f);
-        joinStartPosition = new Vector2(gameResources.getScreenWidth() * 0.15f, gameResources.getScreenHeight() * 0.25f);
+        hostStartPosition = new Vector2(gameResources.getScreenWidth() * 0.45f, gameResources.getScreenHeight() * 0.01f);
+        joinStartPosition = new Vector2(gameResources.getScreenWidth() * 0.15f, gameResources.getScreenHeight() * 0.01f);
         multiplayerStatus = true;
     }
 
@@ -123,8 +123,12 @@ public class LevelGenerator
     //////////////////////////////////////////////////
     public void buildLevel(int numberOfCharacters, int numberOfObstacles)
     {
+        // DEBUG: Testing player messages
+        createGround((resources.getScreenHeight() * 0.25f));
+
         // Creating all of the level objects.
-        createGround();
+        createGround((resources.getScreenHeight() - 190.0f));
+
         createStaticBackground();
         createAnimatedBackground();
 
@@ -204,10 +208,10 @@ public class LevelGenerator
     //==============================================//
     //  This will create the static body ground.    //
     //////////////////////////////////////////////////
-    private void createGround()
+    private void createGround(float y)
     {
         StaticBody groundFloor = new StaticBody(resources, ObjectID.GROUND);
-        groundY = resources.getScreenHeight() - 190.0f;
+        groundY = y;
         groundFloor.bodyInit(new Vector2(0.0f, groundY), new Vector2(resources.getScreenWidth(), 80.0f), 0.0f);
         groundFloor.loadTexture(R.drawable.sprite_sheet);
         groundFloor.setTexture(new Vector2(0.0f, 0.0f), new Vector2(0.125f, 0.0625f));
@@ -366,6 +370,7 @@ public class LevelGenerator
     private void createPlayer(Vector2 position, int image, final int id)
     {
         DynamicBody player = new DynamicBody(resources, id);
+        //StaticBody player = new StaticBody(resources, id);
 
         // Used with camera code.
         if(optionOneChecked)

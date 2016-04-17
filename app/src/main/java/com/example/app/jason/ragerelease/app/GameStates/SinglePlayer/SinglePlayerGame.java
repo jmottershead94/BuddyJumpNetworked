@@ -201,7 +201,7 @@ public class SinglePlayerGame extends Activity
 
             // All other update calls here.
             // Update the level.
-            level.update(dt);
+            level.update(dt, false);
         }
 
         // If the singlePlayerGame is paused, the player should be able to unpause the singlePlayerGame.

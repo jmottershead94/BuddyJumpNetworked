@@ -35,6 +35,7 @@ public class WiFiTasks extends Thread
     protected Socket socket = null;
     protected boolean tapped = false;
     protected boolean peerTapped = false;
+    protected boolean isRunning = false;
 
     // Methods.
 //    protected void newReadyThread()
@@ -60,6 +61,11 @@ public class WiFiTasks extends Thread
     public void setTapped(boolean tap)
     {
         tapped = tap;
+    }
+
+    public void setGameIsRunning(boolean running)
+    {
+        isRunning = running;
     }
 
     // This class will handle sending the ready message over to the other peer.
@@ -138,18 +144,21 @@ public class WiFiTasks extends Thread
                 // while(either player has not died)
                 // {
 
-                // Accessing the player tapped status.
-                final boolean playerTapped = tapped;
-                final String tappedMessage = String.valueOf(playerTapped);
-
-                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                dataOutputStream.writeUTF(tappedMessage);
-
-                if(socket.getInputStream() != null)
+                while(isRunning)
                 {
-                    DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-                    String peerTappedMessage = dataInputStream.readUTF();
-                    peerTapped = Boolean.valueOf(peerTappedMessage);
+                    // Accessing the player tapped status.
+                    final boolean playerTapped = tapped;
+                    final String tappedMessage = String.valueOf(playerTapped);
+
+                    DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                    dataOutputStream.writeUTF(tappedMessage);
+
+                    if (socket.getInputStream() != null)
+                    {
+                        DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+                        String peerTappedMessage = dataInputStream.readUTF();
+                        peerTapped = Boolean.valueOf(peerTappedMessage);
+                    }
                 }
 
                 // }
@@ -170,7 +179,7 @@ public class WiFiTasks extends Thread
             {
                 case NetworkConstants.STATE_SEND_READY_MESSAGE:
                 {
-                    //DebugInformation.displayShortToastMessage(activity, "CLIENT READY MESSAGE");
+                    DebugInformation.displayShortToastMessage(activity, "Peer connected successfully");
                     progressLoading.dismiss();
                     break;
                 }
@@ -195,8 +204,14 @@ public class WiFiTasks extends Thread
                 }
                 case NetworkConstants.STATE_SEND_GAME_MESSAGES:
                 {
-                    //DebugInformation.displayShortToastMessage(activity, "CLIENT GAME MESSAGES");
+                    DebugInformation.displayShortToastMessage(activity, "Game messages");
                     progressLoading.dismiss();
+
+                    // Start sending game messages.
+                    sendGameMessages.start();
+
+                    //DebugInformation.displayShortToastMessage(activity, "Shouldn't get here?" + areGameMessagesRunning());
+
                     break;
                 }
             }
@@ -206,4 +221,13 @@ public class WiFiTasks extends Thread
     // Getters.
     // Return whether or not the peer has tapped on their character.
     public boolean hasPeerTapped() { return peerTapped; }
+
+    public boolean areGameMessagesRunning() { return isRunning; }
+
+    // Setters.
+    public void setState(int newState)
+    {
+        currentState = newState;
+        handler.sendEmptyMessage(newState);
+    }
 }

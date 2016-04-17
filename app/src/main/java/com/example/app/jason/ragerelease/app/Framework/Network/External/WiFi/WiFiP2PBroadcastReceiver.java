@@ -154,8 +154,8 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
     public WifiP2pDeviceList getPeers()             { return peers; }
 
     // Getting our server asynchronous task.
-    public WiFiServerTasks getServerAsyncTask() { return wifiServerTasks; }
+    public WiFiServerTasks getServerTask()          { return wifiServerTasks; }
 
     // Getting our client asynchronous task.
-    public WiFiClientTasks getClientAsyncTask() { return wifiClientTasks; }
+    public WiFiClientTasks getClientTask()          { return wifiClientTasks; }
 }

@@ -35,9 +35,9 @@ public class ConnectionApplication extends Application
     public ConnectionManagement getConnectionManagement() { return connectionManagement; }
 
     // This will return our server image index.
-    public int getServerPeerIndexImage() { return connectionManagement.getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().getPeerImageIndexInt(); }
+    public int getServerPeerIndexImage() { return connectionManagement.getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().getPeerImageIndexInt(); }
 
     // This will return our client image index.
-    public int getClientPeerIndexImage() { return connectionManagement.getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().getPeerImageIndexInt(); }
+    public int getClientPeerIndexImage() { return connectionManagement.getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().getPeerImageIndexInt(); }
 
 }

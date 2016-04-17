@@ -96,12 +96,12 @@ public class WiFiServerTasks extends WiFiTasks
     // Get the current peer image.
     public int getPeerImageIndexInt()   { return peerImageIndexInt; }
 
-    // Setters.
-    public void setServerState(int value)
-    {
-        currentState = value;
-        handler.sendEmptyMessage(value);
-    }
+//    // Setters.
+//    public void setServerState(int value)
+//    {
+//        currentState = value;
+//        handler.sendEmptyMessage(value);
+//    }
 
     public void setServerPeerImage(int image)
     {

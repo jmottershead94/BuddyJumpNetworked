@@ -2,10 +2,12 @@
 package com.example.app.jason.ragerelease.app.GameStates.Multiplayer;
 
 // All of the extra includes here.
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
@@ -13,7 +15,9 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.example.app.jason.ragerelease.R;
+import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Level;
+import com.example.app.jason.ragerelease.app.Framework.Network.ConnectionApplication;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
 import com.example.app.jason.ragerelease.app.Framework.Resources;
@@ -40,7 +44,7 @@ public class MultiplayerGame extends NetworkActivity
     private int playerImage = 0;                                                // The current player image.
     private int peerImage = 0;                                                  // The current companion image.
     private int playerMatchStatus = 0;
-    private Integer peerImageInteger = 0;
+    private boolean runPeerChecks = false;
 
     // Android attributes.
     private RelativeLayout background = null;                                   // Gives access to the relative layout background for the singlePlayerGame.
@@ -171,7 +175,6 @@ public class MultiplayerGame extends NetworkActivity
         // Load in options here...
         SharedPreferences gameSettings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         playerImage = gameSettings.getInt("mplayerImage", 0);
-        //playerMatchStatus = gameSettings.getInt(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, 0);
         playerMatchStatus = getIntent().getIntExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, 0);
 
         // Setting up the screen dimensions.
@@ -187,41 +190,40 @@ public class MultiplayerGame extends NetworkActivity
         pauseButton = (Button) findViewById(R.id.pauseButton);
         level = new Level();
         gameThread = new MainThread(this, desiredFPS);
-        //connectionApplication.getConnectionManagement().setNetworkActivity(this);
-        //resources = new Resources(this, getApplicationContext(), background, displayMetrics.widthPixels, displayMetrics.heightPixels, world);
         resources = new Resources(this, getApplicationContext(), background, displayMetrics.widthPixels, displayMetrics.heightPixels, world, connectionApplication);
 
         pauseButton.setVisibility(View.GONE);
 
-        //peerImageInteger = getIntent().getIntExtra(NetworkConstants.EXTRA_PEER_INDEX, 0);
-
-        // Initialising the level.
-        //level.init(resources, this, playerImages[playerImageIndex], enemyImages[enemyImageIndex]);
-        //level.init(resources, this, playerImage, companionImage);
+        final MultiplayerGame multiplayerGameReference = this;
+        final Activity activityReference = this;
 
         if(playerMatchStatus == NetworkConstants.HOST_ID)
         {
-            peerImageInteger = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().getPeerImageIndexInt();
-
-            //DebugInformation.displayShortToastMessage(this, "Client image index: " + peerImageInteger);
+//            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setGameIsRunning(true);
+//            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
 
             // Initialise the level.
-            level.init(resources, this, playerImage, playerMatchStatus, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().getPeerImageIndexInt(), this);
-
-            //level.init(resources, this, playerImage, playerMatchStatus, peerImageInteger, this);
+            level.init(resources, multiplayerGameReference, playerImage, playerMatchStatus, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().getPeerImageIndexInt(), activityReference, connectionApplication);
         }
         else if(playerMatchStatus == NetworkConstants.JOIN_ID)
         {
-            peerImageInteger = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().getPeerImageIndexInt();
-
-            //DebugInformation.displayShortToastMessage(this, "Server image index: " + peerImageInteger);
+//            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setGameIsRunning(true);
+//            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
 
             // Initialise the level.
-            level.init(resources, this, playerImage, playerMatchStatus, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().getPeerImageIndexInt(), this);
-
-            //level.init(resources, this, playerImage, playerMatchStatus, peerImageInteger, this);
+            level.init(resources, multiplayerGameReference, playerImage, playerMatchStatus, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().getPeerImageIndexInt(), activityReference, connectionApplication);
         }
 
+        Handler levelDelay = new Handler();
+        levelDelay.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                DebugInformation.displayShortToastMessage(activityReference, "Run peer checks now");
+                runPeerChecks = true;
+            }
+        }, 3000);
     }
 
     //////////////////////////////////////////////////
@@ -242,12 +244,26 @@ public class MultiplayerGame extends NetworkActivity
         // If the player has not paused the singlePlayerGame and the singlePlayerGame is not yet over.
         if(!level.player.isGameOver())
         {
+            boolean peerTappedStatus = false;
+
             // Update the physics engine.
             resources.getWorld().step(timeStep, velocityIterations, positionIterations);
 
-            // All other update calls here.
-            // Update the level.
-            level.update(dt);
+            if(runPeerChecks)
+            {
+                if (playerMatchStatus == NetworkConstants.HOST_ID)
+                {
+                    // All other update calls here.
+                    // Update the level.
+                    peerTappedStatus = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().hasPeerTapped();
+                }
+                else if (playerMatchStatus == NetworkConstants.JOIN_ID)
+                {
+                    peerTappedStatus = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().hasPeerTapped();
+                }
+
+                level.update(dt, peerTappedStatus);
+            }
         }
 
         // If the game is paused, the player should be able to unpause the singlePlayerGame.
@@ -269,6 +285,15 @@ public class MultiplayerGame extends NetworkActivity
         {
             // Return to the main menu.
             Intent intent = new Intent(this, GameOver.class);
+
+//            if(playerMatchStatus == NetworkConstants.HOST_ID)
+//            {
+//                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setGameIsRunning(!level.player.isGameOver());
+//            }
+//            else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+//            {
+//                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setGameIsRunning(!level.player.isGameOver());
+//            }
 
             // Clear the current level.
             level.levelGenerator.clearLevel();

@@ -6,9 +6,10 @@ import android.app.Activity;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Graphics.AnimatedSprite;
 import com.example.app.jason.ragerelease.app.Framework.Maths.Vector2;
-import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
+import com.example.app.jason.ragerelease.app.Framework.Network.ConnectionApplication;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
 import com.example.app.jason.ragerelease.app.Framework.Physics.StaticBody;
 import com.example.app.jason.ragerelease.app.GameStates.Multiplayer.MultiplayerGame;
@@ -48,6 +49,7 @@ public class Level implements View.OnTouchListener
     private ScheduledFuture<?> distanceIncrementer = null;
     private int playerMatchStatus = 0;
     private Activity activityReference = null;
+    private ConnectionApplication connectionApplication = null;
 
     // Methods.
     //////////////////////////////////////////////////
@@ -96,7 +98,7 @@ public class Level implements View.OnTouchListener
     //  This will set up access to common game      //
     //  properties, and set up the touch listener.  //
     //////////////////////////////////////////////////
-    public void init(final Resources gameResources, final MultiplayerGame multiplayerGameView, final int gamePlayerImage, final int gamePlayerMatchStatus, final int gamePeerImage, final Activity gameActivity)
+    public void init(final Resources gameResources, final MultiplayerGame multiplayerGameView, final int gamePlayerImage, final int gamePlayerMatchStatus, final int gamePeerImage, final Activity gameActivity, final ConnectionApplication gameConnectionApplication)
     {
         // Initialising local variables.
         resources = gameResources;
@@ -114,6 +116,7 @@ public class Level implements View.OnTouchListener
         scheduler = Executors.newSingleThreadScheduledExecutor();
         activityReference = gameActivity;
         levelNumber = 3;
+        connectionApplication = gameConnectionApplication;
 
         // This schedule is incrementing player distance every second.
         // Running on a new thread.
@@ -220,13 +223,20 @@ public class Level implements View.OnTouchListener
                     {
                         if(multiplayerStatus)
                         {
-                            if ((object.getID() == ObjectID.CHARACTERONE))
+                            // Processing our character input.
+                            if (object.getID() == ObjectID.CHARACTERONE)
                             {
                                 if (touchCollisionTest(object))
                                 {
                                     tappedResponse(object);
                                 }
                             }
+
+//                            // Processing other player input.
+//                            if(object.getID() == ObjectID.CHARACTERTWO)
+//                            {
+//                                peerTappedResponse(object);
+//                            }
                         }
                         else
                         {
@@ -307,11 +317,50 @@ public class Level implements View.OnTouchListener
             // Receive the any tapped info.
             if(playerMatchStatus == NetworkConstants.HOST_ID)
             {
-                resources.getConnectionApplication().getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().setTapped(player.tap);
+                resources.getConnectionApplication().getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setTapped(player.tap);
             }
             else
             {
-                resources.getConnectionApplication().getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().setTapped(player.tap);
+                resources.getConnectionApplication().getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setTapped(player.tap);
+            }
+        }
+    }
+
+    private void peerTappedResponse(AnimatedSprite object, boolean peerTapped)
+    {
+        if(multiplayerStatus)
+        {
+            if(playerMatchStatus == NetworkConstants.HOST_ID)
+            {
+                if(peerTapped)
+                {
+                    // Make them jump.
+                    if (!object.isUsingCameraImage())
+                    {
+                        // Change to a jumping animation.
+                        object.changeTexture(new Vector2((5.0f / 7.0f), (1.0f / 3.0f)));
+                        object.setAnimationFrames(2);
+                    }
+
+                    // Make the object jump.
+                    object.getBody().applyLinearImpulse(new Vec2(0.0f, 4.0f), object.getBody().getWorldCenter());
+                }
+            }
+            else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+            {
+                if(peerTapped)
+                {
+                    // Make them jump.
+                    if (!object.isUsingCameraImage())
+                    {
+                        // Change to a jumping animation.
+                        object.changeTexture(new Vector2((5.0f / 7.0f), (1.0f / 3.0f)));
+                        object.setAnimationFrames(2);
+                    }
+
+                    // Make the object jump.
+                    object.getBody().applyLinearImpulse(new Vec2(0.0f, 4.0f), object.getBody().getWorldCenter());
+                }
             }
         }
     }
@@ -323,7 +372,7 @@ public class Level implements View.OnTouchListener
     //  can gather in the level, and provide        //
     //  appropriate responses to the condition.     //
     //////////////////////////////////////////////////
-    private void handleLevelObjects(float dt)
+    private void handleLevelObjects(float dt, boolean peerTapped)
     {
         for (AnimatedSprite object : getLevelObjects())
         {
@@ -351,6 +400,11 @@ public class Level implements View.OnTouchListener
                         // Set the player square at the spawn location.
                         playerSprite.translateFramework(object.getSpawnLocation());
                         playerSprite.setRespawnState(false);
+                    }
+
+                    if(object.getID() == ObjectID.CHARACTERTWO)
+                    {
+                        peerTappedResponse(object, peerTapped);
                     }
                 }
 
@@ -435,7 +489,7 @@ public class Level implements View.OnTouchListener
     //==============================================//
     //  This will update the level every frame.     //
     //////////////////////////////////////////////////
-    public void update(final float dt)
+    public void update(final float dt, boolean peerTapped)
     {
         // If the level has been completed.
         finishedLevel();
@@ -444,7 +498,7 @@ public class Level implements View.OnTouchListener
         updatePlayerDistance();
 
         // Local function calls.
-        handleLevelObjects(dt);
+        handleLevelObjects(dt, peerTapped);
 
         // Check any collisions in the level.
         checkCollisions();

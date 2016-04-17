@@ -366,9 +366,6 @@ public class LevelGenerator
     private void createPlayer(Vector2 position, int image, final int id)
     {
         DynamicBody player = new DynamicBody(resources, id);
-        //int imageIndex = new int(image);
-        //String imageIndexString = String.valueOf(image);
-        //int imageIndex = Integer.parseInt(imageIndexString);
 
         // Used with camera code.
         if(optionOneChecked)
@@ -385,13 +382,6 @@ public class LevelGenerator
         }
 
         objects.add(player);
-
-//        activityReference.runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                DebugInformation.displayShortToastMessage(activityReference, "Added to vector.");
-//            }
-//        });
     }
 
     //////////////////////////////////////////////////

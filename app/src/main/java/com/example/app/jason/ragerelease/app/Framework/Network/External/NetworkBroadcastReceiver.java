@@ -9,8 +9,8 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 
-import com.example.app.jason.ragerelease.app.Framework.Network.External.WiFi.WiFiClientAsyncTask;
-import com.example.app.jason.ragerelease.app.Framework.Network.External.WiFi.WiFiServerAsyncTask;
+import com.example.app.jason.ragerelease.app.Framework.Network.External.WiFi.WiFiClientTasks;
+import com.example.app.jason.ragerelease.app.Framework.Network.External.WiFi.WiFiServerTasks;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 
 /**
@@ -25,8 +25,8 @@ public class NetworkBroadcastReceiver extends BroadcastReceiver
     protected WifiP2pManager wifiP2pManager = null;
     protected Channel wifiChannel = null;
     protected NetworkActivity currentActivity = null;
-    protected WiFiServerAsyncTask wifiServerAsyncTask = null;
-    protected WiFiClientAsyncTask wifiClientAsyncTask = null;
+    protected WiFiServerTasks wifiServerTasks = null;
+    protected WiFiClientTasks wifiClientTasks = null;
 
     // Methods.
     public NetworkBroadcastReceiver(WifiManager manager, WifiP2pManager p2pManager, Channel channel, NetworkActivity activity)

@@ -9,6 +9,7 @@ import android.view.View;
 import com.example.app.jason.ragerelease.app.Framework.Graphics.AnimatedSprite;
 import com.example.app.jason.ragerelease.app.Framework.Maths.Vector2;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
+import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
 import com.example.app.jason.ragerelease.app.Framework.Physics.StaticBody;
 import com.example.app.jason.ragerelease.app.GameStates.Multiplayer.MultiplayerGame;
 import com.example.app.jason.ragerelease.app.GameStates.SinglePlayer.SinglePlayerGame;
@@ -112,7 +113,7 @@ public class Level implements View.OnTouchListener
         player.setPaused(false);
         scheduler = Executors.newSingleThreadScheduledExecutor();
         activityReference = gameActivity;
-        //levelNumber = 3;
+        levelNumber = 3;
 
         // This schedule is incrementing player distance every second.
         // Running on a new thread.
@@ -298,6 +299,21 @@ public class Level implements View.OnTouchListener
 
         // Make the object jump.
         object.getBody().applyLinearImpulse(new Vec2(0.0f, 4.0f), object.getBody().getWorldCenter());
+
+        // If we are using multiplayer.
+        if(multiplayerStatus)
+        {
+            // Send this boolean message to the other client.
+            // Receive the any tapped info.
+            if(playerMatchStatus == NetworkConstants.HOST_ID)
+            {
+                resources.getConnectionApplication().getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().setTapped(player.tap);
+            }
+            else
+            {
+                resources.getConnectionApplication().getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().setTapped(player.tap);
+            }
+        }
     }
 
     //////////////////////////////////////////////////

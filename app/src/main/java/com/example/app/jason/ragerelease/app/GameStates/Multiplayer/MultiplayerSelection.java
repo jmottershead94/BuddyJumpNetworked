@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
@@ -63,6 +64,7 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
         playerImage = gameSettings.getInt("mplayerImageIndex", 0);
 
         // Initialising variables.
+        final TextView title = (TextView) findViewById(R.id.gameTextView);
         final Button playerSelectionButton = (Button) findViewById(R.id.playerSelectionButton);
         final Button mainMenuButton = (Button) findViewById(R.id.mainMenuButton);
         final NavigationButton button = new NavigationButton();
@@ -77,6 +79,8 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
         //button.isPressed(playGameButton, this, MultiplayerGame.class);
 
         // We are using multiplayer, there are no companions.
+        title.setText("Lobby");
+        playerSelectionButton.setVisibility(View.GONE);
         companionSelectionButton.setVisibility(View.GONE);
         playGameButton.setOnClickListener(this);
 
@@ -142,8 +146,11 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
 
         if(playerMatchStatus == NetworkConstants.HOST_ID)
         {
-            // Saving the player option status.
-            editor.putInt(peerImageIndexKey, playerImages[connectionApplication.getServerPeerIndexImage()]);
+//            if(connectionApplication.getServerPeerIndexImage() != null)
+//            {
+                // Saving the player option status.
+                editor.putInt(peerImageIndexKey, playerImages[connectionApplication.getServerPeerIndexImage()]);
+//            }
         }
         else if(playerMatchStatus == NetworkConstants.JOIN_ID)
         {
@@ -170,20 +177,14 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
             if(playerMatchStatus == NetworkConstants.HOST_ID)
             {
                 // Send the current player image index to the other player via the server.
-                (connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().sendImageThread).setImageIndex(playerImage);
+                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().setServerPeerImage(playerImage);
                 connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().setServerState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
-                peerImage = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().getPeerImageIndexInt();
-                peerImageIndexInteger = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerAsyncTask().getPeerImageIndexInt();
-                gameActivity.putExtra(NetworkConstants.EXTRA_PEER_INDEX, peerImageIndexInteger);
                 gameActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.HOST_ID);
             }
             else if(playerMatchStatus ==  NetworkConstants.JOIN_ID)
             {
-                (connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().sendImageThread).setImageIndex(playerImage);
+                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().setClientPeerImage(playerImage);
                 connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().setClientState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
-                peerImage = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().getPeerImageIndexInt();
-                peerImageIndexInteger = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().getPeerImageIndexInt();
-                gameActivity.putExtra(NetworkConstants.EXTRA_PEER_INDEX, peerImageIndexInteger);
                 gameActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.JOIN_ID);
             }
 
@@ -200,12 +201,10 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
                     if(playerMatchStatus == NetworkConstants.HOST_ID)
                     {
                         DebugInformation.displayShortToastMessage(activityReference, "Client Image: " + connectionApplication.getServerPeerIndexImage());
-                        //DebugInformation.displayShortToastMessage(activityReference, "Client Image Integer: " + peerImage);
                     }
                     else if(playerMatchStatus == NetworkConstants.JOIN_ID)
                     {
                         DebugInformation.displayShortToastMessage(activityReference, "Server Image: " + connectionApplication.getClientPeerIndexImage());
-                        //DebugInformation.displayShortToastMessage(activityReference, "Server Image Integer: " + peerImage);
                     }
                 }
             }, 6000);

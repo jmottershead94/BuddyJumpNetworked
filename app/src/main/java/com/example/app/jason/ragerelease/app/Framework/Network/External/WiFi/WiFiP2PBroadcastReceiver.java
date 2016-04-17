@@ -11,13 +11,9 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 
-import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Network.External.NetworkBroadcastReceiver;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
-
-import java.net.InetAddress;
-import java.util.List;
 
 /**
  * Created by Jason Mottershead on 04/04/2016.
@@ -136,9 +132,9 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
                 // Set up the server thread, accept incoming data connections?
                 //DebugInformation.displayShortToastMessage(currentActivity, "Should start server thread");
 
-                wifiServerAsyncTask = new WiFiServerAsyncTask(currentActivity);
-                //wifiServerAsyncTask.execute();
-                wifiServerAsyncTask.start();
+                wifiServerTasks = new WiFiServerTasks(currentActivity);
+                //wifiServerTasks.execute();
+                wifiServerTasks.start();
             }
             else if (playerMatchStatus == NetworkConstants.JOIN_ID)
             {
@@ -146,9 +142,9 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
                 // Create a client thread here?
                 //DebugInformation.displayShortToastMessage(currentActivity, "Should start client thread");
 
-                wifiClientAsyncTask = new WiFiClientAsyncTask(currentActivity, groupOwnerAddress);
-                //wifiClientAsyncTask.execute();
-                wifiClientAsyncTask.start();
+                wifiClientTasks = new WiFiClientTasks(currentActivity, groupOwnerAddress);
+                //wifiClientTasks.execute();
+                wifiClientTasks.start();
             }
         }
     };
@@ -158,8 +154,8 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
     public WifiP2pDeviceList getPeers()             { return peers; }
 
     // Getting our server asynchronous task.
-    public WiFiServerAsyncTask getServerAsyncTask() { return wifiServerAsyncTask; }
+    public WiFiServerTasks getServerAsyncTask() { return wifiServerTasks; }
 
     // Getting our client asynchronous task.
-    public WiFiClientAsyncTask getClientAsyncTask() { return wifiClientAsyncTask; }
+    public WiFiClientTasks getClientAsyncTask() { return wifiClientTasks; }
 }

@@ -39,4 +39,5 @@ public class ConnectionApplication extends Application
 
     // This will return our client image index.
     public int getClientPeerIndexImage() { return connectionManagement.getWifiHandler().getWifiP2PBroadcastReceiver().getClientAsyncTask().getPeerImageIndexInt(); }
+
 }

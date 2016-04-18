@@ -311,6 +311,15 @@ public class Level implements View.OnTouchListener
         // Make the object jump.
         object.getBody().applyLinearImpulse(new Vec2(0.0f, 4.0f), object.getBody().getWorldCenter());
 
+//        activityReference.runOnUiThread(new Runnable()
+//        {
+//            @Override
+//            public void run()
+//            {
+//                DebugInformation.displayShortToastMessage(activityReference, "Tapped: " + player.tap);
+//            }
+//        });
+
 //        // If we are using multiplayer.
 //        if(multiplayerStatus)
 //        {
@@ -327,58 +336,53 @@ public class Level implements View.OnTouchListener
 //        }
     }
 
-    private void peerTappedResponse(AnimatedSprite object, boolean peerTapped)
+    private void peerTappedResponse(final AnimatedSprite object, boolean peerTapped)
     {
-        if(multiplayerStatus)
+        boolean doOnce = true;
+        final Vec2 originalForce = new Vec2(0.0f, 4.0f);
+        final Vec2 forceApplied = new Vec2(0.0f, 0.75f);
+
+        if(playerMatchStatus == NetworkConstants.HOST_ID)
         {
-            if(playerMatchStatus == NetworkConstants.HOST_ID)
+            //final Vec2 forceMultiplied = new Vec2(0.0f, forceApplied.y * 3.0f);
+
+            if(peerTapped)
             {
-                if(peerTapped)
+                // Make them jump.
+                if (!object.isUsingCameraImage())
                 {
-                    activityReference.runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            DebugInformation.displayShortToastMessage(activityReference, "Client has tapped");
-                        }
-                    });
+                    // Change to a jumping animation.
+                    object.changeTexture(new Vector2((5.0f / 7.0f), (1.0f / 3.0f)));
+                    object.setAnimationFrames(2);
+                }
 
-                    // Make them jump.
-                    if (!object.isUsingCameraImage())
-                    {
-                        // Change to a jumping animation.
-                        object.changeTexture(new Vector2((5.0f / 7.0f), (1.0f / 3.0f)));
-                        object.setAnimationFrames(2);
-                    }
-
+                if(doOnce)
+                {
                     // Make the object jump.
-                    object.getBody().applyLinearImpulse(new Vec2(0.0f, 4.0f), object.getBody().getWorldCenter());
+                    object.getBody().applyLinearImpulse(originalForce, object.getBody().getWorldCenter());
+
+                    doOnce = false;
                 }
             }
-            else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+        }
+        else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+        {
+            if(peerTapped)
             {
-                if(peerTapped)
+                // Make them jump.
+                if (!object.isUsingCameraImage())
                 {
-                    activityReference.runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            DebugInformation.displayShortToastMessage(activityReference, "Server has tapped");
-                        }
-                    });
+                    // Change to a jumping animation.
+                    object.changeTexture(new Vector2((5.0f / 7.0f), (1.0f / 3.0f)));
+                    object.setAnimationFrames(2);
+                }
 
-                    // Make them jump.
-                    if (!object.isUsingCameraImage())
-                    {
-                        // Change to a jumping animation.
-                        object.changeTexture(new Vector2((5.0f / 7.0f), (1.0f / 3.0f)));
-                        object.setAnimationFrames(2);
-                    }
-
+                if(doOnce)
+                {
                     // Make the object jump.
-                    object.getBody().applyLinearImpulse(new Vec2(0.0f, 4.0f), object.getBody().getWorldCenter());
+                    object.getBody().applyLinearImpulse(forceApplied, object.getBody().getWorldCenter());
+
+                    doOnce = false;
                 }
             }
         }
@@ -421,9 +425,12 @@ public class Level implements View.OnTouchListener
                         playerSprite.setRespawnState(false);
                     }
 
-                    if(playerSprite.getID() == ObjectID.CHARACTERTWO)
+                    if(multiplayerStatus)
                     {
-                        peerTappedResponse(playerSprite, peerTapped);
+                        if (playerSprite.getID() == ObjectID.CHARACTERTWO)
+                        {
+                            peerTappedResponse(playerSprite, peerTapped);
+                        }
                     }
                 }
 

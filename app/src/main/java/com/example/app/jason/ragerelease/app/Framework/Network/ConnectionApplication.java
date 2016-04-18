@@ -5,6 +5,8 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 
+import com.example.app.jason.ragerelease.app.Framework.Player;
+
 /**
  * Created by Jason Mottershead on 04/04/2016.
  */
@@ -15,6 +17,7 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 public class ConnectionApplication extends Application
 {
     // Attributes.
+    private static ConnectionApplication connectionApplication = null;
     private ConnectionManagement connectionManagement = null;
 
     // Methods.
@@ -22,7 +25,11 @@ public class ConnectionApplication extends Application
     public void onCreate()
     {
         super.onCreate();
+        connectionApplication = this;
     }
+
+    // This will return.
+    public static ConnectionApplication getConnectionApplication() { return connectionApplication; }
 
     // Setters.
     public void setConnectionManagement(WifiP2pManager p2pManager, WifiManager manager, Channel channel, NetworkActivity activity)
@@ -39,5 +46,15 @@ public class ConnectionApplication extends Application
 
     // This will return our client image index.
     public int getClientPeerIndexImage() { return connectionManagement.getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().getPeerImageIndexInt(); }
+
+    public void setServerPlayer(Player gamePlayer)
+    {
+        connectionManagement.getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setPlayer(gamePlayer);
+    }
+
+    public void setClientPlayer(Player gamePlayer)
+    {
+        connectionManagement.getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setPlayer(gamePlayer);
+    }
 
 }

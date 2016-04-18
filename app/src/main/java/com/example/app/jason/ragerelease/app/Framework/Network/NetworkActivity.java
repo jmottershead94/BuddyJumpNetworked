@@ -42,7 +42,7 @@ public class NetworkActivity extends Activity
         wifiP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         wifiChannel = wifiP2pManager.initialize(this, getMainLooper(), null);
-        connectionApplication = (ConnectionApplication)this.getApplicationContext();
+        connectionApplication = (ConnectionApplication)getApplicationContext();
         peerNames = new ArrayAdapter<String>(this, R.layout.device_name);
     }
 

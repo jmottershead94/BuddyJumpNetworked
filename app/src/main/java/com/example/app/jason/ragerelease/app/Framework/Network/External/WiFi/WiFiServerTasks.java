@@ -32,6 +32,7 @@ public class WiFiServerTasks extends WiFiTasks
     {
         activity = networkActivity;
         progressLoading = new ProgressDialog(networkActivity);
+        setSharedPreferences();
         //newImageThread();
     }
 

@@ -2,12 +2,14 @@
 package com.example.app.jason.ragerelease.app.Framework.Network.External.WiFi;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 
 import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
+import com.example.app.jason.ragerelease.app.Framework.Player;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -31,12 +33,16 @@ public class WiFiTasks extends Thread
     protected int peerImageIndexInt = 0;
     protected static String PREFS_NAME = "MyPrefsFile";                      // Where the options will be saved to, whether they are true or false.
     protected static String PLAYER_IMAGE_INDEX_KEY = "mplayerImage";         // The key used to access the player image index.
+    protected String PLAYER_TAPPED_KEY = "mplayerTapped";
     protected int currentState = NetworkConstants.STATE_SEND_READY_MESSAGE;
     protected Socket socket = null;
     protected boolean tapped = false;
-    protected boolean peerTapped = false;
+    protected static boolean peerTapped = false;
     protected boolean isRunning = false;
-
+    protected Player player = null;
+    private String peerTappedMessage = "";
+    protected SharedPreferences gameSettings = null;
+    protected SharedPreferences.Editor editor = null;
     // Methods.
 //    protected void newReadyThread()
 //    {
@@ -53,6 +59,12 @@ public class WiFiTasks extends Thread
 //
 //    }
 
+    protected void setSharedPreferences()
+    {
+        gameSettings = activity.getSharedPreferences(PREFS_NAME, activity.MODE_PRIVATE);
+        editor = gameSettings.edit();
+    }
+
     protected void setSocket(Socket peerSocket)
     {
         socket = peerSocket;
@@ -67,6 +79,8 @@ public class WiFiTasks extends Thread
     {
         isRunning = running;
     }
+
+    public void setPlayer(Player gamePlayer) { player = gamePlayer; }
 
     // This class will handle sending the ready message over to the other peer.
     protected class SendReadyMessage extends Thread
@@ -144,52 +158,32 @@ public class WiFiTasks extends Thread
                 // while(either player has not died)
                 // {
 
-                while(isRunning)
+                while(true)
                 {
                     // Accessing the player tapped status.
-                    final boolean playerTapped = tapped;
-                    final String tappedMessage = String.valueOf(playerTapped);
-
-                    if(playerTapped)
+                    if(player != null)
                     {
-                        activity.runOnUiThread(new Runnable()
+                        boolean playerTapped = player.tap;
+                        String tappedMessage = String.valueOf(playerTapped);
+
+                        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                        dataOutputStream.writeUTF(tappedMessage);
+
+                        if (socket.getInputStream() != null)
                         {
-                            @Override
-                            public void run()
-                            {
-                                DebugInformation.displayShortToastMessage(activity, "Player has tapped");
-                            }
-                        });
-                    }
+                            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+                            String peerTappedMessageTemp = dataInputStream.readUTF();
 
-                    DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                    dataOutputStream.writeUTF(tappedMessage);
+                            peerTappedMessage = peerTappedMessageTemp;
+                            peerTapped = Boolean.parseBoolean(peerTappedMessage);
 
-                    if (socket.getInputStream() != null)
-                    {
-                        DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-                        String peerTappedMessage = dataInputStream.readUTF();
-                        peerTapped = Boolean.parseBoolean(peerTappedMessage);
-
-//                        activity.runOnUiThread(new Runnable()
-//                        {
-//                            @Override
-//                            public void run()
+                            editor.putBoolean(PLAYER_TAPPED_KEY, peerTapped);
+                            editor.apply();
+//                            // Maybe the bool is changing too quickly to be notified in the level?
+//                            if(peerTapped)
 //                            {
-//                                DebugInformation.displayShortToastMessage(activity, "Peer tapped: " + peerTapped);
+//
 //                            }
-//                        });
-
-                        if(peerTapped)
-                        {
-                            activity.runOnUiThread(new Runnable()
-                            {
-                                @Override
-                                public void run()
-                                {
-                                    DebugInformation.displayShortToastMessage(activity, "Peer has tapped: " + peerTapped);
-                                }
-                            });
                         }
                     }
                 }
@@ -240,11 +234,13 @@ public class WiFiTasks extends Thread
                     DebugInformation.displayShortToastMessage(activity, "Game messages");
                     progressLoading.dismiss();
 
-                    // Start sending game messages.
-                    sendGameMessages.start();
+                    if(!sendGameMessages.isAlive())
+                    {
+                        // Start sending game messages.
+                        sendGameMessages.start();
+                    }
 
                     //DebugInformation.displayShortToastMessage(activity, "Shouldn't get here?" + areGameMessagesRunning());
-
                     break;
                 }
             }
@@ -254,6 +250,9 @@ public class WiFiTasks extends Thread
     // Getters.
     // Return whether or not the peer has tapped on their character.
     public boolean hasPeerTapped() { return peerTapped; }
+
+    // RETURN.
+    public String peerTapped() { return peerTappedMessage; }
 
     public boolean areGameMessagesRunning() { return isRunning; }
 

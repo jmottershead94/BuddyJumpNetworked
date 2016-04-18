@@ -45,6 +45,7 @@ public class MultiplayerGame extends NetworkActivity
     private int peerImage = 0;                                                  // The current companion image.
     private int playerMatchStatus = 0;
     private boolean runPeerChecks = false;
+    protected String PLAYER_TAPPED_KEY = "mplayerTapped";
 
     // Android attributes.
     private RelativeLayout background = null;                                   // Gives access to the relative layout background for the singlePlayerGame.
@@ -199,19 +200,21 @@ public class MultiplayerGame extends NetworkActivity
 
         if(playerMatchStatus == NetworkConstants.HOST_ID)
         {
-//            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setGameIsRunning(true);
+            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setGameIsRunning(true);
 //            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
 
             // Initialise the level.
             level.init(resources, multiplayerGameReference, playerImage, playerMatchStatus, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().getPeerImageIndexInt(), activityReference, connectionApplication);
+            connectionApplication.setServerPlayer(level.player);
         }
         else if(playerMatchStatus == NetworkConstants.JOIN_ID)
         {
-//            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setGameIsRunning(true);
+            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setGameIsRunning(true);
 //            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
 
             // Initialise the level.
             level.init(resources, multiplayerGameReference, playerImage, playerMatchStatus, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().getPeerImageIndexInt(), activityReference, connectionApplication);
+            connectionApplication.setClientPlayer(level.player);
         }
 
         Handler levelDelay = new Handler();
@@ -220,6 +223,15 @@ public class MultiplayerGame extends NetworkActivity
             @Override
             public void run()
             {
+                if(playerMatchStatus == NetworkConstants.HOST_ID)
+                {
+                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
+                }
+                else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+                {
+                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
+                }
+
                 runPeerChecks = true;
             }
         }, 3000);
@@ -250,20 +262,56 @@ public class MultiplayerGame extends NetworkActivity
 
             if(runPeerChecks)
             {
-                if (playerMatchStatus == NetworkConstants.HOST_ID)
-                {
-                    // All other update calls here.
-                    // Update the level.
-                    //peerTappedStatus = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().hasPeerTapped();
-                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setTapped(level.player.tap);
-                    level.update(dt, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().hasPeerTapped());
-                }
-                else if (playerMatchStatus == NetworkConstants.JOIN_ID)
-                {
-                    //peerTappedStatus = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().hasPeerTapped();
-                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setTapped(level.player.tap);
-                    level.update(dt, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().hasPeerTapped());
-                }
+                SharedPreferences gameSettings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                peerTappedStatus = gameSettings.getBoolean(PLAYER_TAPPED_KEY, false);
+
+//                if(playerMatchStatus == NetworkConstants.HOST_ID)
+//                {
+//                    peerTappedStatus = Boolean.valueOf(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().peerTapped());
+//
+//                    if(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().hasPeerTapped())
+//                    {
+//                        DebugInformation.displayShortToastMessage(this, "boolean: TAPPED PLZ");
+//                    }
+//
+//                    if(Boolean.valueOf(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().peerTapped()))
+//                    {
+//                        DebugInformation.displayShortToastMessage(this, "valueOf: TAPPED PLZ");
+//                    }
+//
+//                    if(Boolean.parseBoolean(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().peerTapped()))
+//                    {
+//                        DebugInformation.displayShortToastMessage(this, "parseBoolean: TAPPED PLZ");
+//                    }
+//                }
+//                else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+//                {
+//                    peerTappedStatus = Boolean.valueOf(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().peerTapped());
+//                }
+
+//                if(peerTappedStatus)
+//                {
+//                    DebugInformation.displayShortToastMessage(this, "Tapped bro.");
+//                }
+
+                level.update(dt, peerTappedStatus);
+
+//                if (playerMatchStatus == NetworkConstants.HOST_ID)
+//                {
+//                    // All other update calls here.
+//                    // Update the level.
+//                    //peerTappedStatus = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().hasPeerTapped();
+//                    //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setTapped(level.player.tap);
+//                    //level.update(dt, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().hasPeerTapped());
+//                    level.update(dt, connectionApplication);
+//                }
+//                else if (playerMatchStatus == NetworkConstants.JOIN_ID)
+//                {
+//                    //peerTappedStatus = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().hasPeerTapped();
+//                    //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setTapped(level.player.tap);
+//                    //level.update(dt, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().hasPeerTapped());
+//                    level.update(dt, connectionApplication);
+//                }
 
                 //level.update(dt, peerTappedStatus);
             }

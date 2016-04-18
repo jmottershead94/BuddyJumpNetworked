@@ -42,13 +42,13 @@ public class WiFiBroadcastReceiver extends NetworkBroadcastReceiver
             if(state == WifiManager.WIFI_STATE_ENABLED)
             {
                 // Wifi is enabled.
-                DebugInformation.displayShortToastMessage(currentActivity, "Wifi is enabled");
+                //DebugInformation.displayShortToastMessage(currentActivity, "Wifi is enabled");
             }
             // Otherwise, wifi is turned off.
             else
             {
                 // Wifi is disabled.
-                DebugInformation.displayShortToastMessage(currentActivity, "Wifi is not enabled");
+                //DebugInformation.displayShortToastMessage(currentActivity, "Wifi is not enabled");
             }
         }
     }

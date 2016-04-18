@@ -41,6 +41,7 @@ public class WiFiClientTasks extends WiFiTasks
         activity = networkActivity;
         serverAddress = connectedDeviceAddress;
         progressLoading = new ProgressDialog(networkActivity);
+        setSharedPreferences();
         //newImageThread();
     }
 

@@ -96,6 +96,40 @@ public class NetworkActivity extends Activity
     }
 
     //////////////////////////////////////////////////
+    //              Search For Devices              //
+    //==============================================//
+    // This will search for any devices on the wifi //
+    // connection.                                  //
+    //////////////////////////////////////////////////
+    protected void searchForDevices()
+    {
+        final Activity activityReference = this;
+
+        // This will attempt to discover any peers on the wifi connection.
+        wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener() {
+            // We have discovered a peer on the same network.
+            @Override
+            public void onSuccess() {
+                // Add all of the peers that we have found into our own device list for processing.
+                peers.addAll(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getPeers().getDeviceList());
+
+                // Retrieve the names off all of the devices.
+                getDeviceName();
+            }
+
+            // We have not discovered any peers on the same network.
+            @Override
+            public void onFailure(int i) {
+                // Display a message to the user, telling them that the search for peers was unsuccessful.
+                DebugInformation.displayShortToastMessage(activityReference, "No more peers, retrying...");
+
+                // Try searching again.
+                searchForDevices();
+            }
+        });
+    }
+
+    //////////////////////////////////////////////////
     //                Connect To Peer               //
     //==============================================//
     // This will connect to our selected device.    //
@@ -109,62 +143,22 @@ public class NetworkActivity extends Activity
         config.wps.setup = WpsInfo.PBC;
 
         // Connect to our selected device.
-        wifiP2pManager.connect(wifiChannel, config, new WifiP2pManager.ActionListener()
-        {
+        wifiP2pManager.connect(wifiChannel, config, new WifiP2pManager.ActionListener() {
             // We are connecting to our peer.
             @Override
-            public void onSuccess()
-            {
+            public void onSuccess() {
                 // Display a message to the user, telling them that they are connecting to their device.
                 DebugInformation.displayShortToastMessage(activityReference, "Connecting...");
             }
 
             // We have not connected to our peer.
             @Override
-            public void onFailure(int reason)
-            {
+            public void onFailure(int reason) {
                 // Display a message to the user, telling them that they have not connected to their device.
                 DebugInformation.displayShortToastMessage(activityReference, "Not connected, retrying...");
 
                 // Retry the connection.
                 connectToPeer(connectedDevice);
-            }
-        });
-    }
-
-    //////////////////////////////////////////////////
-    //              Search For Devices              //
-    //==============================================//
-    // This will search for any devices on the wifi //
-    // connection.                                  //
-    //////////////////////////////////////////////////
-    protected void searchForDevices()
-    {
-        final Activity activityReference = this;
-
-        // This will attempt to discover any peers on the wifi connection.
-        wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener()
-        {
-            // We have discovered a peer on the same network.
-            @Override
-            public void onSuccess()
-            {
-                // Add all of the peers that we have found into our own device list for processing.
-                peers.addAll(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getPeers().getDeviceList());
-
-                // Retrieve the names off all of the devices.
-                getDeviceName();
-            }
-
-            // We have not discovered any peers on the same network.
-            @Override
-            public void onFailure(int i)
-            {
-                // Display a message to the user, telling them that the search for peers was unsuccessful.
-                DebugInformation.displayShortToastMessage(activityReference, "No more peers, retrying...");
-
-                // Try searching again.
-                searchForDevices();
             }
         });
     }

@@ -16,7 +16,7 @@ public class SMSHandler extends Activity
 {
     // Attributes.
     // Private.
-    private final String standardMessage = "I have played Buddy Jump!, a game developed by Jason Mottershead (1300455) for coursework, and I wanted to tell you how I did: \n \n";
+    private final String standardMessage = "I have played Buddy Jump! and I wanted to tell you how I did: \n \n";   // The standard SMS message used in the application.
 
     // Methods.
     //////////////////////////////////////////////////

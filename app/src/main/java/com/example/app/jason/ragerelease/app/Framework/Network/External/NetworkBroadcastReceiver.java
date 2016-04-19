@@ -1,4 +1,4 @@
-// The package location of this class.
+// The package location for this class.
 package com.example.app.jason.ragerelease.app.Framework.Network.External;
 
 // All of the extra includes here.
@@ -18,25 +18,40 @@ import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
  */
 
 // Network broadcast receiver IS A broadcast receiver, therefore inherits from it.
+// This will be responsible for handling all of the generic network broadcast functions.
 public class NetworkBroadcastReceiver extends BroadcastReceiver
 {
     // Attributes.
-    protected WifiManager wifiManager = null;
-    protected WifiP2pManager wifiP2pManager = null;
-    protected Channel wifiChannel = null;
-    protected NetworkActivity currentActivity = null;
-    protected WiFiServerTasks wifiServerTasks = null;
-    protected WiFiClientTasks wifiClientTasks = null;
+    // Protected.
+    protected WifiManager wifiManager = null;           // This will provide access to the wifi manager.
+    protected WifiP2pManager wifiP2pManager = null;     // This will provide access to the wifi p2p manager.
+    protected Channel wifiChannel = null;               // This will provide access to our wifi channel.
+    protected NetworkActivity currentActivity = null;   // This will provide access to our current network activity.
+    protected WiFiServerTasks wifiServerTasks = null;   // This will provide access to the wifi server tasks.
+    protected WiFiClientTasks wifiClientTasks = null;   // This will provide access to the wifi client tasks.
 
     // Methods.
+    //////////////////////////////////////////////////
+    //                  Constructor                 //
+    //==============================================//
+    // This will initialise the network broadcast   //
+    // attributes.                                  //
+    //////////////////////////////////////////////////
     public NetworkBroadcastReceiver(WifiManager manager, WifiP2pManager p2pManager, Channel channel, NetworkActivity activity)
     {
+        // Initialising our network broadcast attributes.
         wifiManager = manager;
         wifiP2pManager = p2pManager;
         wifiChannel = channel;
         currentActivity = activity;
     }
 
+    //////////////////////////////////////////////////
+    //                  On Receive                  //
+    //==============================================//
+    // This will be overridden in the other         //
+    // broadcast receivers.                         //
+    //////////////////////////////////////////////////
     @Override
     public void onReceive(Context context, Intent intent) {};
 }

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.os.Handler;
 
 import com.example.app.jason.ragerelease.R;
+import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
 import com.example.app.jason.ragerelease.app.Framework.Network.External.Bluetooth.BluetoothHandler;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
@@ -100,7 +101,7 @@ public class ConnectionSelection extends NetworkActivity implements View.OnClick
     //////////////////////////////////////////////////
     //              On Restore Instance State       //
     //==============================================//
-    //  This will save the current singlePlayerGame status,     //
+    //  This will save the current game status,     //
     //  e.g. if we are using multiplayer.           //
     //  This is called if the phone orientation     //
     //  changes, or if for any reason the phone     //
@@ -172,9 +173,22 @@ public class ConnectionSelection extends NetworkActivity implements View.OnClick
                 else
                 {
                     wifiButton.setText(activateWiFiMessage);
+
+                    // If we have messageReply the message.
+                    if(DebugInformation.messageReply == DebugInformation.ACCEPTED_MESSAGE)
+                    {
+                        // Attempt to turn on WiFi.
+                        wifiButton.setText(acceptedWiFiMessage);
+
+                        // Turn on wifi connection.
+                        // Look for proper way to ask user permission - later.
+                        connectionApplication.getConnectionManagement().getWifiHandler().turnOn();
+
+                        DebugInformation.messageReply = DebugInformation.NO_MESSAGE_BOX;
+                    }
                 }
 
-                handler.postDelayed(this, 500);
+                handler.postDelayed(this, 1000);
             }
         });
     }
@@ -199,15 +213,12 @@ public class ConnectionSelection extends NetworkActivity implements View.OnClick
         // Otherwise, we are using wifi.
         else if(view == wifiButton)
         {
-            // Attempt to turn on WiFi.
-            wifiButton.setText(acceptedWiFiMessage);
-
-            // Turn on wifi connection.
-            // Look for proper way to ask user permission - later.
-            connectionApplication.getConnectionManagement().getWifiHandler().turnOn();
-
-            // If wifi has been enabled.
-            if(wifiManager.isWifiEnabled())
+            if(!wifiManager.isWifiEnabled())
+            {
+                // Display a message box to the user.
+                DebugInformation.displayMessageBox(this, "WiFi", "Turn on wifi?", "Yes", "No");
+            }
+            else
             {
                 startActivity(matchMakerActivity);
             }

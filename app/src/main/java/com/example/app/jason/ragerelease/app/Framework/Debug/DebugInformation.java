@@ -1,4 +1,4 @@
-// The package location of this class.
+// The package location for this class.
 package com.example.app.jason.ragerelease.app.Framework.Debug;
 
 // All of the extra includes here.
@@ -9,8 +9,7 @@ import android.widget.Toast;
  * Created by Jason Mottershead on 04/04/2016.
  */
 
-// This class will contain methods which will allow debug information to
-// to be easily printed.
+// This class will contain methods which will allow debug information to be easily printed.
 public class DebugInformation
 {
     // Methods.

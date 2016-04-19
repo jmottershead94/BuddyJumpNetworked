@@ -1,4 +1,4 @@
-// The package location of this class.
+// The package location for this class.
 package com.example.app.jason.ragerelease.app.Framework.Network.Internal.SQLiteDatabase;
 
 // All of the extra includes here.
@@ -22,15 +22,26 @@ import java.util.ArrayList;
 public class DataAdapter extends ArrayAdapter<Data>
 {
     // Methods.
+    //////////////////////////////////////////////////
+    //                  Constructor                 //
+    //==============================================//
+    // This will initialise our database adapter.   //
+    //////////////////////////////////////////////////
     public DataAdapter(final Context context, ArrayList<Data> data)
     {
         super(context, 0, data);
     }
 
+    //////////////////////////////////////////////////
+    //                  Get View                    //
+    //==============================================//
+    // This will return our current view within the //
+    // database and return it to place on screen.   //
+    //////////////////////////////////////////////////
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        // Get the contacts item for this position.
+        // Get the score for this position.
         Data data = getItem(position);
 
         // Check if an existing view is being reused, otherwise inflate the view.
@@ -39,11 +50,11 @@ public class DataAdapter extends ArrayAdapter<Data>
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.data_layout, parent, false);
         }
 
-        // Lookup view for data population.
+        // Obtain the text values for this piece of data.
         TextView displayLevelNumber = (TextView) convertView.findViewById(R.id.display_level_number);
         TextView displayDistance = (TextView) convertView.findViewById(R.id.display_distance);
 
-        // Populate the data into the template view.
+        // Place in the level number and distance number.
         displayLevelNumber.setText(data.levelNumber);
         displayDistance.setText(data.distanceTravelled);
 

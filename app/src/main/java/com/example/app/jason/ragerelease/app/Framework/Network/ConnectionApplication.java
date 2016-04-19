@@ -24,7 +24,7 @@ public class ConnectionApplication extends Application
     // Methods.
     // Setters.
     // This will set up our connection manager.
-    public void setConnectionManagement(WifiP2pManager p2pManager, WifiManager manager, Channel channel, NetworkActivity activity) { connectionManagement = new ConnectionManagement(p2pManager, manager, channel, activity); }
+    public void setConnectionManagement(WifiP2pManager p2pManager, WifiManager manager, Channel channel, NetworkActivity activity)  { connectionManagement = new ConnectionManagement(p2pManager, manager, channel, activity); }
 
     // This will set up our server player instance.
     // Which will be used in order to track player tapping.

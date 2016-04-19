@@ -3,7 +3,6 @@ package com.example.app.jason.ragerelease.app.Framework.Network;
 
 // All of the extra includes here.
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WpsInfo;
@@ -12,7 +11,6 @@ import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.Bundle;
-import android.os.Debug;
 import android.widget.ArrayAdapter;
 
 import com.example.app.jason.ragerelease.R;

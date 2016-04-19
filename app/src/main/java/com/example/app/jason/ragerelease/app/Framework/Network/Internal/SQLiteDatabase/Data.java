@@ -1,7 +1,5 @@
-// The package location of this class.
+// The package location for this class.
 package com.example.app.jason.ragerelease.app.Framework.Network.Internal.SQLiteDatabase;
-
-// All of the extra includes here.
 
 /**
  * Created by Jason Mottershead on 09/03/2016.
@@ -16,9 +14,14 @@ public class Data
     public String distanceTravelled = "";
 
     // Methods.
-    // Passing in the data.
+    //////////////////////////////////////////////////
+    //                  Constructor                 //
+    //==============================================//
+    // This will initialise our data values.        //
+    //////////////////////////////////////////////////
     public Data(String levelNum, String distance)
     {
+        // Initialising our attributes.
         levelNumber = levelNum;
         distanceTravelled = distance;
     }

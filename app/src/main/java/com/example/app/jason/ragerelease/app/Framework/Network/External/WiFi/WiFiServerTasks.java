@@ -1,17 +1,13 @@
-// The package location of this class.
+// The package location for this class.
 package com.example.app.jason.ragerelease.app.Framework.Network.External.WiFi;
 
 // All of the extra includes here.
 import android.app.ProgressDialog;
-import android.os.Handler;
-import android.os.Message;
 
-import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -20,43 +16,73 @@ import java.net.Socket;
  * Created by Jason Mottershead on 10/04/2016.
  */
 
-// WiFi server async task IS AN async task, therefore inherits from it.
-//public class WiFiServerTasks extends AsyncTask<String, Void, String>
+// WiFi server tasks ARE wifi tasks, therefore inherits from it.
 public class WiFiServerTasks extends WiFiTasks
 {
     // Attributes.
-    private Socket client = null;
+    // Private.
+    private Socket client = null;       // The socket that will be used to connect to the client peer.
 
     // Methods.
+    //////////////////////////////////////////////////
+    //                  Constructor                 //
+    //==============================================//
+    // This will initialise our attributes, and set //
+    // up the shared preference files.              //
+    //////////////////////////////////////////////////
     public WiFiServerTasks(NetworkActivity networkActivity)
     {
+        // Initialising our attributes.
         activity = networkActivity;
         progressLoading = new ProgressDialog(networkActivity);
         setSharedPreferences();
-        //newImageThread();
     }
 
+    //////////////////////////////////////////////////
+    //                    Start                     //
+    //==============================================//
+    // This start function will show progress       //
+    // dialog and send the current network state    //
+    // over to our handler for processing.          //
+    //////////////////////////////////////////////////
     @Override
     public void start()
     {
         super.start();
 
+        // Setting the message of the progress dialog.
         progressLoading.setMessage("Loading...");
-        progressLoading.show();
 
+        // If the progress loading dialog is not showing.
+        if(!progressLoading.isShowing())
+        {
+            // Display our loading progress.
+            progressLoading.show();
+        }
+
+        // Send over our current network state.
         handler.sendEmptyMessage(currentState);
     }
 
+    //////////////////////////////////////////////////
+    //                    Run                       //
+    //==============================================//
+    // This function will set up the main server    //
+    // task to run, to begin with we send a ready   //
+    // message to the peer.                         //
+    //////////////////////////////////////////////////
     @Override
     public void run()
     {
+        // Our string message used to handle the response from the client peer.
         String message = "";
 
         try
         {
+            // Switching between the current network state.
             switch (currentState)
             {
-                // If we need to send the ready message.
+                // If we are going to send a ready message.
                 case NetworkConstants.STATE_SEND_READY_MESSAGE:
                 {
                     // Create a server socket and wait for client connections.
@@ -64,48 +90,37 @@ public class WiFiServerTasks extends WiFiTasks
                     client = serverSocket.accept();
                     setSocket(client);
 
-                    DataInputStream dataInputStream = new DataInputStream(client.getInputStream());
-                    message = dataInputStream.readUTF();
+                    // If we have some data in our input stream.
+                    if(client.getInputStream() != null)
+                    {
+                        // Read the data from the connected socket.
+                        DataInputStream dataInputStream = new DataInputStream(client.getInputStream());
+                        message = dataInputStream.readUTF();
 
-                    // Make a response.
-                    new SendReadyMessage().run();
-                    handler.sendEmptyMessage(Integer.parseInt(message));
+                        // Make a response.
+                        new SendReadyMessage().run();
+
+                        // Send the current message over to the handle.
+                        // This will send over the peer network state.
+                        handler.sendEmptyMessage(Integer.parseInt(message));
+                    }
 
                     // If we are here, we have accepted a connection from the client.
-                    break;
-                }
-                case NetworkConstants.STATE_SEND_IMAGE_MESSAGE:
-                {
-                    break;
-                }
-                case NetworkConstants.STATE_SEND_GAME_MESSAGES:
-                {
                     break;
                 }
             }
         }
         catch (IOException e)
         {
-            message = "Not done";
+            e.printStackTrace();
         }
     }
 
     // Getters.
-    // Get the current server state.
-    public int getServerState()         { return currentState; }
-
     // Get the current peer image.
-    public int getPeerImageIndexInt()   { return peerImageIndexInt; }
+    public int getPeerImageIndexInt()           { return peerImageIndexInt; }
 
-//    // Setters.
-//    public void setServerState(int value)
-//    {
-//        currentState = value;
-//        handler.sendEmptyMessage(value);
-//    }
-
-    public void setServerPeerImage(int image)
-    {
-        sendImageThread.setImageIndex(image);
-    }
+    // Setters.
+    // Setting the peer image index.
+    public void setServerPeerImage(int image)   { sendImageThread.setImageIndex(image); }
 }

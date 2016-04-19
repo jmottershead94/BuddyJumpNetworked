@@ -337,6 +337,7 @@ public class MultiplayerGame extends NetworkActivity
             // Return to the main menu.
             Intent intent = new Intent(this, GameOver.class);
 
+            // TEST THIS OUT>>>>>>
 //            if(playerMatchStatus == NetworkConstants.HOST_ID)
 //            {
 //                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setGameIsRunning(!level.player.isGameOver());

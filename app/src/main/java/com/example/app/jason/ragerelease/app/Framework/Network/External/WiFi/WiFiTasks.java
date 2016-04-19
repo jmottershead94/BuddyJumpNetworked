@@ -1,6 +1,7 @@
-// The package location of this class.
+// The package location for this class.
 package com.example.app.jason.ragerelease.app.Framework.Network.External.WiFi;
 
+// All of the extra includes here.
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -24,73 +25,43 @@ import java.net.Socket;
 public class WiFiTasks extends Thread
 {
     // Attributes.
-    protected ProgressDialog progressLoading = null;
-    protected String serverAddress;
-    protected NetworkActivity activity = null;
-    protected SendReadyMessage sendReadyMessage = new SendReadyMessage();
-    protected SendImageMessage sendImageThread = new SendImageMessage();
-    protected SendGameMessages sendGameMessages = new SendGameMessages();
-    protected int peerImageIndexInt = 0;
-    protected static String PREFS_NAME = "MyPrefsFile";                      // Where the options will be saved to, whether they are true or false.
-    protected static String PLAYER_IMAGE_INDEX_KEY = "mplayerImage";         // The key used to access the player image index.
-    protected String PLAYER_TAPPED_KEY = "mplayerTapped";
-    protected int currentState = NetworkConstants.STATE_SEND_READY_MESSAGE;
-    protected Socket socket = null;
-    protected boolean tapped = false;
-    protected static boolean peerTapped = false;
-    protected boolean isRunning = false;
-    protected Player player = null;
-    private String peerTappedMessage = "";
-    protected SharedPreferences gameSettings = null;
-    protected SharedPreferences.Editor editor = null;
-    // Methods.
-//    protected void newReadyThread()
-//    {
-//        sendReadyMessage = new SendReadyMessage();
-//    }
-//
-//    protected void newImageThread()
-//    {
-//        sendImageThread = new SendImageMessage();
-//    }
-//
-//    protected void newGameMessageThread()
-//    {
-//
-//    }
+    // Protected.
+    protected ProgressDialog progressLoading = null;                        // This will be used to display loading progress for the wifi tasks.
+    protected String serverAddress = "";                                    // The string value to store the server address.
+    protected NetworkActivity activity = null;                              // Our reference to the current network activity.
+    protected SendImageMessage sendImageThread = new SendImageMessage();    // This will be used in order to send our image index over to the other thread.
+    protected SendGameMessages sendGameMessages = new SendGameMessages();   // This will be used in order to send game messages over to the other peer.
+    protected int peerImageIndexInt = 0;                                    // The current int value for our peer image index.
+    protected static String PREFS_NAME = "MyPrefsFile";                     // Where the options will be saved to, whether they are true or false.
+    protected String PLAYER_TAPPED_KEY = "mplayerTapped";                   // The string key for accessing whether or not the peer player has tapped the screen.
+    protected int currentState = NetworkConstants.STATE_SEND_READY_MESSAGE; // Initialising our current network state to send a ready message.
+    protected Socket socket = null;                                         // Will be used for wifi communication and reading input stream / writing to output stream.
+    protected static boolean peerTapped = false;                            // Whether or not the peer has tapped.
+    protected boolean isRunning = false;                                    // Whether or not the game message sending thread should be running or not.
+    protected Player player = null;                                         // Gaining access to the player.
+    protected SharedPreferences gameSettings = null;                        // Gaining access to the shared preferences file.
+    protected SharedPreferences.Editor editor = null;                       // Gaining access to the editor of the shared preference file.
 
-    protected void setSharedPreferences()
-    {
-        gameSettings = activity.getSharedPreferences(PREFS_NAME, activity.MODE_PRIVATE);
-        editor = gameSettings.edit();
-    }
-
-    protected void setSocket(Socket peerSocket)
-    {
-        socket = peerSocket;
-    }
-
-    public void setTapped(boolean tap)
-    {
-        tapped = tap;
-    }
-
-    public void setGameIsRunning(boolean running)
-    {
-        isRunning = running;
-    }
-
-    public void setPlayer(Player gamePlayer) { player = gamePlayer; }
-
-    // This class will handle sending the ready message over to the other peer.
+    // This private class will handle sending the ready message over to the other peer.
     protected class SendReadyMessage extends Thread
     {
+        // Methods.
+        //////////////////////////////////////////////////
+        //                      Run                     //
+        //==============================================//
+        // This function will run the ready message     //
+        // thread, which will send over the current     //
+        // state to the peer.                           //
+        //////////////////////////////////////////////////
         @Override
         public void run()
         {
             try
             {
+                // Setting up the response to the peer, this will store our current network state.
                 String response = String.valueOf(currentState);
+
+                // This will write our response to the output stream.
                 DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 dataOutputStream.writeUTF(response);
             }
@@ -104,38 +75,48 @@ public class WiFiTasks extends Thread
     // This class will handle sending over the image index to the other peer.
     protected class SendImageMessage extends Thread
     {
-        private int playerImageIndex = 0;
+        // Attributes.
+        // Private.
+        private int playerImageIndex = 0;           // This is our current peer image index.
 
-        public void setImageIndex(int imageIndex)
-        {
-            playerImageIndex = imageIndex;
-        }
-
+        // Methods.
+        //////////////////////////////////////////////////
+        //                      Run                     //
+        //==============================================//
+        // This function will run the image message     //
+        // thread, which will send over our current     //
+        // image index.                                 //
+        //////////////////////////////////////////////////
         @Override
         public void run()
         {
             try
             {
-                // Get access to the singlePlayerGame options.
                 // Accessing the player image index.
                 final int playerImage = playerImageIndex;
                 final String imageIndexMessage = String.valueOf(playerImage);
 
+                // Writing our index to the output stream of the socket.
                 DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 dataOutputStream.writeUTF(imageIndexMessage);
 
+                // If we have some data in our input stream.
                 if(socket.getInputStream() != null)
                 {
+                    // Read the data from the connected socket.
                     DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
                     String peerImageIndex = dataInputStream.readUTF();
+
+                    // Access the peer image index.
                     peerImageIndexInt = Integer.parseInt(peerImageIndex);
 
+                    // Display a message to the user, telling them that an image has been received from the peer.
                     activity.runOnUiThread(new Runnable()
                     {
                         @Override
                         public void run()
                         {
-                            DebugInformation.displayShortToastMessage(activity, "Peer Image index: " + peerImageIndexInt);
+                            DebugInformation.displayShortToastMessage(activity, "Received peer image: " + peerImageIndexInt);
                         }
                     });
                 }
@@ -145,50 +126,60 @@ public class WiFiTasks extends Thread
                 e.printStackTrace();
             }
         }
+
+        // Setters.
+        // This will set our current image index.
+        public void setImageIndex(int imageIndex) { playerImageIndex = imageIndex; }
     }
 
     // This class will allow us to send game messages within the game loop.
     protected class SendGameMessages extends Thread
     {
+        // Methods.
+        //////////////////////////////////////////////////
+        //                      Run                     //
+        //==============================================//
+        // This function will run the game message      //
+        // thread, this will be responsible for sending //
+        // over messages from each player.              //
+        //////////////////////////////////////////////////
         @Override
         public void run()
         {
             try
             {
-                // while(either player has not died)
-                // {
-
-                while(true)
+                // While the game is running.
+                while(isRunning)
                 {
-                    // Accessing the player tapped status.
+                    // If we have an instance of the player.
                     if(player != null)
                     {
+                        // Access the tapped status from the player.
                         boolean playerTapped = player.tap;
+
+                        // Store that tapped value into a string.
                         String tappedMessage = String.valueOf(playerTapped);
 
+                        // Writing the tapped message to the output stream of the socket.
                         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
                         dataOutputStream.writeUTF(tappedMessage);
 
+                        // If we have some data in our input stream.
                         if (socket.getInputStream() != null)
                         {
+                            // Reading data from the input stream of the socket.
                             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
                             String peerTappedMessageTemp = dataInputStream.readUTF();
 
-                            peerTappedMessage = peerTappedMessageTemp;
-                            peerTapped = Boolean.parseBoolean(peerTappedMessage);
+                            // Parsing our string value into a boolean value to be used with our game activity.
+                            peerTapped = Boolean.parseBoolean(peerTappedMessageTemp);
 
+                            // Saving the boolean value within our shared preference file in order to use.
                             editor.putBoolean(PLAYER_TAPPED_KEY, peerTapped);
                             editor.apply();
-//                            // Maybe the bool is changing too quickly to be notified in the level?
-//                            if(peerTapped)
-//                            {
-//
-//                            }
                         }
                     }
                 }
-
-                // }
             }
             catch(IOException e)
             {
@@ -197,69 +188,125 @@ public class WiFiTasks extends Thread
         }
     }
 
+    // This is our handler which will have our network states.
     protected Handler handler = new Handler()
     {
+        // Methods.
+        //////////////////////////////////////////////////
+        //               Handle Message                 //
+        //==============================================//
+        // This function will handle the messages that  //
+        // are sent to the handler.                     //
+        //////////////////////////////////////////////////
         @Override
         public void handleMessage(Message message)
         {
+            // Switching between the message int value.
             switch (message.what)
             {
+                // If we are going to send a ready message.
                 case NetworkConstants.STATE_SEND_READY_MESSAGE:
                 {
+                    // Setting the message of the progress dialog.
+                    progressLoading.setMessage("Connecting...");
+
+                    // If the progress loading dialog is not showing.
+                    if(!progressLoading.isShowing())
+                    {
+                        // Display our loading progress.
+                        progressLoading.show();
+                    }
+
+                    // Displaying a message to the user, telling them that they have successfully connected to the peer.
                     DebugInformation.displayShortToastMessage(activity, "Peer connected successfully");
-                    progressLoading.dismiss();
+
+                    // If our progress dialog is showing.
+                    if(progressLoading.isShowing())
+                    {
+                        // Remove the progress loading dialog.
+                        progressLoading.dismiss();
+                    }
+
                     break;
                 }
+                // If we are going to send an image message to the peer.
                 case NetworkConstants.STATE_SEND_IMAGE_MESSAGE:
                 {
                     // We are about to send over the image index.
                     progressLoading.setMessage("Sending image over...");
-                    progressLoading.show();
-                    //DebugInformation.displayShortToastMessage(activity, "Sending image.");
+
+                    // If the progress loading dialog is not showing.
+                    if(!progressLoading.isShowing())
+                    {
+                        // Display our loading progress.
+                        progressLoading.show();
+                    }
 
                     // Start the thread to send the image index.
                     sendImageThread.start();
 
                     // Switch the state for the client to the next state.
                     currentState = NetworkConstants.STATE_SEND_GAME_MESSAGES;
-                    String clientMessage = String.valueOf(currentState);
 
-                    // We have received our server image here.
-                    //DebugInformation.displayShortToastMessage(activity, "Image received from client");
-                    progressLoading.dismiss();
+                    // If our progress dialog is showing.
+                    if(progressLoading.isShowing())
+                    {
+                        // Remove the progress loading dialog.
+                        progressLoading.dismiss();
+                    }
+
                     break;
                 }
+                // If we are going to send game messages to the peer.
                 case NetworkConstants.STATE_SEND_GAME_MESSAGES:
                 {
-                    DebugInformation.displayShortToastMessage(activity, "Game messages");
-                    progressLoading.dismiss();
+                    // If our progress dialog is showing.
+                    if(progressLoading.isShowing())
+                    {
+                        // Remove the progress loading dialog.
+                        progressLoading.dismiss();
+                    }
 
+                    // If our send game messages thread is not yet alive.
                     if(!sendGameMessages.isAlive())
                     {
                         // Start sending game messages.
                         sendGameMessages.start();
                     }
 
-                    //DebugInformation.displayShortToastMessage(activity, "Shouldn't get here?" + areGameMessagesRunning());
                     break;
                 }
             }
         }
     };
 
-    // Getters.
-    // Return whether or not the peer has tapped on their character.
-    public boolean hasPeerTapped() { return peerTapped; }
-
-    // RETURN.
-    public String peerTapped() { return peerTappedMessage; }
-
-    public boolean areGameMessagesRunning() { return isRunning; }
-
     // Setters.
-    public void setState(int newState)
+    // This will set our current network state and send that state over to our handler for processing.
+    public void setState(final int newState)
     {
+        // Setting the new state.
         currentState = newState;
+
+        // Sending that state over to the handler.
         handler.sendEmptyMessage(newState);
     }
+
+    // This will set our current shared preference file and editor.
+    protected void setSharedPreferences()
+    {
+        // Accessing the shared preferences file.
+        gameSettings = activity.getSharedPreferences(PREFS_NAME, activity.MODE_PRIVATE);
+
+        // Setting up the edit for the shared preference file.
+        editor = gameSettings.edit();
+    }
+
+    // This will set our current socket instance.
+    protected void setSocket(final Socket peerSocket)     { socket = peerSocket; }
+
+    // This will set whether or not the game message loop should be running.
+    public void setGameIsRunning(final boolean running)   { isRunning = running; }
+
+    // This will set up our instance of the player.
+    public void setPlayer(final Player gamePlayer)        { player = gamePlayer; }
 }

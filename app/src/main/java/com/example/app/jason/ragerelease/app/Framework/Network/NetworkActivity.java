@@ -29,13 +29,13 @@ public class NetworkActivity extends Activity
 {
     // Attributes.
     // Protected.
-    protected WifiP2pManager wifiP2pManager = null;                     // Used to manage our peer-to-peer wifi connection.
-    protected WifiManager wifiManager = null;                           // Used to manage our wifi connection.
-    protected Channel wifiChannel = null;                               // Connects the application to the wifi p2p framework.
-    protected ConnectionApplication connectionApplication = null;       // The application class for this application in order to try and keep data values between activities.
-    protected ArrayAdapter<String> peerNames = null;                    // This will store the list of available peer names when we are searching for devices.
-    protected List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();           // This will store a list of wifi p2p devices when we are searching for devices.
-    protected WifiP2pDevice wifiP2pDevice = new WifiP2pDevice();        // This will store our connected wifi p2p device.
+    protected WifiP2pManager wifiP2pManager = null;                         // Used to manage our peer-to-peer wifi connection.
+    protected WifiManager wifiManager = null;                               // Used to manage our wifi connection.
+    protected Channel wifiChannel = null;                                   // Connects the application to the wifi p2p framework.
+    protected ConnectionApplication connectionApplication = null;           // The application class for this application in order to try and keep data values between activities.
+    protected ArrayAdapter<String> peerNames = null;                        // This will store the list of available peer names when we are searching for devices.
+    protected List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();   // This will store a list of wifi p2p devices when we are searching for devices.
+    protected WifiP2pDevice wifiP2pDevice = new WifiP2pDevice();            // This will store our connected wifi p2p device.
 
     // Methods.
     //////////////////////////////////////////////////
@@ -146,17 +146,20 @@ public class NetworkActivity extends Activity
         config.wps.setup = WpsInfo.PBC;
 
         // Connect to our selected device.
-        wifiP2pManager.connect(wifiChannel, config, new WifiP2pManager.ActionListener() {
+        wifiP2pManager.connect(wifiChannel, config, new WifiP2pManager.ActionListener()
+        {
             // We are connecting to our peer.
             @Override
-            public void onSuccess() {
+            public void onSuccess()
+            {
                 // Display a message to the user, telling them that they are connecting to their device.
                 DebugInformation.displayShortToastMessage(activityReference, "Connecting...");
             }
 
             // We have not connected to our peer.
             @Override
-            public void onFailure(int reason) {
+            public void onFailure(int reason)
+            {
                 // Display a message to the user, telling them that they have not connected to their device.
                 DebugInformation.displayShortToastMessage(activityReference, "Not connected, retrying...");
 

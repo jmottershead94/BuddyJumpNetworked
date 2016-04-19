@@ -1,4 +1,4 @@
-// The package location of this class.
+// The package location for this class.
 package com.example.app.jason.ragerelease.app.Framework.Network.Internal.AndroidOSHandlers;
 
 // All of the extra includes here.
@@ -19,6 +19,12 @@ public class SMSHandler extends Activity
     private final String standardMessage = "I have played Buddy Jump!, a game developed by Jason Mottershead (1300455) for coursework, and I wanted to tell you how I did: \n \n";
 
     // Methods.
+    //////////////////////////////////////////////////
+    //                  Constructor                 //
+    //==============================================//
+    // This will initialise the intent for sms      //
+    // service.                                     //
+    //////////////////////////////////////////////////
     public SMSHandler(final Activity gameOverScreen, String extraMessage)
     {
         // An intent that takes us to an sms activity.

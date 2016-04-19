@@ -106,10 +106,12 @@ public class NetworkActivity extends Activity
         final Activity activityReference = this;
 
         // This will attempt to discover any peers on the wifi connection.
-        wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener() {
+        wifiP2pManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener()
+        {
             // We have discovered a peer on the same network.
             @Override
-            public void onSuccess() {
+            public void onSuccess()
+            {
                 // Add all of the peers that we have found into our own device list for processing.
                 peers.addAll(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getPeers().getDeviceList());
 
@@ -119,7 +121,8 @@ public class NetworkActivity extends Activity
 
             // We have not discovered any peers on the same network.
             @Override
-            public void onFailure(int i) {
+            public void onFailure(int i)
+            {
                 // Display a message to the user, telling them that the search for peers was unsuccessful.
                 DebugInformation.displayShortToastMessage(activityReference, "No more peers, retrying...");
 

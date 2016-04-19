@@ -3,11 +3,9 @@ package com.example.app.jason.ragerelease.app.Framework;
 
 // All of the extra includes here.
 import android.app.Activity;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Graphics.AnimatedSprite;
 import com.example.app.jason.ragerelease.app.Framework.Maths.Vector2;
 import com.example.app.jason.ragerelease.app.Framework.Network.ConnectionApplication;

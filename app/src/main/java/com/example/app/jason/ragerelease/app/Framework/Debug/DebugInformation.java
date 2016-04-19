@@ -1,6 +1,7 @@
 // The package location of this class.
 package com.example.app.jason.ragerelease.app.Framework.Debug;
 
+// All of the extra includes here.
 import android.app.Activity;
 import android.widget.Toast;
 
@@ -13,14 +14,22 @@ import android.widget.Toast;
 public class DebugInformation
 {
     // Methods.
-    // This method will display a short length toast message.
-    public static void displayShortToastMessage(Activity currentActivity, String toastMessage)
+    //////////////////////////////////////////////////
+    //          Display Short Toast Message         //
+    //==============================================//
+    // This will display a short toast message.     //
+    //////////////////////////////////////////////////
+    public static void displayShortToastMessage(final Activity currentActivity, final String toastMessage)
     {
         Toast.makeText(currentActivity.getApplicationContext(), toastMessage, Toast.LENGTH_SHORT).show();
     }
 
-    // This method will display a long length toast message.
-    public static void displayLongToastMessage(Activity currentActivity, String toastMessage)
+    //////////////////////////////////////////////////
+    //          Display Long Toast Message          //
+    //==============================================//
+    // This will display a long toast message.      //
+    //////////////////////////////////////////////////
+    public static void displayLongToastMessage(final Activity currentActivity, final String toastMessage)
     {
         Toast.makeText(currentActivity.getApplicationContext(), toastMessage, Toast.LENGTH_LONG).show();
     }

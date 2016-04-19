@@ -1,9 +1,11 @@
+// The package location of this class.
 package com.example.app.jason.ragerelease.app.Framework.Network;
 
 /**
  * Created by Jason Mottershead on 05/04/2016.
  */
 
+// This class will be responsible for holding all of the network constant values within the app.
 public class NetworkConstants
 {
     // Attributes.

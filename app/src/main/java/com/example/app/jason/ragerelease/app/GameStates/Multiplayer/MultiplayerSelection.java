@@ -83,7 +83,7 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
         companionSelectionButton.setVisibility(View.GONE);
         playGameButton.setOnClickListener(this);
 
-        DebugInformation.displayShortToastMessage(this, "Image index: " + playerImage);
+//        DebugInformation.displayShortToastMessage(this, "Image index: " + playerImage);
     }
 
     //////////////////////////////////////////////////

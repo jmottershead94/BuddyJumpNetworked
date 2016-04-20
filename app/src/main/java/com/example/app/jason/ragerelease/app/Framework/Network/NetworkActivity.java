@@ -4,6 +4,7 @@ package com.example.app.jason.ragerelease.app.Framework.Network;
 // All of the extra includes here.
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -11,10 +12,13 @@ import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
+import com.example.app.jason.ragerelease.app.GameStates.Multiplayer.ConnectionSelection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +60,8 @@ public class NetworkActivity extends Activity
         wifiChannel = wifiP2pManager.initialize(this, getMainLooper(), null);
         connectionApplication = (ConnectionApplication)getApplicationContext();
         peerNames = new ArrayAdapter<String>(this, R.layout.device_name);
+
+//        DebugInformation.resetMessageValues();
     }
 
     //////////////////////////////////////////////////
@@ -94,6 +100,102 @@ public class NetworkActivity extends Activity
         unregisterReceiver(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver());
         unregisterReceiver(connectionApplication.getConnectionManagement().getWifiHandler().getWifiBroadcastReceiver());
     }
+
+    public void checkEnabledStatusButton(final Button button)
+    {
+        final Activity activityReference = this;
+        DebugInformation.resetMessageValues();
+
+        // Setting up a handler and runnable to handle button text changes.
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                // Do the same for WiFi.
+                if(wifiManager.isWifiEnabled())
+                {
+                    if(!button.isEnabled())
+                    {
+                        button.setEnabled(true);
+                    }
+                }
+                else
+                {
+                    if(button.isEnabled())
+                    {
+                        button.setEnabled(false);
+                    }
+
+                    DebugInformation.displayMessageBox(activityReference, "WiFi Connection", "WiFi has been disabled, reconnect?", "Yes", "No");
+
+                    // If we have messageReply the message.
+                    if (DebugInformation.messageReply == DebugInformation.ACCEPTED_MESSAGE)
+                    {
+                        button.setEnabled(true);
+
+                        // Turn on wifi connection.
+                        connectionApplication.getConnectionManagement().getWifiHandler().turnOn();
+
+                        DebugInformation.messageReply = DebugInformation.NO_MESSAGE_BOX;
+                    }
+                    else if(DebugInformation.messageReply == DebugInformation.DECLINED_MESSAGE)
+                    {
+                        DebugInformation.displayShortToastMessage(activityReference, "DECLINED");
+//
+                        DebugInformation.resetMessageValues();
+
+                        // Return them to the connection selection activity.
+                        Intent connectionSelectionActivity = new Intent(activityReference, ConnectionSelection.class);
+
+                        activityReference.startActivity(connectionSelectionActivity);
+                    }
+                }
+            }
+        }, 300);
+    }
+
+//    public void checkEnabledStatus()
+//    {
+//        final Activity activityReference = this;
+//
+//        // Setting up a handler and runnable to handle button text changes.
+//        final Handler handler = new Handler();
+//        handler.post(new Runnable()
+//        {
+//            // What happens after delay.
+//            @Override
+//            public void run()
+//            {
+//                // Do the same for WiFi.
+//                if (!wifiManager.isWifiEnabled())
+//                {
+//                    DebugInformation.displayMessageBox(activityReference, "WiFi Connection", "WiFi has been disabled, reconnect?", "Yes", "No");
+//
+//                    // If we have messageReply the message.
+//                    if (DebugInformation.messageReply == DebugInformation.ACCEPTED_MESSAGE)
+//                    {
+//                        // Turn on wifi connection.
+//                        connectionApplication.getConnectionManagement().getWifiHandler().turnOn();
+//
+//                        DebugInformation.messageReply = DebugInformation.NO_MESSAGE_BOX;
+//                    }
+//                    else if(DebugInformation.messageReply == DebugInformation.DECLINED_MESSAGE)
+//                    {
+//                        DebugInformation.messageReply = DebugInformation.NO_MESSAGE_BOX;
+//
+//                        // Return them to the connection selection activity.
+//                        Intent connectionSelectionActivity = new Intent(activityReference, ConnectionSelection.class);
+//
+//                        activityReference.startActivity(connectionSelectionActivity);
+//                    }
+//                }
+//
+//                handler.postDelayed(this, 500);
+//            }
+//        });
+//    }
 
     //////////////////////////////////////////////////
     //              Search For Devices              //

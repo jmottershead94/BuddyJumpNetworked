@@ -41,7 +41,7 @@ public class WiFiHandler
         currentActivity = activity;
 
         // Initialising the wifi broadcast receiver.
-        wifiBroadcastReceiver = new WiFiBroadcastReceiver(manager, p2pManager, channel, activity);
+        wifiBroadcastReceiver = new WiFiBroadcastReceiver(this, manager, p2pManager, channel, activity);
         wifiP2PBroadcastReceiver = new WiFiP2PBroadcastReceiver(manager, p2pManager, channel, activity);
     }
 

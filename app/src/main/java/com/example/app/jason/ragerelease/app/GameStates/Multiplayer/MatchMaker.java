@@ -4,6 +4,7 @@ package com.example.app.jason.ragerelease.app.GameStates.Multiplayer;
 // All of the extra includes here.
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 
@@ -52,6 +53,9 @@ public class MatchMaker extends NetworkActivity implements View.OnClickListener
         // If any of the buttons are pressed on the match maker screen.
         button.isPressed(mainMenuButton, this, MainMenu.class);
         button.isPressed(backButton, this, ConnectionSelection.class);
+
+        checkEnabledStatusButton(hostButton);
+        checkEnabledStatusButton(joinButton);
     }
 
     @Override
@@ -71,29 +75,43 @@ public class MatchMaker extends NetworkActivity implements View.OnClickListener
     {
         Intent nextActivity = null;
 
-        // If the user wants to host a match.
-        if(view == hostButton)
+        if(wifiManager.isWifiEnabled())
         {
-            nextActivity = new Intent(this, MultiplayerSelection.class);
+            // If the user wants to host a match.
+            if (view == hostButton)
+            {
+                nextActivity = new Intent(this, MultiplayerSelection.class);
 
-            searchForDevices();
+                searchForDevices();
 
-            // Start a server connection.
-            DebugInformation.displayShortToastMessage(this, "Hosting");
-            nextActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.HOST_ID);
+                // Start a server connection.
+                DebugInformation.displayShortToastMessage(this, "Hosting");
+                nextActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.HOST_ID);
+            }
+            // Otherwise, if the user wants to join a match.
+            else if (view == joinButton)
+            {
+                nextActivity = new Intent(this, DeviceList.class);
+
+                //searchForDevices();
+
+                // Start a client connection.
+                DebugInformation.displayShortToastMessage(this, "Joining");
+                nextActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.JOIN_ID);
+            }
+
+            startActivity(nextActivity);
         }
-        // Otherwise, if the user wants to join a match.
-        else if(view == joinButton)
+        else
         {
-            nextActivity = new Intent(this, DeviceList.class);
-
-            //searchForDevices();
-
-            // Start a client connection.
-            DebugInformation.displayShortToastMessage(this, "Joining");
-            nextActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.JOIN_ID);
+            if(view == hostButton)
+            {
+                checkEnabledStatusButton(hostButton);
+            }
+            else if(view == joinButton)
+            {
+                checkEnabledStatusButton(joinButton);
+            }
         }
-
-        startActivity(nextActivity);
     }
 }

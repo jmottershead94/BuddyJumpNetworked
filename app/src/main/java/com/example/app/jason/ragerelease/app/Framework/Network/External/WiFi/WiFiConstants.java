@@ -11,4 +11,6 @@ public class WiFiConstants
     // Attributes.
     // Public.
     public static final int REQUEST_ENABLE_WIFI = 1;    // The request code for enabling WiFi.
+    public static final int WIFI_ENABLED = 2;
+    public static final int WIFI_DISABLED = WIFI_ENABLED + 1;
 }

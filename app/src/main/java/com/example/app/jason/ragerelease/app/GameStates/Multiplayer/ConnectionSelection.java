@@ -184,7 +184,11 @@ public class ConnectionSelection extends NetworkActivity implements View.OnClick
                         // Look for proper way to ask user permission - later.
                         connectionApplication.getConnectionManagement().getWifiHandler().turnOn();
 
-                        DebugInformation.messageReply = DebugInformation.NO_MESSAGE_BOX;
+                        DebugInformation.resetMessageValues();
+                    }
+                    else if(DebugInformation.messageReply == DebugInformation.DECLINED_MESSAGE)
+                    {
+                        DebugInformation.resetMessageValues();
                     }
                 }
 
@@ -215,6 +219,8 @@ public class ConnectionSelection extends NetworkActivity implements View.OnClick
         {
             if(!wifiManager.isWifiEnabled())
             {
+                DebugInformation.resetMessageValues();
+
                 // Display a message box to the user.
                 DebugInformation.displayMessageBox(this, "WiFi", "Turn on wifi?", "Yes", "No");
             }

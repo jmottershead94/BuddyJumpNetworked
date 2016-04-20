@@ -36,6 +36,7 @@ public class WiFiTasks extends Thread
     protected String PLAYER_TAPPED_KEY = "mplayerTapped";                   // The string key for accessing whether or not the peer player has tapped the screen.
     protected int currentState = NetworkConstants.STATE_SEND_READY_MESSAGE; // Initialising our current network state to send a ready message.
     protected Socket socket = null;                                         // Will be used for wifi communication and reading input stream / writing to output stream.
+    protected boolean isReady = false;                                      // Whether or not the player is ready to start the game.
     protected static boolean peerTapped = false;                            // Whether or not the peer has tapped.
     protected boolean isRunning = false;                                    // Whether or not the game message sending thread should be running or not.
     protected Player player = null;                                         // Gaining access to the player.
@@ -135,6 +136,53 @@ public class WiFiTasks extends Thread
         // Setters.
         // This will set our current image index.
         public void setImageIndex(int imageIndex) { playerImageIndex = imageIndex; }
+    }
+
+    protected class SendStartGameMessage extends Thread
+    {
+        // Methods.
+        //////////////////////////////////////////////////
+        //                      Run                     //
+        //==============================================//
+        // This function will run the game message      //
+        // thread, this will be responsible for sending //
+        // over messages from each player.              //
+        //////////////////////////////////////////////////
+        @Override
+        public void run()
+        {
+            try
+            {
+                // Set is ready to true when we press play game!
+                final boolean ready = true;
+
+                // Store that tapped value into a string.
+                String readyMessage = String.valueOf(ready);
+
+                // Writing the tapped message to the output stream of the socket.
+                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                dataOutputStream.writeUTF(readyMessage);
+
+                // If we have some data in our input stream.
+                if (socket.getInputStream() != null)
+                {
+                    while(!isReady)
+                    {
+                        // Reading data from the input stream of the socket.
+                        DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+                        String peerReadyMessage = dataInputStream.readUTF();
+
+                        // Parsing our string value into a boolean value to be used with our game activity.
+                        isReady = Boolean.parseBoolean(peerReadyMessage);
+                    }
+                }
+
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     // This class will allow us to send game messages within the game loop.
@@ -251,6 +299,31 @@ public class WiFiTasks extends Thread
                     sendImageThread.start();
 
                     // Switch the state for the client to the next state.
+                    currentState = NetworkConstants.STATE_TELL_PEER_READY;
+
+                    // If our progress dialog is showing.
+                    if(progressLoading.isShowing())
+                    {
+                        // Remove the progress loading dialog.
+                        progressLoading.dismiss();
+                    }
+
+                    break;
+                }
+                case NetworkConstants.STATE_TELL_PEER_READY:
+                {
+                    // We are about to send over the image index.
+                    progressLoading.setMessage("Sending image over...");
+
+                    // If the progress loading dialog is not showing.
+                    if(!progressLoading.isShowing())
+                    {
+                        // Display our loading progress.
+                        progressLoading.show();
+                    }
+
+                    new SendStartGameMessage().run();
+
                     currentState = NetworkConstants.STATE_SEND_GAME_MESSAGES;
 
                     // If our progress dialog is showing.
@@ -292,6 +365,12 @@ public class WiFiTasks extends Thread
 //            sendImageThread.
 //        }
 //    }
+
+    // Getters.
+    // This will tell us whether or not the peer is ready.
+    public boolean isPlayerReady() { return isReady; }
+
+    public int getCurrentState() {return currentState;}
 
     // Setters.
     // This will set our current network state and send that state over to our handler for processing.

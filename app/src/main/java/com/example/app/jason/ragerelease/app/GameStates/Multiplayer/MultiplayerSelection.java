@@ -4,6 +4,7 @@ package com.example.app.jason.ragerelease.app.GameStates.Multiplayer;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Network;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -82,6 +83,40 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
         playerSelectionButton.setVisibility(View.GONE);
         companionSelectionButton.setVisibility(View.GONE);
         playGameButton.setOnClickListener(this);
+
+//        final Activity activityReference = this;
+//        final Handler handler = new Handler();
+//        final Runnable runnable = new Runnable()
+//        {
+//            @Override
+//            public void run()
+//            {
+//                if(DebugInformation.messageReply == DebugInformation.ACCEPTED_MESSAGE)
+//                {
+//                    if(playerMatchStatus == NetworkConstants.HOST_ID)
+//                    {
+//                        DebugInformation.displayShortToastMessage(activityReference, "Host starting ready.");
+//                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setState(NetworkConstants.STATE_TELL_PEER_READY);
+//                        DebugInformation.displayShortToastMessage(activityReference, "Host should be ready.");
+//                    }
+//                    else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+//                    {
+//                        DebugInformation.displayShortToastMessage(activityReference, "Join starting ready");
+//                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setState(NetworkConstants.STATE_TELL_PEER_READY);
+//                        DebugInformation.displayShortToastMessage(activityReference, "Join should be ready");
+//                    }
+//
+//                    if((connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().isPlayerReady())
+//                        && (connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().isPlayerReady()))
+//                    {
+//                        DebugInformation.displayShortToastMessage(activityReference, "READY");
+//                        startGame();
+//                    }
+//                }
+//            }
+//        };
+//
+//        handler.post(runnable);
     }
 
     //////////////////////////////////////////////////
@@ -173,81 +208,87 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
         {
             if(wifiManager.isWifiEnabled())
             {
-                final Intent gameActivity = new Intent(this, MultiplayerGame.class);
-
-                // If we are hosting a match.
-                if (playerMatchStatus == NetworkConstants.HOST_ID)
-                {
-                    // Send the current player image index to the other player via the server.
-                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setServerPeerImage(playerImage);
-                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
-                    gameActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.HOST_ID);
-                }
-                else if (playerMatchStatus == NetworkConstants.JOIN_ID)
-                {
-                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setClientPeerImage(playerImage);
-                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
-                    gameActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.JOIN_ID);
-                }
-
-                final Activity activityReference = this;
-
-                // Create a delay.
-                final Handler debugHandler = new Handler();
-                debugHandler.postDelayed(new Runnable()
-                {
-                    // After 6 seconds.
-                    @Override
-                    public void run()
-                    {
-                        if(wifiManager.isWifiEnabled())
-                        {
-                            if (playerMatchStatus == NetworkConstants.HOST_ID)
-                            {
-                                DebugInformation.displayShortToastMessage(activityReference, "Client Image: " + connectionApplication.getServerPeerIndexImage());
-
-                                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setGameIsRunning(true);
-                                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
-                            }
-                            else if (playerMatchStatus == NetworkConstants.JOIN_ID)
-                            {
-                                DebugInformation.displayShortToastMessage(activityReference, "Server Image: " + connectionApplication.getClientPeerIndexImage());
-
-                                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setGameIsRunning(true);
-                                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
-                            }
-                        }
-                        else
-                        {
-                            userDisconnected();
-                        }
-                    }
-                }, 6000);
-
-                // Create a delay.
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable()
-                {
-                    // After 6 seconds.
-                    @Override
-                    public void run()
-                    {
-                        if(wifiManager.isWifiEnabled())
-                        {
-                            startActivity(gameActivity);
-                        }
-                        else
-                        {
-                            userDisconnected();
-                        }
-                    }
-                }, 12000);
+//                DebugInformation.displayMessageBox(this, "Start Game", "Are you ready to start the game with your peer?", "Yes", "No");
+                startGame();
             }
             else
             {
                 userDisconnected();
             }
         }
+    }
+
+    private void startGame()
+    {
+        final Intent gameActivity = new Intent(this, MultiplayerGame.class);
+
+        // If we are hosting a match.
+        if (playerMatchStatus == NetworkConstants.HOST_ID)
+        {
+            // Send the current player image index to the other player via the server.
+            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setServerPeerImage(playerImage);
+            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
+            gameActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.HOST_ID);
+        }
+        else if (playerMatchStatus == NetworkConstants.JOIN_ID)
+        {
+            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setClientPeerImage(playerImage);
+            connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
+            gameActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.JOIN_ID);
+        }
+
+        final Activity activityReference = this;
+
+        // Create a delay.
+        final Handler debugHandler = new Handler();
+        debugHandler.postDelayed(new Runnable()
+        {
+            // After 6 seconds.
+            @Override
+            public void run()
+            {
+                if(wifiManager.isWifiEnabled())
+                {
+                    if (playerMatchStatus == NetworkConstants.HOST_ID)
+                    {
+                        DebugInformation.displayShortToastMessage(activityReference, "Client Image: " + connectionApplication.getServerPeerIndexImage());
+
+                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setGameIsRunning(true);
+                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
+                    }
+                    else if (playerMatchStatus == NetworkConstants.JOIN_ID)
+                    {
+                        DebugInformation.displayShortToastMessage(activityReference, "Server Image: " + connectionApplication.getClientPeerIndexImage());
+
+                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setGameIsRunning(true);
+                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
+                    }
+                }
+                else
+                {
+                    userDisconnected();
+                }
+            }
+        }, 6000);
+
+        // Create a delay.
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable()
+        {
+            // After 6 seconds.
+            @Override
+            public void run()
+            {
+                if(wifiManager.isWifiEnabled())
+                {
+                    startActivity(gameActivity);
+                }
+                else
+                {
+                    userDisconnected();
+                }
+            }
+        }, 12000);
     }
 
 //    // This class will handle sending over the image index to the other peer.

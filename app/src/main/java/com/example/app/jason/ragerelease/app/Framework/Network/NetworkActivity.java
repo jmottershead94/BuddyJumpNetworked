@@ -109,16 +109,23 @@ public class NetworkActivity extends Activity
 
         // Setting up a handler and runnable to handle button text changes.
         final Handler handler = new Handler();
-        handler.post(new Runnable() {
+        handler.post(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 // Do the same for WiFi.
-                if (wifiManager.isWifiEnabled()) {
-                    if (!button.isEnabled()) {
+                if (wifiManager.isWifiEnabled())
+                {
+                    if (!button.isEnabled())
+                    {
                         button.setEnabled(true);
                     }
-                } else {
-                    if (button.isEnabled()) {
+                }
+                else
+                {
+                    if (button.isEnabled())
+                    {
                         button.setEnabled(false);
                     }
 

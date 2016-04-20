@@ -110,8 +110,10 @@ public class LevelGenerator
         playerMatchStatus = gamePlayerMatchStatus;
         peerImageInteger = gamePeerImage;
         activityReference = gameActivity;
-        hostStartPosition = new Vector2(gameResources.getScreenWidth() * 0.45f, gameResources.getScreenHeight() * 0.01f);
-        joinStartPosition = new Vector2(gameResources.getScreenWidth() * 0.15f, gameResources.getScreenHeight() * 0.01f);
+//        hostStartPosition = new Vector2(gameResources.getScreenWidth() * 0.45f, gameResources.getScreenHeight() * 0.01f);
+//        joinStartPosition = new Vector2(gameResources.getScreenWidth() * 0.15f, gameResources.getScreenHeight() * 0.01f);
+        hostStartPosition = new Vector2(gameResources.getScreenWidth() * 0.45f, gameResources.getScreenHeight() * 0.25f);
+        joinStartPosition = new Vector2(gameResources.getScreenWidth() * 0.15f, gameResources.getScreenHeight() * 0.25f);
         multiplayerStatus = true;
     }
 
@@ -124,7 +126,7 @@ public class LevelGenerator
     public void buildLevel(int numberOfCharacters, int numberOfObstacles)
     {
         // DEBUG: Testing player messages
-        createGround((resources.getScreenHeight() * 0.25f));
+//        createGround((resources.getScreenHeight() * 0.25f));
 
         // Creating all of the level objects.
         createGround((resources.getScreenHeight() - 190.0f));

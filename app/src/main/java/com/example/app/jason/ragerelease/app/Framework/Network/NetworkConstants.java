@@ -16,7 +16,8 @@ public class NetworkConstants
     public static final int JOIN_ID = HOST_ID + 1;                                      // The join ID number, used to determine if the player is joining a game.
     public static final int STATE_SEND_READY_MESSAGE = JOIN_ID + 1;                     // The state of the connection, we should send a ready message to the peer.
     public static final int STATE_SEND_IMAGE_MESSAGE = STATE_SEND_READY_MESSAGE + 1;    // The state of the connection, we should send an image message to the peer.
-    public static final int STATE_SEND_GAME_MESSAGES = STATE_SEND_IMAGE_MESSAGE + 1;    // The state of the connection, we should send our game messages to the peer.
+    public static final int STATE_TELL_PEER_READY = STATE_SEND_IMAGE_MESSAGE + 1;       // The state of the connection, we should send over our ready state.
+    public static final int STATE_SEND_GAME_MESSAGES = STATE_TELL_PEER_READY + 1;       // The state of the connection, we should send our game messages to the peer.
 
     // Strings.
     public static final String EXTRA_DEVICE_ADDRESS = "deviceAddress";                  // The key for storing our connected device MAC address.

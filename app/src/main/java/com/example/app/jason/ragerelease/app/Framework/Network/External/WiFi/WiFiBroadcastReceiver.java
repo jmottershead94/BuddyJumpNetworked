@@ -8,6 +8,7 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 
+import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Network.External.NetworkBroadcastReceiver;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 import com.example.app.jason.ragerelease.app.GameStates.Multiplayer.ConnectionSelection;
@@ -57,7 +58,7 @@ public class WiFiBroadcastReceiver extends NetworkBroadcastReceiver
             if(state == WifiManager.WIFI_STATE_ENABLED)
             {
                 // Wifi is enabled.
-
+                DebugInformation.resetMessageValues();
             }
             // Otherwise, wifi is turned off.
             else
@@ -65,6 +66,10 @@ public class WiFiBroadcastReceiver extends NetworkBroadcastReceiver
                 // Wifi is disabled.
                 // Turn on the connection again?
                 // wifiManager.setWifiEnabled(true);
+                if(currentActivity.getClass() != ConnectionSelection.class)
+                {
+                    currentActivity.userDisconnected();
+                }
             }
         }
     }

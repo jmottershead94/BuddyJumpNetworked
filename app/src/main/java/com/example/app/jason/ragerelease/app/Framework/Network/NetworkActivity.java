@@ -61,7 +61,7 @@ public class NetworkActivity extends Activity
         connectionApplication = (ConnectionApplication)getApplicationContext();
         peerNames = new ArrayAdapter<String>(this, R.layout.device_name);
 
-//        DebugInformation.resetMessageValues();
+        DebugInformation.resetMessageValues();
     }
 
     //////////////////////////////////////////////////
@@ -104,98 +104,50 @@ public class NetworkActivity extends Activity
     public void checkEnabledStatusButton(final Button button)
     {
         final Activity activityReference = this;
-        DebugInformation.resetMessageValues();
 
         // Setting up a handler and runnable to handle button text changes.
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable()
-        {
+        handler.post(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 // Do the same for WiFi.
-                if(wifiManager.isWifiEnabled())
-                {
-                    if(!button.isEnabled())
-                    {
+                if (wifiManager.isWifiEnabled()) {
+                    if (!button.isEnabled()) {
                         button.setEnabled(true);
                     }
-                }
-                else
-                {
-                    if(button.isEnabled())
-                    {
+                } else {
+                    if (button.isEnabled()) {
                         button.setEnabled(false);
                     }
 
-                    DebugInformation.displayMessageBox(activityReference, "WiFi Connection", "WiFi has been disabled, reconnect?", "Yes", "No");
-
-                    // If we have messageReply the message.
-                    if (DebugInformation.messageReply == DebugInformation.ACCEPTED_MESSAGE)
-                    {
-                        button.setEnabled(true);
-
-                        // Turn on wifi connection.
-                        connectionApplication.getConnectionManagement().getWifiHandler().turnOn();
-
-                        DebugInformation.messageReply = DebugInformation.NO_MESSAGE_BOX;
-                    }
-                    else if(DebugInformation.messageReply == DebugInformation.DECLINED_MESSAGE)
-                    {
-                        DebugInformation.displayShortToastMessage(activityReference, "DECLINED");
-//
-                        DebugInformation.resetMessageValues();
-
-                        // Return them to the connection selection activity.
-                        Intent connectionSelectionActivity = new Intent(activityReference, ConnectionSelection.class);
-
-                        activityReference.startActivity(connectionSelectionActivity);
-                    }
-                }
-            }
-        }, 300);
-    }
-
-//    public void checkEnabledStatus()
-//    {
-//        final Activity activityReference = this;
-//
-//        // Setting up a handler and runnable to handle button text changes.
-//        final Handler handler = new Handler();
-//        handler.post(new Runnable()
-//        {
-//            // What happens after delay.
-//            @Override
-//            public void run()
-//            {
-//                // Do the same for WiFi.
-//                if (!wifiManager.isWifiEnabled())
-//                {
-//                    DebugInformation.displayMessageBox(activityReference, "WiFi Connection", "WiFi has been disabled, reconnect?", "Yes", "No");
-//
 //                    // If we have messageReply the message.
 //                    if (DebugInformation.messageReply == DebugInformation.ACCEPTED_MESSAGE)
 //                    {
-//                        // Turn on wifi connection.
-//                        connectionApplication.getConnectionManagement().getWifiHandler().turnOn();
-//
-//                        DebugInformation.messageReply = DebugInformation.NO_MESSAGE_BOX;
+//                        DebugInformation.resetMessageValues();
 //                    }
-//                    else if(DebugInformation.messageReply == DebugInformation.DECLINED_MESSAGE)
+//                    else if (DebugInformation.messageReply == DebugInformation.DECLINED_MESSAGE)
 //                    {
-//                        DebugInformation.messageReply = DebugInformation.NO_MESSAGE_BOX;
-//
-//                        // Return them to the connection selection activity.
-//                        Intent connectionSelectionActivity = new Intent(activityReference, ConnectionSelection.class);
-//
-//                        activityReference.startActivity(connectionSelectionActivity);
+//                        DebugInformation.resetMessageValues();
 //                    }
-//                }
-//
-//                handler.postDelayed(this, 500);
-//            }
-//        });
-//    }
+                }
+            }
+        });
+    }
+
+    public void userDisconnected()
+    {
+        if((DebugInformation.messageReply == DebugInformation.ACCEPTED_MESSAGE) || (DebugInformation.messageReply == DebugInformation.ACCEPTED_MESSAGE))
+        {
+            DebugInformation.displayShortToastMessage(this, "Returning to connection selection...");
+
+            Intent connectionSelectionActivity = new Intent(this, ConnectionSelection.class);
+            startActivity(connectionSelectionActivity);
+        }
+        else
+        {
+            DebugInformation.displayMessageBox(this, "WiFi Connection", "WiFi has been disabled, please return to connection selection or enable WiFi", "OK", "");
+        }
+    }
 
     //////////////////////////////////////////////////
     //              Search For Devices              //

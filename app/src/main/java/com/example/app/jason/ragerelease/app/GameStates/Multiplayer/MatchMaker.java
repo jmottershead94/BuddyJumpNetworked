@@ -50,12 +50,12 @@ public class MatchMaker extends NetworkActivity implements View.OnClickListener
         hostButton.setOnClickListener(this);
         joinButton.setOnClickListener(this);
 
+        checkEnabledStatusButton(hostButton);
+        checkEnabledStatusButton(joinButton);
+
         // If any of the buttons are pressed on the match maker screen.
         button.isPressed(mainMenuButton, this, MainMenu.class);
         button.isPressed(backButton, this, ConnectionSelection.class);
-
-        checkEnabledStatusButton(hostButton);
-        checkEnabledStatusButton(joinButton);
     }
 
     @Override
@@ -104,13 +104,9 @@ public class MatchMaker extends NetworkActivity implements View.OnClickListener
         }
         else
         {
-            if(view == hostButton)
+            if(view == hostButton || view == joinButton)
             {
-                checkEnabledStatusButton(hostButton);
-            }
-            else if(view == joinButton)
-            {
-                checkEnabledStatusButton(joinButton);
+                userDisconnected();
             }
         }
     }

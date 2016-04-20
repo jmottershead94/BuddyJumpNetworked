@@ -34,6 +34,54 @@ public class ConnectionSelection extends NetworkActivity implements View.OnClick
     private static final String activateWiFiMessage = "Activate WiFi";
     private static final String acceptedBluetoothMessage = "Continue With Bluetooth";
     private static final String acceptedWiFiMessage = "Continue With WiFi";
+    final Handler handler = new Handler();
+    private Runnable runnable = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            // Check to see if bluetooth is already enabled.
+            if(bluetoothHandler.getBluetoothAdapter().isEnabled())
+            {
+                // If so, use the correct text message for the button.
+                bluetoothButton.setText(acceptedBluetoothMessage);
+            }
+            else
+            {
+                // If so, use the correct text message for the button.
+                bluetoothButton.setText(activateBluetoothMessage);
+            }
+
+            // Do the same for WiFi.
+            if(wifiManager.isWifiEnabled())
+            {
+                wifiButton.setText(acceptedWiFiMessage);
+            }
+            else
+            {
+                wifiButton.setText(activateWiFiMessage);
+
+                // If we have messageReply the message.
+                if(DebugInformation.messageReply == DebugInformation.ACCEPTED_MESSAGE)
+                {
+                    // Attempt to turn on WiFi.
+                    wifiButton.setText(acceptedWiFiMessage);
+
+                    // Turn on wifi connection.
+                    // Look for proper way to ask user permission - later.
+                    connectionApplication.getConnectionManagement().getWifiHandler().turnOn();
+
+                    DebugInformation.resetMessageValues();
+                }
+                else if(DebugInformation.messageReply == DebugInformation.DECLINED_MESSAGE)
+                {
+                    DebugInformation.resetMessageValues();
+                }
+            }
+
+            handler.postDelayed(this, 1000);
+        }
+    };
 
     // Methods.
     //////////////////////////////////////////////////
@@ -146,55 +194,8 @@ public class ConnectionSelection extends NetworkActivity implements View.OnClick
     public void checkEnabledStatus()
     {
         // Setting up a handler and runnable to handle button text changes.
-        final Handler handler = new Handler();
-        handler.post(new Runnable()
-        {
-            // What happens after delay.
-            @Override
-            public void run()
-            {
-                // Check to see if bluetooth is already enabled.
-                if(bluetoothHandler.getBluetoothAdapter().isEnabled())
-                {
-                    // If so, use the correct text message for the button.
-                    bluetoothButton.setText(acceptedBluetoothMessage);
-                }
-                else
-                {
-                    // If so, use the correct text message for the button.
-                    bluetoothButton.setText(activateBluetoothMessage);
-                }
-
-                // Do the same for WiFi.
-                if(wifiManager.isWifiEnabled())
-                {
-                    wifiButton.setText(acceptedWiFiMessage);
-                }
-                else
-                {
-                    wifiButton.setText(activateWiFiMessage);
-
-                    // If we have messageReply the message.
-                    if(DebugInformation.messageReply == DebugInformation.ACCEPTED_MESSAGE)
-                    {
-                        // Attempt to turn on WiFi.
-                        wifiButton.setText(acceptedWiFiMessage);
-
-                        // Turn on wifi connection.
-                        // Look for proper way to ask user permission - later.
-                        connectionApplication.getConnectionManagement().getWifiHandler().turnOn();
-
-                        DebugInformation.resetMessageValues();
-                    }
-                    else if(DebugInformation.messageReply == DebugInformation.DECLINED_MESSAGE)
-                    {
-                        DebugInformation.resetMessageValues();
-                    }
-                }
-
-                handler.postDelayed(this, 1000);
-            }
-        });
+//        final Handler handler = new Handler();
+        handler.postDelayed(runnable, 1000);
     }
 
     public void onClick(View view)
@@ -226,6 +227,7 @@ public class ConnectionSelection extends NetworkActivity implements View.OnClick
             }
             else
             {
+                handler.removeCallbacks(runnable);
                 startActivity(matchMakerActivity);
             }
         }

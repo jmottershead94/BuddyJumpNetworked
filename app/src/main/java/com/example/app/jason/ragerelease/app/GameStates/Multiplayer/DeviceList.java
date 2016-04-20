@@ -24,12 +24,8 @@ import java.util.Set;
 public class DeviceList extends NetworkActivity// implements WifiP2pManager.PeerListListener
 {
     // Attributes.
-    private Set<WifiP2pDevice> wifiP2pDevices = null;
     private ListView newDevicesListView = null;
     private int playerMatchStatus = 0;
-//    private ArrayAdapter<String> peerNames = null;
-//    private List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
-//    private WifiP2pDevice wifiP2pDevice = new WifiP2pDevice();
 
     // Methods.
     @Override
@@ -41,34 +37,40 @@ public class DeviceList extends NetworkActivity// implements WifiP2pManager.Peer
         setResult(Activity.RESULT_CANCELED);
 
         Button scanButton = (Button) findViewById(R.id.button_scan);
-        //peerNames = new ArrayAdapter<String>(this, R.layout.device_name);
         newDevicesListView = (ListView) findViewById(R.id.new_devices);
         playerMatchStatus = getIntent().getIntExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, 0);
+
+        final Activity activityReference = this;
 
         scanButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                // Clear previous scan data.
-                newDevicesListView.setVisibility(View.INVISIBLE);
-                peers.clear();
-                peerNames.clear();
+                if(wifiManager.isWifiEnabled())
+                {
+                    DebugInformation.resetMessageValues();
 
-                findViewById(R.id.deviceListProgressBar).setVisibility(View.VISIBLE);
+                    // Clear previous scan data.
+                    newDevicesListView.setVisibility(View.INVISIBLE);
+                    peers.clear();
+                    peerNames.clear();
 
-                // Start a new scan.
-                searchForDevices();
+                    findViewById(R.id.deviceListProgressBar).setVisibility(View.VISIBLE);
 
-                newDevicesListView.setAdapter(peerNames);
-                newDevicesListView.setOnItemClickListener(deviceClickListener);
-                newDevicesListView.setVisibility(View.VISIBLE);
-                //view.setVisibility(View.GONE);
+                    // Start a new scan.
+                    searchForDevices();
+
+                    newDevicesListView.setAdapter(peerNames);
+                    newDevicesListView.setOnItemClickListener(deviceClickListener);
+                    newDevicesListView.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    userDisconnected();
+                }
             }
         });
-
-//        newDevicesListView.setAdapter(peerNames);
-//        newDevicesListView.setOnItemClickListener(deviceClickListener);
     }
 
     @Override
@@ -88,32 +90,37 @@ public class DeviceList extends NetworkActivity// implements WifiP2pManager.Peer
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
         {
-            String deviceName = ((TextView) view).getText().toString();
-
-            //String address = info.substring(info.length() - 17);
-            for(WifiP2pDevice device : peers)
+            if(wifiManager.isWifiEnabled())
             {
-                // If our device name is within our list and we have clicked on the device.
-                if(deviceName == device.deviceName)
-                {
-                    // Set our connected device.
-                    wifiP2pDevice = device;
+                String deviceName = ((TextView) view).getText().toString();
+
+                //String address = info.substring(info.length() - 17);
+                for (WifiP2pDevice device : peers) {
+                    // If our device name is within our list and we have clicked on the device.
+                    if (deviceName == device.deviceName) {
+                        // Set our connected device.
+                        wifiP2pDevice = device;
+                    }
                 }
+
+                Intent selectionScreenActivity = new Intent(connectionApplication.getConnectionManagement().getNetworkActivity(), MultiplayerSelection.class);
+                selectionScreenActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, playerMatchStatus);
+                selectionScreenActivity.putExtra(NetworkConstants.EXTRA_DEVICE_ADDRESS, wifiP2pDevice.deviceAddress);
+
+                DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "You are connecting with: " + deviceName);
+
+                // Attempt to connect to the device.
+                connectToPeer(wifiP2pDevice);
+
+                setResult(Activity.RESULT_OK, selectionScreenActivity);
+                startActivity(selectionScreenActivity);
+
+                //finish();
             }
+            else
+            {
 
-            Intent selectionScreenActivity = new Intent(connectionApplication.getConnectionManagement().getNetworkActivity(), MultiplayerSelection.class);
-            selectionScreenActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, playerMatchStatus);
-            selectionScreenActivity.putExtra(NetworkConstants.EXTRA_DEVICE_ADDRESS, wifiP2pDevice.deviceAddress);
-
-            DebugInformation.displayShortToastMessage(connectionApplication.getConnectionManagement().getNetworkActivity(), "You are connecting with: " + deviceName);
-
-            // Attempt to connect to the device.
-            connectToPeer(wifiP2pDevice);
-
-            setResult(Activity.RESULT_OK, selectionScreenActivity);
-            startActivity(selectionScreenActivity);
-
-            //finish();
+            }
         }
     };
 }

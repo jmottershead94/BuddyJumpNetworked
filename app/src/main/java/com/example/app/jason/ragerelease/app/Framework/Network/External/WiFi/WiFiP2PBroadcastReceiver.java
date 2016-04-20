@@ -14,6 +14,7 @@ import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import com.example.app.jason.ragerelease.app.Framework.Network.External.NetworkBroadcastReceiver;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
+import com.example.app.jason.ragerelease.app.GameStates.Multiplayer.MultiplayerSelection;
 
 /**
  * Created by Jason Mottershead on 04/04/2016.
@@ -81,11 +82,9 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
         else if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action))
         {
 //            // Respond to new connection or disconnections.
-//            //DebugInformation.displayShortToastMessage(currentActivity, "Wifi P2P Connection Changed");
 
             if (wifiP2pManager == null)
             {
-                //DebugInformation.displayShortToastMessage(currentActivity, "Wifi P2P manager is null");
                 return;
             }
 
@@ -100,7 +99,26 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
                 //DebugInformation.displayShortToastMessage(currentActivity, "Connected to other device");
                 wifiP2pManager.requestConnectionInfo(wifiChannel, connectionInfoListener);
             }
-
+            else
+            {
+//                if(currentActivity.getClass() == MultiplayerSelection.class)
+//                {
+//                    if (playerMatchStatus == NetworkConstants.HOST_ID && getServerTask() != null)
+//                    {
+//                        if (getServerTask().currentState != NetworkConstants.STATE_SEND_READY_MESSAGE)
+//                        {
+//                            currentActivity.userDisconnected();
+//                        }
+//                    }
+//                    else if (playerMatchStatus == NetworkConstants.JOIN_ID && getClientTask() != null)
+//                    {
+//                        if (getClientTask().currentState != NetworkConstants.STATE_SEND_READY_MESSAGE)
+//                        {
+//                            currentActivity.userDisconnected();
+//                        }
+//                    }
+//                }
+            }
         }
         // Otherwise, if this device's details have changed.
         else if(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action))

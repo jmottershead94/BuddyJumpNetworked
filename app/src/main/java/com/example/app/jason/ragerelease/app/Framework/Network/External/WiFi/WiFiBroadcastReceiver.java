@@ -12,6 +12,7 @@ import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Network.External.NetworkBroadcastReceiver;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 import com.example.app.jason.ragerelease.app.GameStates.Multiplayer.ConnectionSelection;
+import com.example.app.jason.ragerelease.app.GameStates.Multiplayer.MultiplayerSelection;
 
 /**
  * Created by Jason Mottershead on 10/04/2016.
@@ -66,6 +67,13 @@ public class WiFiBroadcastReceiver extends NetworkBroadcastReceiver
                 // Wifi is disabled.
                 // Turn on the connection again?
                 // wifiManager.setWifiEnabled(true);
+                if(currentActivity.getClass() == MultiplayerSelection.class)
+                {
+                    DebugInformation.messageReply = DebugInformation.ACCEPTED_MESSAGE;
+                    currentActivity.userDisconnected();
+                    return;
+                }
+
                 if(currentActivity.getClass() != ConnectionSelection.class)
                 {
                     currentActivity.userDisconnected();

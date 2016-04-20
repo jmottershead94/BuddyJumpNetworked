@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
@@ -11,6 +12,7 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 
+import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Network.External.NetworkBroadcastReceiver;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
@@ -61,12 +63,38 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
             if(state == WifiP2pManager.WIFI_P2P_STATE_ENABLED)
             {
                 // Wifi P2P has been enabled.
+                DebugInformation.resetMessageValues();
             }
             // Otherwise, wifi is turned off.
             else
             {
-                // Wifi P2P has been disabled.
+//                // Wifi P2P has been disabled.
+//                if(currentActivity.getClass() == MultiplayerSelection.class)
+//                {
+//                    if(playerMatchStatus == NetworkConstants.HOST_ID)
+//                    {
+//
+//                    }
+//                }
             }
+
+//            if(currentActivity.getClass() == MultiplayerSelection.class)
+//            {
+//                if((playerMatchStatus == NetworkConstants.HOST_ID) && (getServerTask() != null))
+//                {
+//                    if ((currentActivity.getConnectedDevice() == WifiP2pDevice.UNAVAILABLE) && (getServerTask().currentState != NetworkConstants.STATE_SEND_READY_MESSAGE))
+//                    {
+//                        currentActivity.userDisconnected();
+//                    }
+//                }
+//                else if((playerMatchStatus == NetworkConstants.JOIN_ID) && (getClientTask() != null))
+//                {
+//                    if ((currentActivity.getConnectedDevice() == WifiP2pDevice.UNAVAILABLE) && (getClientTask().currentState != NetworkConstants.STATE_SEND_READY_MESSAGE))
+//                    {
+//                        currentActivity.userDisconnected();
+//                    }
+//                }
+//            }
         }
         // Otherwise, if there is a change in the list of available peers.
         else if(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action))
@@ -77,6 +105,24 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
             {
                 wifiP2pManager.requestPeers(wifiChannel, peerListListener);
             }
+
+//            if(currentActivity.getClass() == MultiplayerSelection.class)
+//            {
+//                if (playerMatchStatus == NetworkConstants.HOST_ID && getServerTask() != null)
+//                {
+//                    if (getServerTask().currentState != NetworkConstants.STATE_SEND_READY_MESSAGE)
+//                    {
+//                        currentActivity.userDisconnected();
+//                    }
+//                }
+//                else if (playerMatchStatus == NetworkConstants.JOIN_ID && getClientTask() != null)
+//                {
+//                    if (getClientTask().currentState != NetworkConstants.STATE_SEND_READY_MESSAGE)
+//                    {
+//                        currentActivity.userDisconnected();
+//                    }
+//                }
+//            }
         }
         // Otherwise, if the state of WiFi P2P connectivity has changed.
         else if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action))
@@ -87,6 +133,24 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
             {
                 return;
             }
+
+//            if(currentActivity.getClass() == MultiplayerSelection.class)
+//            {
+//                if((playerMatchStatus == NetworkConstants.HOST_ID) && (getServerTask() != null))
+//                {
+//                    if ((currentActivity.getConnectedDevice() == WifiP2pDevice.UNAVAILABLE) && (getServerTask().currentState != NetworkConstants.STATE_SEND_READY_MESSAGE))
+//                    {
+//                        currentActivity.userDisconnected();
+//                    }
+//                }
+//                else if((playerMatchStatus == NetworkConstants.JOIN_ID) && (getClientTask() != null))
+//                {
+//                    if ((currentActivity.getConnectedDevice() == WifiP2pDevice.UNAVAILABLE) && (getClientTask().currentState != NetworkConstants.STATE_SEND_READY_MESSAGE))
+//                    {
+//                        currentActivity.userDisconnected();
+//                    }
+//                }
+//            }
 
             NetworkInfo networkInfo = (NetworkInfo) intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
 
@@ -142,27 +206,30 @@ public class WiFiP2PBroadcastReceiver extends NetworkBroadcastReceiver
         @Override
         public void onConnectionInfoAvailable(final WifiP2pInfo wifiP2pInfo)
         {
-            String groupOwnerAddress = wifiP2pInfo.groupOwnerAddress.getHostAddress();
-
-            if (playerMatchStatus == NetworkConstants.HOST_ID)
+            if(wifiManager.isWifiEnabled())
             {
-                // If we have formed a group and we are the group owner.
-                // Set up the server thread, accept incoming data connections?
-                //DebugInformation.displayShortToastMessage(currentActivity, "Should start server thread");
+                String groupOwnerAddress = wifiP2pInfo.groupOwnerAddress.getHostAddress();
 
-                wifiServerTasks = new WiFiServerTasks(currentActivity);
-                //wifiServerTasks.execute();
-                wifiServerTasks.start();
-            }
-            else if (playerMatchStatus == NetworkConstants.JOIN_ID)
-            {
-                // The other device acts as a client.
-                // Create a client thread here?
-                //DebugInformation.displayShortToastMessage(currentActivity, "Should start client thread");
+                if (playerMatchStatus == NetworkConstants.HOST_ID)
+                {
+                    // If we have formed a group and we are the group owner.
+                    // Set up the server thread, accept incoming data connections?
+                    //DebugInformation.displayShortToastMessage(currentActivity, "Should start server thread");
 
-                wifiClientTasks = new WiFiClientTasks(currentActivity, groupOwnerAddress);
-                //wifiClientTasks.execute();
-                wifiClientTasks.start();
+                    wifiServerTasks = new WiFiServerTasks(currentActivity);
+                    //wifiServerTasks.execute();
+                    wifiServerTasks.start();
+                }
+                else if (playerMatchStatus == NetworkConstants.JOIN_ID)
+                {
+                    // The other device acts as a client.
+                    // Create a client thread here?
+                    //DebugInformation.displayShortToastMessage(currentActivity, "Should start client thread");
+
+                    wifiClientTasks = new WiFiClientTasks(currentActivity, groupOwnerAddress);
+                    //wifiClientTasks.execute();
+                    wifiClientTasks.start();
+                }
             }
         }
     };

@@ -127,6 +127,11 @@ public class WiFiTasks extends Thread
             }
         }
 
+        public void cancel()
+        {
+
+        }
+
         // Setters.
         // This will set our current image index.
         public void setImageIndex(int imageIndex) { playerImageIndex = imageIndex; }
@@ -279,6 +284,14 @@ public class WiFiTasks extends Thread
             }
         }
     };
+
+//    public void stopAllThreads()
+//    {
+//        if(sendImageThread.isAlive())
+//        {
+//            sendImageThread.
+//        }
+//    }
 
     // Setters.
     // This will set our current network state and send that state over to our handler for processing.

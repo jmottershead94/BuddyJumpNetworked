@@ -95,9 +95,11 @@ public class DeviceList extends NetworkActivity// implements WifiP2pManager.Peer
                 String deviceName = ((TextView) view).getText().toString();
 
                 //String address = info.substring(info.length() - 17);
-                for (WifiP2pDevice device : peers) {
+                for (WifiP2pDevice device : peers)
+                {
                     // If our device name is within our list and we have clicked on the device.
-                    if (deviceName == device.deviceName) {
+                    if (deviceName == device.deviceName)
+                    {
                         // Set our connected device.
                         wifiP2pDevice = device;
                     }
@@ -119,7 +121,7 @@ public class DeviceList extends NetworkActivity// implements WifiP2pManager.Peer
             }
             else
             {
-
+                userDisconnected();
             }
         }
     };

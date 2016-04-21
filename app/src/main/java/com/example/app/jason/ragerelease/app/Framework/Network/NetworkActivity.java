@@ -101,6 +101,46 @@ public class NetworkActivity extends Activity
         unregisterReceiver(connectionApplication.getConnectionManagement().getWifiHandler().getWifiBroadcastReceiver());
     }
 
+    protected void closeAnyOldConnections(int playerMatchStatus)
+    {
+        if(wifiManager != null && wifiManager.isWifiEnabled() && connectionApplication.getConnectionManagement() != null)
+        {
+            if(playerMatchStatus == NetworkConstants.HOST_ID)
+            {
+                if (connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask() != null)
+                {
+                    DebugInformation.displayShortToastMessage(this, "Old server task");
+
+                    if (connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().getSocket().isConnected())
+                    {
+                        DebugInformation.displayShortToastMessage(this, "Server socket still connected");
+
+                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().closeDown();
+
+                        DebugInformation.displayShortToastMessage(this, "Closed down? " + connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().getSocket().isConnected());
+                    }
+                }
+            }
+            else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+            {
+                if (connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask() != null)
+                {
+                    DebugInformation.displayShortToastMessage(this, "Old server task");
+
+                    if (connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().getSocket().isConnected())
+                    {
+                        DebugInformation.displayShortToastMessage(this, "Client socket still connected");
+
+                        connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().closeDown();
+
+                        DebugInformation.displayShortToastMessage(this, "Closed down? " + connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().getSocket().isConnected());
+
+                    }
+                }
+            }
+        }
+    }
+
     public void checkEnabledStatusButton(final Button button)
     {
         final Activity activityReference = this;

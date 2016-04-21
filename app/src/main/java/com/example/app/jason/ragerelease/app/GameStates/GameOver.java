@@ -6,12 +6,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.app.jason.ragerelease.R;
+import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Network.Internal.AndroidOSHandlers.SMSHandler;
 import com.example.app.jason.ragerelease.app.Framework.NavigationButton;
 import com.example.app.jason.ragerelease.app.Framework.Network.Internal.SQLiteDatabase.Data;
@@ -32,8 +34,37 @@ public class GameOver extends Activity implements View.OnClickListener
     private Button textAFriendButton = null;
     private Button saveScoresButton = null;
     private DataDatabaseHelper dataDatabaseHelper = null;
-    TextView levelNumberText;
-    TextView distanceText;
+    private TextView levelNumberText;
+    private TextView distanceText;
+    private final Activity activityReference = this;
+    private final Handler checkTextPermission = new Handler();
+    private Runnable runnable = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            // If we have accepted the message box.
+            if(DebugInformation.messageReply == DebugInformation.ACCEPTED_MESSAGE)
+            {
+                // Reset our message values.
+                DebugInformation.resetMessageValues();
+
+                // Place our level number and distance information into a string to pass to SMS.
+                String overallScore = levelNumberText.getText().toString() + "\n" + distanceText.getText().toString();
+
+                // Go to the sms application.
+                final SMSHandler smsHandler = new SMSHandler(activityReference, overallScore);
+            }
+            // If we have declined the message box.
+            else if(DebugInformation.messageReply == DebugInformation.DECLINED_MESSAGE)
+            {
+                // Reset our message values.
+                DebugInformation.resetMessageValues();
+            }
+
+            checkTextPermission.postDelayed(this, 1000);
+        }
+    };
 
     // Methods.
     //////////////////////////////////////////////////
@@ -73,6 +104,9 @@ public class GameOver extends Activity implements View.OnClickListener
 
         // Setting the on click listener for this button.
         textAFriendButton.setOnClickListener(this);
+
+        // Set off our handler to check what our message response is.
+        checkTextPermission.post(runnable);
     }
 
     @Override
@@ -81,31 +115,14 @@ public class GameOver extends Activity implements View.OnClickListener
         // If we have clicked on the text a friend button.
         if(view == textAFriendButton)
         {
-            String overallScore = levelNumberText.getText().toString() + "\n" + distanceText.getText().toString();
-
-            // Go to the sms application.
-            final SMSHandler smsHandler = new SMSHandler(this, overallScore);
+            DebugInformation.displayMessageBox(this, "SMS Access", "Accept if you would like to use SMS", "Accept", "Cancel");
         }
-
-//        if(view == saveScoresButton)
-//        {
-//            addToScores();
-//        }
     }
 
     public void addToScores(View view)
     {
         String level = levelNumberText.getText().toString();
         String distance = distanceText.getText().toString();
-
-        // Check here for high scores (do later?).
-        // if(level > (the last level score (10th score)))
-        //
-            // (loop through level values)
-            //
-                // if(level > current level value)
-                //
-                    // its current place in the score board increments.
 
         // Check if the scores doesn't already exist to avoid duplicate entries.
         if (!dataDatabaseHelper.dataExists(new Data(level, distance)))

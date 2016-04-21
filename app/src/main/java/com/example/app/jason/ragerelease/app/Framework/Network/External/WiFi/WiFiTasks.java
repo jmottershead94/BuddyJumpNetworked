@@ -254,6 +254,11 @@ public class WiFiTasks extends Thread
                         }
                     }
                 }
+
+                if(isRunning)
+                {
+                    return;
+                }
             }
             catch(IOException e)
             {
@@ -384,6 +389,24 @@ public class WiFiTasks extends Thread
             }
         }
     };
+
+    // Methods.
+    public void closeDown()
+    {
+        // If we still have our socket connected.
+        if(socket.isConnected())
+        {
+            try
+            {
+                // Try and close our socket.
+                socket.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
 
     // Getters.
     // This will tell us whether or not the peer is ready.

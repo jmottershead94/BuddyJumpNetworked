@@ -62,6 +62,9 @@ public class GameOver extends Activity implements View.OnClickListener
 
                 // Go to the sms application.
                 final SMSHandler smsHandler = new SMSHandler(activityReference, overallScore);
+
+                // Reset our message values.
+                DebugInformation.resetMessageValues();
             }
             // If we have declined the message box.
             else if(DebugInformation.messageReply == DebugInformation.DECLINED_MESSAGE)

@@ -373,6 +373,8 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
                 // If our wifi is already enabled.
                 if(wifiManager.isWifiEnabled())
                 {
+                    checkPeerStatus = false;
+
                     // Start the multiplayer game activity.
                     startActivity(gameActivity);
                 }

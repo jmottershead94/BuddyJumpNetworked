@@ -9,7 +9,6 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.Bundle;
@@ -20,7 +19,6 @@ import android.widget.Button;
 import com.example.app.jason.ragerelease.R;
 import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.GameStates.Multiplayer.ConnectionSelection;
-import com.example.app.jason.ragerelease.app.GameStates.Multiplayer.MultiplayerSelection;
 
 import java.util.ArrayList;
 import java.util.List;

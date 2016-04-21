@@ -64,18 +64,23 @@ public class WiFiBroadcastReceiver extends NetworkBroadcastReceiver
             // Otherwise, wifi is turned off.
             else
             {
-                // Wifi is disabled.
-                // Turn on the connection again?
-                // wifiManager.setWifiEnabled(true);
+                // Check to see if we are within the multiplayer selection class.
                 if(currentActivity.getClass() == MultiplayerSelection.class)
                 {
+                    // Set the message box to automatically place them back into connection selection.
                     DebugInformation.messageReply = DebugInformation.ACCEPTED_MESSAGE;
+
+                    // The user has disconnected.
                     currentActivity.userDisconnected();
+
+                    // Leave this function.
                     return;
                 }
 
+                // If the current activity is not the connection selection class.
                 if(currentActivity.getClass() != ConnectionSelection.class)
                 {
+                    // The user has disconnected.
                     currentActivity.userDisconnected();
                 }
             }

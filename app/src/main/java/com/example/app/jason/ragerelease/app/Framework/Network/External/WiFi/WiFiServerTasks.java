@@ -79,34 +79,26 @@ public class WiFiServerTasks extends WiFiTasks
 
         try
         {
-            // Switching between the current network state.
-            switch (currentState)
+            if(currentState == NetworkConstants.STATE_SEND_READY_MESSAGE)
             {
-                // If we are going to send a ready message.
-                case NetworkConstants.STATE_SEND_READY_MESSAGE:
+                // Create a server socket and wait for client connections.
+                ServerSocket serverSocket = new ServerSocket(NetworkConstants.SOCKET_SERVER_PORT);
+                client = serverSocket.accept();
+                setSocket(client);
+
+                // If we have some data in our input stream.
+                if(client.getInputStream() != null)
                 {
-                    // Create a server socket and wait for client connections.
-                    ServerSocket serverSocket = new ServerSocket(NetworkConstants.SOCKET_SERVER_PORT);
-                    client = serverSocket.accept();
-                    setSocket(client);
+                    // Read the data from the connected socket.
+                    DataInputStream dataInputStream = new DataInputStream(client.getInputStream());
+                    message = dataInputStream.readUTF();
 
-                    // If we have some data in our input stream.
-                    if(client.getInputStream() != null)
-                    {
-                        // Read the data from the connected socket.
-                        DataInputStream dataInputStream = new DataInputStream(client.getInputStream());
-                        message = dataInputStream.readUTF();
+                    // Make a response.
+                    new SendReadyMessage().run();
 
-                        // Make a response.
-                        new SendReadyMessage().run();
-
-                        // Send the current message over to the handle.
-                        // This will send over the peer network state.
-                        handler.sendEmptyMessage(Integer.parseInt(message));
-                    }
-
-                    // If we are here, we have accepted a connection from the client.
-                    break;
+                    // Send the current message over to the handle.
+                    // This will send over the peer network state.
+                    handler.sendEmptyMessage(Integer.parseInt(message));
                 }
             }
         }

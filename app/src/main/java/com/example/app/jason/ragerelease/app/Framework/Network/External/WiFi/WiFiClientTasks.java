@@ -82,36 +82,29 @@ public class WiFiClientTasks extends WiFiTasks
 
         try
         {
-            // Switching between the current network state.
-            switch (currentState)
+            if(currentState == NetworkConstants.STATE_SEND_READY_MESSAGE)
             {
-                // If we are going to send a ready message.
-                case NetworkConstants.STATE_SEND_READY_MESSAGE:
+                // Create a client socket with the host, port number and use the default time out information.
+                serverSocket = new Socket(serverAddress, NetworkConstants.SOCKET_SERVER_PORT);
+                setSocket(serverSocket);
+
+                // Setting our message to the value of our current state.
+                message = String.valueOf(currentState);
+
+                // Writing our current network state to the server socket.
+                DataOutputStream dataOutputStream = new DataOutputStream(serverSocket.getOutputStream());
+                dataOutputStream.writeUTF(message);
+
+                // If we have some data in our input stream.
+                if(serverSocket.getInputStream() != null)
                 {
-                    // Create a client socket with the host, port number and use the default time out information.
-                    serverSocket = new Socket(serverAddress, NetworkConstants.SOCKET_SERVER_PORT);
-                    setSocket(serverSocket);
+                    // Read the data from the connected socket.
+                    DataInputStream dataInputStream = new DataInputStream(serverSocket.getInputStream());
+                    response = dataInputStream.readUTF();
 
-                    // Setting our message to the value of our current state.
-                    message = String.valueOf(currentState);
-
-                    // Writing our current network state to the server socket.
-                    DataOutputStream dataOutputStream = new DataOutputStream(serverSocket.getOutputStream());
-                    dataOutputStream.writeUTF(message);
-
-                    // If we have some data in our input stream.
-                    if(serverSocket.getInputStream() != null)
-                    {
-                        // Read the data from the connected socket.
-                        DataInputStream dataInputStream = new DataInputStream(serverSocket.getInputStream());
-                        response = dataInputStream.readUTF();
-
-                        // Send the response from the server to our handler.
-                        // This should obtain the current server network state.
-                        handler.sendEmptyMessage(Integer.parseInt(response));
-                    }
-
-                    break;
+                    // Send the response from the server to our handler.
+                    // This should obtain the current server network state.
+                    handler.sendEmptyMessage(Integer.parseInt(response));
                 }
             }
         }

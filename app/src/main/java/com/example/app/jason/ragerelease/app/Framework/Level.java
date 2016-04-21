@@ -295,10 +295,18 @@ public class Level implements View.OnTouchListener
         return true;
     }
 
+    //////////////////////////////////////////////////
+    //               Tapped Response                //
+    //==============================================//
+    //  This will define what we do when we have    //
+    //  tapped onto our own character.              //
+    //////////////////////////////////////////////////
     private void tappedResponse(AnimatedSprite object)
     {
+        // The player has tapped onto the character.
         player.tap = true;
 
+        // If we are not using a camera image.
         if (!object.isUsingCameraImage())
         {
             // Change to a jumping animation.
@@ -308,42 +316,33 @@ public class Level implements View.OnTouchListener
 
         // Make the object jump.
         object.getBody().applyLinearImpulse(new Vec2(0.0f, 4.0f), object.getBody().getWorldCenter());
-
-//        activityReference.runOnUiThread(new Runnable()
-//        {
-//            @Override
-//            public void run()
-//            {
-//                DebugInformation.displayShortToastMessage(activityReference, "Tapped: " + player.tap);
-//            }
-//        });
-
-//        // If we are using multiplayer.
-//        if(multiplayerStatus)
-//        {
-//            // Send this boolean message to the other client.
-//            // Receive the any tapped info.
-//            if(playerMatchStatus == NetworkConstants.HOST_ID)
-//            {
-//                resources.getConnectionApplication().getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setTapped(player.tap);
-//            }
-//            else
-//            {
-//                resources.getConnectionApplication().getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setTapped(player.tap);
-//            }
-//        }
     }
 
+    //////////////////////////////////////////////////
+    //             Peer Tapped Response             //
+    //==============================================//
+    //  This will define what we do when we have    //
+    //  have received some tapped information from  //
+    //  our peer.                                   //
+    //////////////////////////////////////////////////
     private void peerTappedResponse(final AnimatedSprite object, boolean peerTapped)
     {
+        // Perform an action only once.
         boolean doOnce = true;
-        final Vec2 originalForce = new Vec2(0.0f, 4.0f);
-        final Vec2 forceApplied = new Vec2(0.0f, 0.75f);
 
+        // The original force applied.
+        final Vec2 originalForce = new Vec2(0.0f, 4.0f);
+
+        // A factor of the original force applied to make the jump seem correct.
+//        final Vec2 hostForceApplied = new Vec2(originalForce.x, (originalForce.y * 1.0f));
+
+        // A factor of the original force applied to make the jump seem correct.
+        final Vec2 clientForceApplied = new Vec2(originalForce.x, (originalForce.y * 0.125f));
+
+        // If we are hosting a match.
         if(playerMatchStatus == NetworkConstants.HOST_ID)
         {
-            //final Vec2 forceMultiplied = new Vec2(0.0f, forceApplied.y * 3.0f);
-
+            // If the peer has tapped.
             if(peerTapped)
             {
                 // Make them jump.
@@ -354,15 +353,18 @@ public class Level implements View.OnTouchListener
                     object.setAnimationFrames(2);
                 }
 
+                // We should only apply this force once.
                 if(doOnce)
                 {
                     // Make the object jump.
                     object.getBody().applyLinearImpulse(originalForce, object.getBody().getWorldCenter());
 
+                    // Reset the flag.
                     doOnce = false;
                 }
             }
         }
+        // Otherwise, we are joining a game.
         else if(playerMatchStatus == NetworkConstants.JOIN_ID)
         {
             if(peerTapped)
@@ -378,7 +380,7 @@ public class Level implements View.OnTouchListener
                 if(doOnce)
                 {
                     // Make the object jump.
-                    object.getBody().applyLinearImpulse(forceApplied, object.getBody().getWorldCenter());
+                    object.getBody().applyLinearImpulse(clientForceApplied, object.getBody().getWorldCenter());
 
                     doOnce = false;
                 }

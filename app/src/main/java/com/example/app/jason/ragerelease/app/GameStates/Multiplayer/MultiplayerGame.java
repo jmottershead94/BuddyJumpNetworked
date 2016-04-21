@@ -1,4 +1,4 @@
-// The package location of this class.
+// The package location for this class.
 package com.example.app.jason.ragerelease.app.GameStates.Multiplayer;
 
 // All of the extra includes here.
@@ -15,9 +15,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.example.app.jason.ragerelease.R;
-import com.example.app.jason.ragerelease.app.Framework.Debug.DebugInformation;
 import com.example.app.jason.ragerelease.app.Framework.Level;
-import com.example.app.jason.ragerelease.app.Framework.Network.ConnectionApplication;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkActivity;
 import com.example.app.jason.ragerelease.app.Framework.Network.NetworkConstants;
 import com.example.app.jason.ragerelease.app.Framework.Resources;
@@ -40,7 +38,6 @@ public class MultiplayerGame extends NetworkActivity
     // Standard library attributes.
     private static final long desiredFPS = 60;                                  // The desired frame rate for the singlePlayerGame.
     private static final String PREFS_NAME = "MyPrefsFile";                     // Where the options will be saved to, whether they are true or false.
-    private final String peerImageIndexKey = "peerImageKey";                    // The key used to store the current peer image index.
     private int playerImage = 0;                                                // The current player image.
     private int peerImage = 0;                                                  // The current companion image.
     private int playerMatchStatus = 0;
@@ -255,65 +252,23 @@ public class MultiplayerGame extends NetworkActivity
         // If the player has not paused the singlePlayerGame and the singlePlayerGame is not yet over.
         if(!level.player.isGameOver())
         {
+            // The current tapped status for our peer.
             boolean peerTappedStatus = false;
 
             // Update the physics engine.
             resources.getWorld().step(timeStep, velocityIterations, positionIterations);
 
+            // If we should now check our peer messages.
             if(runPeerChecks)
             {
+                // Accessing shared preferences.
                 SharedPreferences gameSettings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+
+                // Obtain the peer tapped status.
                 peerTappedStatus = gameSettings.getBoolean(PLAYER_TAPPED_KEY, false);
 
-//                if(playerMatchStatus == NetworkConstants.HOST_ID)
-//                {
-//                    peerTappedStatus = Boolean.valueOf(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().peerTapped());
-//
-//                    if(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().hasPeerTapped())
-//                    {
-//                        DebugInformation.displayShortToastMessage(this, "boolean: TAPPED PLZ");
-//                    }
-//
-//                    if(Boolean.valueOf(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().peerTapped()))
-//                    {
-//                        DebugInformation.displayShortToastMessage(this, "valueOf: TAPPED PLZ");
-//                    }
-//
-//                    if(Boolean.parseBoolean(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().peerTapped()))
-//                    {
-//                        DebugInformation.displayShortToastMessage(this, "parseBoolean: TAPPED PLZ");
-//                    }
-//                }
-//                else if(playerMatchStatus == NetworkConstants.JOIN_ID)
-//                {
-//                    peerTappedStatus = Boolean.valueOf(connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().peerTapped());
-//                }
-
-//                if(peerTappedStatus)
-//                {
-//                    DebugInformation.displayShortToastMessage(this, "Tapped bro.");
-//                }
-
+                // Pass the boolean value down to level in order to move the other player.
                 level.update(dt, peerTappedStatus);
-
-//                if (playerMatchStatus == NetworkConstants.HOST_ID)
-//                {
-//                    // All other update calls here.
-//                    // Update the level.
-//                    //peerTappedStatus = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().hasPeerTapped();
-//                    //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setTapped(level.player.tap);
-//                    //level.update(dt, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().hasPeerTapped());
-//                    level.update(dt, connectionApplication);
-//                }
-//                else if (playerMatchStatus == NetworkConstants.JOIN_ID)
-//                {
-//                    //peerTappedStatus = connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().hasPeerTapped();
-//                    //connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setTapped(level.player.tap);
-//                    //level.update(dt, connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().hasPeerTapped());
-//                    level.update(dt, connectionApplication);
-//                }
-
-                //level.update(dt, peerTappedStatus);
             }
         }
 
@@ -334,25 +289,28 @@ public class MultiplayerGame extends NetworkActivity
     {
         if(level.player.isGameOver())
         {
-            // Return to the main menu.
+            // Setting up the game over activity.
             Intent intent = new Intent(this, GameOver.class);
 
-            // TEST THIS OUT>>>>>>
-//            if(playerMatchStatus == NetworkConstants.HOST_ID)
-//            {
-//                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setGameIsRunning(!level.player.isGameOver());
-//            }
-//            else if(playerMatchStatus == NetworkConstants.JOIN_ID)
-//            {
-//                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setGameIsRunning(!level.player.isGameOver());
-//            }
+            // If we are hosting a game.
+            if(playerMatchStatus == NetworkConstants.HOST_ID)
+            {
+                // Set the server task game message thread to stop.
+                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setGameIsRunning(!level.player.isGameOver());
+            }
+            // Otherwise, if we are joining a game.
+            else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+            {
+                // Set the client task game message thread to stop.
+                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setGameIsRunning(!level.player.isGameOver());
+            }
 
             // Clear the current level.
             level.levelGenerator.clearLevel();
             level.player.setGameOver(false);
             level.player.setPaused(false);
 
-            // Go back to the main menu.
+            // Go to the next game state.
             startActivity(intent);
         }
     }

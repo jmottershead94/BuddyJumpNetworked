@@ -29,17 +29,25 @@ public class GameOver extends Activity implements View.OnClickListener
 {
     // Attributes.
     // Private.
-    private static final String PREFS_NAME = "MyPrefsFile";
-    private Button mainMenuButton = null;
-    private Button textAFriendButton = null;
-    private Button saveScoresButton = null;
-    private DataDatabaseHelper dataDatabaseHelper = null;
-    private TextView levelNumberText;
-    private TextView distanceText;
-    private final Activity activityReference = this;
-    private final Handler checkTextPermission = new Handler();
-    private Runnable runnable = new Runnable()
+    private static final String PREFS_NAME = "MyPrefsFile";         // The shared preference file name.
+    private Button mainMenuButton = null;                           // The button to access the main menu.
+    private Button textAFriendButton = null;                        // The button to use the SMS service.
+    private Button saveScoresButton = null;                         // The button to save our current score.
+    private DataDatabaseHelper dataDatabaseHelper = null;           // Access to our SQLite database.
+    private TextView levelNumberText;                               // The current level number.
+    private TextView distanceText;                                  // The current distance number.
+    private final Activity activityReference = this;                // Reference to this activity, to be used in the runnable below.
+    private final Handler checkTextPermission = new Handler();      // To check what our response is to the message box.
+    private Runnable runnable = new Runnable()                      // Providing the response to our message box reply.
     {
+        //////////////////////////////////////////////////
+        //                      Run                     //
+        //==============================================//
+        // This will check the response for our message //
+        // box and will either take us to the SMS       //
+        // application or just reset our message box    //
+        // response values.                             //
+        //////////////////////////////////////////////////
         @Override
         public void run()
         {
@@ -80,12 +88,12 @@ public class GameOver extends Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_over);
 
-        // Load in options here...
+        // Accessing shared preferences.
         SharedPreferences gameSettings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         final int distance = gameSettings.getInt("mplayerDistance", 0);
         final int levelNumber = gameSettings.getInt("mlevelNumber", 0);
 
-        // Setting up the button to go back to the main menu.
+        // Initialising our attributes.
         final NavigationButton button = new NavigationButton();
         mainMenuButton = (Button) findViewById(R.id.gameOverMainMenuButton);
         textAFriendButton = (Button) findViewById(R.id.textFriendButton);
@@ -109,22 +117,40 @@ public class GameOver extends Activity implements View.OnClickListener
         checkTextPermission.post(runnable);
     }
 
+    //////////////////////////////////////////////////
+    //                  On Click                    //
+    //==============================================//
+    // Here we will listen our for any clicks on    //
+    // our buttons, and complete specific tasks     //
+    // depending on what we need to do.             //
+    //////////////////////////////////////////////////
     @Override
     public void onClick(View view)
     {
         // If we have clicked on the text a friend button.
         if(view == textAFriendButton)
         {
+            // Display a message box to the user, asking them if they want to allow access to the SMS service.
             DebugInformation.displayMessageBox(this, "SMS Access", "Accept if you would like to use SMS", "Accept", "Cancel");
         }
     }
 
+    //////////////////////////////////////////////////
+    //                Add To Scores                 //
+    //==============================================//
+    // Here we will add in our level number and     //
+    // current distance number into our SQLite      //
+    // database.                                    //
+    // We will also check to make sure that the     //
+    // current score has not already been added in. //
+    //////////////////////////////////////////////////
     public void addToScores(View view)
     {
+        // Place our level number and distance into string attributes.
         String level = levelNumberText.getText().toString();
         String distance = distanceText.getText().toString();
 
-        // Check if the scores doesn't already exist to avoid duplicate entries.
+        // Check if the score doesn't already exist to avoid duplicate entries.
         if (!dataDatabaseHelper.dataExists(new Data(level, distance)))
         {
             // Add in the new score if there isn't already the same score in the list.
@@ -133,37 +159,38 @@ public class GameOver extends Activity implements View.OnClickListener
             // Check how many entries we have.
             checkNumberOfDataEntries();
 
-            // Feedback message.
+            // Display a message to the user, telling them that a new score has been added.
             Toast.makeText(getApplicationContext(), "New score has been added!", Toast.LENGTH_SHORT).show();
         }
         // Otherwise, the score already exists.
         else
         {
-            // Feedback message.
+            // Display a message to the user, telling them that their current score is a duplicate.
             Toast.makeText(getApplicationContext(), "You have a similar score already saved!", Toast.LENGTH_SHORT).show();
         }
-
     }
 
+    //////////////////////////////////////////////////
+    //           Check Number Of Data Entries       //
+    //==============================================//
+    // This function will allow us to check the     //
+    // number of current entries within the our     //
+    // database.                                    //
+    //////////////////////////////////////////////////
     private void checkNumberOfDataEntries()
     {
+        // Place the current amount of database data into an attribute.
         int dataCount = dataDatabaseHelper.getAmountOfData();
 
         // If there is no data.
         if (dataCount == -1)
         {
-            //text_numberOfContacts.setText("Contacts database is empty or doesn't exist.");
+            // Do nothing for now.
         }
         // Otherwise, there is some data.
         else
         {
-            // text_numberOfContacts.setText("Contacts database contains " + contactsCount + " entries.");
+            // Do nothing for now.
         }
-    }
-
-    public void viewScores(View view)
-    {
-        Intent intent = new Intent(this, HighScores.class);
-        startActivity(intent);
     }
 }

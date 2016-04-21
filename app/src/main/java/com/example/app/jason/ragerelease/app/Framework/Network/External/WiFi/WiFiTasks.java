@@ -130,16 +130,14 @@ public class WiFiTasks extends Thread
             }
         }
 
-        public void cancel()
-        {
-
-        }
-
         // Setters.
         // This will set our current image index.
         public void setImageIndex(int imageIndex) { playerImageIndex = imageIndex; }
     }
 
+    // This class attempted to help sync up the two players.
+    // With this the player had to wait for a response from the other player.
+    // It worked, but threads in the activity didn't work as expected.
     protected class SendStartGameMessage extends Thread
     {
         // Methods.
@@ -167,32 +165,25 @@ public class WiFiTasks extends Thread
 
                 while(!isReady)
                 {
-//                    try
-//                    {
-                        // If we have some data in our input stream.
-                        if (socket.getInputStream() != null)
+                    // If we have some data in our input stream.
+                    if (socket.getInputStream() != null)
+                    {
+                        // Reading data from the input stream of the socket.
+                        DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+                        String peerReadyMessage = dataInputStream.readUTF();
+
+                        // Parsing our string value into a boolean value to be used with our game activity.
+                        isReady = Boolean.parseBoolean(peerReadyMessage);
+
+                        // Saving the boolean value within our shared preference file in order to use.
+                        editor.putBoolean(PLAYER_READY_KEY, isReady);
+                        editor.apply();
+
+                        if (isReady)
                         {
-                            // Reading data from the input stream of the socket.
-                            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-                            String peerReadyMessage = dataInputStream.readUTF();
-
-                            // Parsing our string value into a boolean value to be used with our game activity.
-                            isReady = Boolean.parseBoolean(peerReadyMessage);
-
-                            // Saving the boolean value within our shared preference file in order to use.
-                            editor.putBoolean(PLAYER_READY_KEY, isReady);
-                            editor.apply();
-
-                            if (isReady)
-                            {
-                                break;
-                            }
+                            break;
                         }
-//                    }
-//                    catch(IOException e)
-//                    {
-//                        e.printStackTrace();
-//                    }
+                    }
                 }
 
                 if(isReady)
@@ -394,19 +385,12 @@ public class WiFiTasks extends Thread
         }
     };
 
-//    public void stopAllThreads()
-//    {
-//        if(sendImageThread.isAlive())
-//        {
-//            sendImageThread.
-//        }
-//    }
-
     // Getters.
     // This will tell us whether or not the peer is ready.
-    public boolean isPlayerReady() { return isReady; }
+    public boolean isPlayerReady()  { return isReady; }
 
-    public int getCurrentState() {return currentState;}
+    // Get the current network state.
+    public int getCurrentState()    { return currentState;}
 
     // Setters.
     // This will set our current network state and send that state over to our handler for processing.

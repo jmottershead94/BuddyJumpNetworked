@@ -97,6 +97,6 @@ public class WiFiHandler
     // Get the wifi broadcast receiver.
     public WiFiBroadcastReceiver getWifiBroadcastReceiver()         { return wifiBroadcastReceiver; }
 
-    // Get the wifi broadcast receiver.
+    // This will return a wifi broadcast receiver.
     public WiFiP2PBroadcastReceiver getWifiP2PBroadcastReceiver()   { return wifiP2PBroadcastReceiver; }
 }

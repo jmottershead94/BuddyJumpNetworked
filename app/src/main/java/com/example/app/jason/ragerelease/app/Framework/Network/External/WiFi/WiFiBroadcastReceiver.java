@@ -58,7 +58,7 @@ public class WiFiBroadcastReceiver extends NetworkBroadcastReceiver
             // If we have wifi turned on.
             if(state == WifiManager.WIFI_STATE_ENABLED)
             {
-                // Wifi is enabled.
+                // Reset our message values.
                 DebugInformation.resetMessageValues();
             }
             // Otherwise, wifi is turned off.

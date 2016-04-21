@@ -149,6 +149,7 @@ public class NetworkActivity extends Activity
 
         if((DebugInformation.messageReply == DebugInformation.ACCEPTED_MESSAGE) || (DebugInformation.messageReply == DebugInformation.ACCEPTED_MESSAGE))
         {
+            DebugInformation.resetMessageValues();
             DebugInformation.displayShortToastMessage(this, "Returning to connection selection...");
 
             Intent connectionSelectionActivity = new Intent(this, ConnectionSelection.class);

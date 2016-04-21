@@ -210,10 +210,80 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
             {
 //                DebugInformation.displayMessageBox(this, "Start Game", "Are you ready to start the game with your peer?", "Yes", "No");
                 startGame();
-            }
-            else
-            {
-                userDisconnected();
+//                final Intent gameActivity = new Intent(this, MultiplayerGame.class);
+//
+//                // If we are hosting a match.
+//                if (playerMatchStatus == NetworkConstants.HOST_ID)
+//                {
+//                    // Send the current player image index to the other player via the server.
+//                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setServerPeerImage(playerImage);
+//                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
+//                    gameActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.HOST_ID);
+//                }
+//                else if (playerMatchStatus == NetworkConstants.JOIN_ID)
+//                {
+//                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setClientPeerImage(playerImage);
+//                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setState(NetworkConstants.STATE_SEND_IMAGE_MESSAGE);
+//                    gameActivity.putExtra(NetworkConstants.EXTRA_PLAYER_MATCH_STATUS, NetworkConstants.JOIN_ID);
+//                }
+//
+//                final Activity activityReference = this;
+//
+//                // Create a delay.
+//                final Handler debugHandler = new Handler();
+//                debugHandler.postDelayed(new Runnable()
+//                {
+//                    // After 6 seconds.
+//                    @Override
+//                    public void run()
+//                    {
+//                        if(wifiManager.isWifiEnabled())
+//                        {
+//                            if (playerMatchStatus == NetworkConstants.HOST_ID)
+//                            {
+//                                DebugInformation.displayShortToastMessage(activityReference, "Client Image: " + connectionApplication.getServerPeerIndexImage());
+//
+//                                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setGameIsRunning(true);
+//                                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
+//                            }
+//                            else if (playerMatchStatus == NetworkConstants.JOIN_ID)
+//                            {
+//                                DebugInformation.displayShortToastMessage(activityReference, "Server Image: " + connectionApplication.getClientPeerIndexImage());
+//
+//                                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setGameIsRunning(true);
+//                                connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setState(NetworkConstants.STATE_SEND_GAME_MESSAGES);
+//                            }
+//                        }
+//                        else
+//                        {
+//                            userDisconnected();
+//                        }
+//                    }
+//                }, 6000);
+//
+//                // Create a delay.
+//                final Handler handler = new Handler();
+//                handler.postDelayed(new Runnable()
+//                {
+//                    // After 6 seconds.
+//                    @Override
+//                    public void run()
+//                    {
+//                        if(wifiManager.isWifiEnabled())
+//                        {
+//                            startActivity(gameActivity);
+//                        }
+//                        else
+//                        {
+//                            userDisconnected();
+//                        }
+//                    }
+//                }, 12000);
+//            }
+//            else
+//            {
+//                userDisconnected();
+//            }
             }
         }
     }

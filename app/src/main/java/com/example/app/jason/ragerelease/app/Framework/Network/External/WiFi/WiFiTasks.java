@@ -415,6 +415,9 @@ public class WiFiTasks extends Thread
     // Get the current network state.
     public int getCurrentState()    { return currentState;}
 
+    // This will return our current socket.
+    public Socket getSocket()       { return socket; }
+
     // Setters.
     // This will set our current network state and send that state over to our handler for processing.
     public void setState(final int newState)

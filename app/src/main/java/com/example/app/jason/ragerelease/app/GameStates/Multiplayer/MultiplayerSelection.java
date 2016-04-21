@@ -43,6 +43,62 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
             R.drawable.p5_front, R.drawable.p6_front,
             R.drawable.p7_front, R.drawable.p8_front
     };
+    private boolean checkPeerStatus = false;                        // This will notify us of when we are able to check the status of the other peer.
+    private int numberOfPlayersReady = 1;                           // The current number of players that are ready.
+    private final Handler checkPeerReady = new Handler();           // Our handler for handling whether or not both players are ready.
+    private Runnable runnable = new Runnable()                      // Our runnable for providing the means to check if both players are ready.
+    {
+        //////////////////////////////////////////////////
+        //                      Run                     //
+        //==============================================//
+        // This will check the enabled status for both  //
+        // bluetooth and wifi, and set our button       //
+        // text accordingly.                            //
+        // We will also handle our message box response //
+        // here.                                        //
+        //////////////////////////////////////////////////
+        @Override
+        public void run()
+        {
+            // If we should check our peer values.
+            if(checkPeerStatus)
+            {
+                // If we are hosting a match.
+                if (playerMatchStatus == NetworkConstants.HOST_ID)
+                {
+                    // Check to see if our peer is ready.
+                    if (connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().isPlayerReady())
+                    {
+                        // If so, increase the number of ready players.
+                        numberOfPlayersReady++;
+                    }
+                }
+                // Otherwise, if we are joining a match.
+                else if (playerMatchStatus == NetworkConstants.JOIN_ID)
+                {
+                    // Check to see if our peer is ready.
+                    if (connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().isPlayerReady())
+                    {
+                        // If so, increase the number of ready players.
+                        numberOfPlayersReady++;
+                    }
+                }
+
+                // If we have two players that are ready.
+                if(numberOfPlayersReady == 2)
+                {
+                    // Stop this handler from running anymore.
+                    checkPeerReady.removeCallbacks(this);
+
+                    // Start the multiplayer game.
+                    startGame();
+                }
+            }
+
+            // Check this every second.
+            checkPeerReady.postDelayed(this, 1000);
+        }
+    };
 
     // Methods.
     //////////////////////////////////////////////////
@@ -88,6 +144,9 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
 
         // Setting on click listener for the button.
         playGameButton.setOnClickListener(this);
+
+        // Check to see if both peers are ready.
+        checkPeerReady.post(runnable);
     }
 
     //////////////////////////////////////////////////
@@ -191,8 +250,27 @@ public class MultiplayerSelection extends NetworkActivity implements View.OnClic
             // If wifi is already enabled.
             if(wifiManager.isWifiEnabled())
             {
-                // Start the game.
-                startGame();
+                // We should now check the status of our peers.
+                checkPeerStatus = true;
+
+                // If we are hosting a match.
+                if(playerMatchStatus == NetworkConstants.HOST_ID)
+                {
+                    // Display a message to the user, telling them that they should wait for a response from their peer.
+                    DebugInformation.displayShortToastMessage(this, "Waiting for your peer to respond");
+
+                    // Set the current network state to tell our peer that we are ready.
+                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getServerTask().setState(NetworkConstants.STATE_TELL_PEER_READY);
+                }
+                // Otherwise, we are joining a match.
+                else if(playerMatchStatus == NetworkConstants.JOIN_ID)
+                {
+                    // Display a message to the user, telling them that they should wait for a response from their peer.
+                    DebugInformation.displayShortToastMessage(this, "Waiting for your peer to respond");
+
+                    // Set the current network state to tell our peer that we are ready.
+                    connectionApplication.getConnectionManagement().getWifiHandler().getWifiP2PBroadcastReceiver().getClientTask().setState(NetworkConstants.STATE_TELL_PEER_READY);
+                }
             }
         }
     }

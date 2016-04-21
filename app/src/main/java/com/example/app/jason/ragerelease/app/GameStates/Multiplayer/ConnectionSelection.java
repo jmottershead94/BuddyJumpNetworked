@@ -132,7 +132,7 @@ public class ConnectionSelection extends NetworkActivity implements View.OnClick
         wifiButton = (Button) findViewById(R.id.wifiButton);
         bluetoothHandler = new BluetoothHandler(getApplicationContext());
 
-        // On click listeners for the connection type buttons.
+        // Setting the on click listeners for our buttons.
         bluetoothButton.setOnClickListener(this);
         wifiButton.setOnClickListener(this);
 

@@ -53,6 +53,7 @@ public class DebugInformation
     //////////////////////////////////////////////////
     public static void displayMessageBox(final Context context, final String title, final String message, final String positiveOption, final String negativeOption)
     {
+        // If we still need to display the message box.
         if(displayOnce)
         {
             // Create the alert box.
@@ -85,6 +86,7 @@ public class DebugInformation
                     // We have messageReply the message box.
                     messageReply = ACCEPTED_MESSAGE;
 
+                    // Reset the display status for this message box.
                     displayOnce = true;
 
                     // Remove the message box from the UI.
@@ -110,6 +112,7 @@ public class DebugInformation
                     // We have declined the message box.
                     messageReply = DECLINED_MESSAGE;
 
+                    // Reset the display status for this message box.
                     displayOnce = true;
 
                     // Remove the message box from the UI.
@@ -123,13 +126,24 @@ public class DebugInformation
             // Display the message box on to the screen.
             messageBox.show();
 
+            // We no longer need to display this message box.
             displayOnce = false;
         }
     }
 
+    //////////////////////////////////////////////////
+    //              Reset Message Values            //
+    //==============================================//
+    // This will reset our message box values so    //
+    // that we can display it again, and read the   //
+    // correct response.                            //
+    //////////////////////////////////////////////////
     public static void resetMessageValues()
     {
+        // Reset the message reply so that we can gauge a correct response from the user when we use another message box.
         messageReply = NO_MESSAGE_BOX;
+
+        // Reset the display status for this message box.
         displayOnce = true;
     }
 }

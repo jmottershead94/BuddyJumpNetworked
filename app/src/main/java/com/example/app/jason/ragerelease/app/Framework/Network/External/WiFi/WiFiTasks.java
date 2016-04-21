@@ -255,7 +255,7 @@ public class WiFiTasks extends Thread
                     }
                 }
 
-                if(isRunning)
+                if(!isRunning)
                 {
                     return;
                 }

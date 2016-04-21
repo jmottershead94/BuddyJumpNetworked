@@ -26,6 +26,12 @@
     <uses-permission
         android:name="ANDROID.PERMISSION.WRITE_SMS"/>
 
+    <!-- Setting the user permission to access bluetooth features. -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"/>
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"/>
+
     <!-- Setting the user permission to access internet features. -->
     <uses-permission
         android:name="android.permission.INTERNET"/>
@@ -33,12 +39,6 @@
         android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission
         android:name="android.permission.CHANGE_NETWORK_STATE"/>
-
-    <!-- Setting the user permission to access bluetooth features. -->
-    <uses-permission
-        android:name="android.permission.BLUETOOTH"/>
-    <uses-permission
-        android:name="android.permission.BLUETOOTH_ADMIN"/>
 
     <!-- Setting the user permission to access wifi features. -->
     <uses-permission

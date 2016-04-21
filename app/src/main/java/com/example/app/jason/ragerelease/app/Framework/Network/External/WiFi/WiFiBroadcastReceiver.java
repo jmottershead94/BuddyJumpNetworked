@@ -86,7 +86,4 @@ public class WiFiBroadcastReceiver extends NetworkBroadcastReceiver
             }
         }
     }
-
-
-
 }
